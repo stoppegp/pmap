@@ -1,0 +1,304 @@
+* {
+	box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Roboto';
+    src: url('../fonts/Roboto-Regular-webfont.eot');
+    src: url('../fonts/Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Regular-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Regular-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Regular-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'Roboto';
+    src: url('../fonts/Roboto-Italic-webfont.eot');
+    src: url('../fonts/Roboto-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Italic-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Italic-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Italic-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: italic; 
+}
+@font-face {
+  font-family: 'Roboto';
+    src: url('../fonts/Roboto-BoldItalic-webfont.eot');
+    src: url('../fonts/Roboto-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-BoldItalic-webfont.woff') format('woff'),
+         url('../fonts/Roboto-BoldItalic-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-BoldItalic-webfont.svg') format('svg');
+  font-weight: bold;
+  font-style: italic; 
+}
+@font-face {
+  font-family: 'Roboto';
+    src: url('../fonts/Roboto-Bold-webfont.eot');
+    src: url('../fonts/Roboto-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Bold-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Bold-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Bold-webfont.svg') format('svg');
+  font-weight: bold;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'RobotoLight';
+    src: url('../fonts/Roboto-Light-webfont.eot');
+    src: url('../fonts/Roboto-Light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Light-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Light-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Light-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'RobotoLight';
+    src: url('../fonts/Roboto-LightItalic-webfont.eot');
+    src: url('../fonts/Roboto-LightItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-LightItalic-webfont.woff') format('woff'),
+         url('../fonts/Roboto-LightItalic-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-LightItalic-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: italic; 
+}
+@font-face {
+  font-family: 'RobotoLight';
+    src: url('../fonts/Roboto-MediumItalic-webfont.eot');
+    src: url('../fonts/Roboto-MediumItalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-MediumItalic-webfont.woff') format('woff'),
+         url('../fonts/Roboto-MediumItalic-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-MediumItalic-webfont.svg') format('svg');
+  font-weight: bold;
+  font-style: italic; 
+}
+@font-face {
+  font-family: 'RobotoLight';
+    src: url('../fonts/Roboto-Medium-webfont.eot');
+    src: url('../fonts/Roboto-Medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Roboto-Medium-webfont.woff') format('woff'),
+         url('../fonts/Roboto-Medium-webfont.ttf') format('truetype'),
+         url('../fonts/Roboto-Medium-webfont.svg') format('svg');
+  font-weight: bold;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'PoliticsHead';
+  src: url('../fonts/PoliticsHead-Bold.eot?#iefix') format('embedded-opentype'),  url('../fonts/PoliticsHead-Bold.otf')  format('opentype'),
+	     url('../fonts/PoliticsHead-Bold.woff') format('woff'), url('../fonts/PoliticsHead-Bold.ttf')  format('truetype'), url('../fonts/PoliticsHead-Bold.svg#PoliticsHead-Bold') format('svg');
+}
+
+body, html {
+	margin: 0;
+	padding: 0;
+	overflow:hidden;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+}
+h1, h2 {
+	font-family: 'PoliticsHead', sans-serif;
+}
+h2 {
+	font-size: 180%;
+}
+h3 {
+	font-size: 140%;
+}
+a {
+	color: #ff8800;
+	text-decoration: none;
+}
+a:hover, a:focus {
+	color: #ff8800;
+	text-decoration: underline;
+}
+small {
+	font-size: 95%;
+	color: #333;
+}
+#common {
+	width: 20vw;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: white;
+	box-shadow: 3px 0px 4px 0px rgba(0,0,0,0.45);
+	background-color: rgba(255, 255, 255, .95);
+	padding: 0px;
+	z-index: 99;
+	overflow: hidden;
+}
+.smallportrait #common {
+	width: 100%;
+}
+.smalllandscape #common {
+	height: 100%;
+}
+#common > #mainimgc {
+	position: absolute;
+	width: 20vw;
+	height: 7vw;
+	padding: 8px;
+	top: 0;
+	left: 0;
+	z-index: 999;
+}
+.smallportrait #common > #mainimgc {
+	width: 100%;
+	height: 75px;
+	background-color: white;
+	padding: 5px;
+}
+.smalllandscape #common > #mainimgc {
+	width: 200px;
+	height: auto;
+}
+#common > #mainimgc img {
+	max-width:100%;
+	height:auto;
+}
+.smallportrait #common >#mainimgc a {
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+.smallportrait #common > #mainimgc img {
+	max-height:100%;
+	width:auto;
+}
+#common h2 {
+	margin-bottom: 7px;
+}
+#commonc {
+	height: 100%;
+	width: 100%;
+	left: 0;
+	top: 0;
+	position: absolute;
+	padding-top: 7vw;
+}
+.smallportrait #commonc {
+	padding-top: 75px;
+}
+.smalllandscape #commonc {
+	right: 0;
+	left: auto;
+	padding-top: 75px;
+}
+#commons {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding: 15px;
+	width: 100%;
+	height: 100%;
+	top: 0;
+}
+#calendar ul, #activegroups ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+#calendar ul li a, #activegroups ul li a, #info a.treffenlink {
+	display: block;
+	color: black;
+	margin-left: -15px;
+	margin-right: -15px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 5px;	
+	padding-bottom: 5px;
+	text-decoration: none;
+}
+#calendar h3 {
+	margin-bottom: 5px;
+}
+#calendar ul li a:hover, #calendar ul li a:focus, #activegroups ul li a:hover, #activegroups ul li a:focus, #activegroups ul li a.active, #info a.treffenlink:hover, #info a.treffenlink:focus, #info a.treffenlink.active {
+	background-color: #ff8800;
+}
+#mapid {
+	width: 100vw;
+	left: 0vw;
+	height: 100vh;
+	position: absolute;
+	z-index: 1;
+}
+
+#info {
+	position: absolute;
+	right: 0;
+	left: auto;
+	top:0;
+	bottom: auto;
+	background-color: rgba(255, 255, 255, .95);
+	height: 100%;
+	width: 0;
+	z-index: 99;
+	box-shadow: -3px 0px 4px 0px rgba(0,0,0,0.45);
+	padding: 0px;
+	overflow: hidden;
+}
+.smallportrait #info {
+	right: auto;
+	left: 0;
+	top: auto;
+	bottom: 0;
+	width: 100%;
+}
+.smalllandscape #info {
+	right: 0;
+	left: auto;
+	top: 0;
+	bottom: auto;
+	height: 100%;
+}
+#infocontent {
+	padding: 15px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	top: 0;
+	left: 0;
+        word-wrap: break-word;
+}
+#info #closelink {
+	position: absolute;
+	top: 3px;
+	right: 12px;
+	z-index: 999;
+	color: black;
+	font-size: 150%;
+}
+.kreislogo {
+	width: 80%;
+	max-width: 250px;
+	height: auto;
+}
+
+.shariff .shariff-button {
+	min-width: 1px !important;
+	flex: none !important;
+}
+.shariff .share_text {
+	display: none !important;
+}
+
+.smallportrait .leaflet-control-zoom {
+	display: none;		
+}
+.smallportrait .leaflet-left {
+	left: 0;
+}
+.leaflet-bottom {
+	bottom: 0;
+}

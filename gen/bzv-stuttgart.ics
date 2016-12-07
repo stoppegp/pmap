@@ -1,0 +1,362 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:20161129180000K0@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Filder
+LOCATION:Kanonenbäck @ Rathausstraße 5, 70565 Stuttgart, Deutschland
+DESCRIPTION:Twittern
+DTSTART:20161129T180000Z
+DTEND:20161129T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161129190000K1@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20161129T190000Z
+DTEND:20161129T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161130180000K2@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Piratentreff Göppingen
+LOCATION:Pizzeria "Toscana", Mittlere Karlstraße 126, 73033 Göppingen, Deutschland
+DESCRIPTION:In Göppingen treffen wir uns alle zwei Wochen, um über Organisatorisches und aktuelle politische Themen zu diskutieren. Wie zu allen unseren Treffen kann auch hier jeder Interessent einfach unangemeldet vorbeischauen und mitdiskutieren!<br />http://goeppinger-piraten.de/treffen/goeppingen
+DTSTART:20161130T180000Z
+DTEND:20161130T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161205180000K3@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Orgatreffen, anschließend Vorstandssitzung
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:jeden zweiten Montag findet in der LGS ein Orgatreffen statt. Alle Piraten und Nicht-Piraten sind eingeladen, aktiv teilzunehmen. Die anschließende  Vorstandssitzung ist öffentlich.<br />An den übrigen Montagen findet ein Openspace statt. Damit steht die Landesgeschäftsstelle allen Interessierten jeden Montag Abend offen.<br /><br />Twittern
+DTSTART:20161205T180000Z
+DTEND:20161205T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161205190000K4@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20161205T190000Z
+DTEND:20161205T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161207180000K5@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:SG Öffentlichkeitsarbeit
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Jeden ersten Mittwoch im Monat trifft sich die SG Öffentlichkeitsarbeit zum ausarbeiten von Kampagnen und Aktionen. Die Treffen sind öffentlich.<br /><br />Twittern
+DTSTART:20161207T180000Z
+DTEND:20161207T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161208190000K6@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Piratentreff-West
+LOCATION:Taverna Yol @ Spittastraße 2, 70193 Stuttgart, Deutschland
+DESCRIPTION:Hier bietet sich Piraten und Interessierten aus der Region rund um Stuttgart die Möglichkeit, sich mit Gleichgesinnten zu treffen, sich auszutauschen, Politisches zu debattieren, (regionale) Aktionen zu planen und auszuführen. Jeder und Jede ist herzlich eingeladen – auch Besucher, Mitglieder anderer Parteien oder Vertreter anderer Organisationen!<br /><br />Twittern
+DTSTART:20161208T190000Z
+DTEND:20161208T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161212180000K7@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:OpenSpace
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Beim OpenSpace steht die Landesgeschäftsstelle allen offen. Ob Mitglieder oder nicht, ihr könnt euch hier treffen, gemeinsam arbeiten, euch austauschen oder nur über die Piraten informieren. Alle 14 Tage.<br />Die übrigen Montage findet ein Orgatreffen statt. Ebenso offen für Gäste.<br />Damit steht die Landesgeschäftsstelle jeden Montag Abend allen Interessierten offen.<br /><br />Twittern
+DTSTART:20161212T180000Z
+DTEND:20161212T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161212190000K8@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20161212T190000Z
+DTEND:20161212T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161213180000K9@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Leonberg
+LOCATION:Irish Pub Murphy's Law, Graf-Ulrich-Straße 6, 71229 Leonberg
+DTSTART:20161213T180000Z
+DTEND:20161213T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161214180000K10@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Piratentreff Göppingen
+LOCATION:Pizzeria "Toscana", Mittlere Karlstraße 126, 73033 Göppingen, Deutschland
+DESCRIPTION:In Göppingen treffen wir uns alle zwei Wochen, um über Organisatorisches und aktuelle politische Themen zu diskutieren. Wie zu allen unseren Treffen kann auch hier jeder Interessent einfach unangemeldet vorbeischauen und mitdiskutieren!<br />http://goeppinger-piraten.de/treffen/goeppingen
+DTSTART:20161214T180000Z
+DTEND:20161214T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161216190000K11@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Ludwigsburg
+DTSTART:20161216T190000Z
+DTEND:20161216T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161217180000K12@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Nürtingen
+DTSTART:20161217T180000Z
+DTEND:20161217T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161218140000K13@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Kryptoparty – digitale Selbstverteidigung
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Auf sogenannten Kryptopartys können Interessierte, vom absoluten Laien bis hin zu IT-Fachleuten, lernen und diskutieren, wie man Emails, Dateien und Laufwerke verschlüsselt und wie man im Internet surft ohne allzu viele Daten-Spuren zu hinterlassen.<br />Teilnahme kostenlos. Bitte hier anmelden (Name oder Pseudonym eintragen genügt):  stuttgart.piratenpad.de/949<br />Wir alle haben etwas zu verbergen: Zum Beispiel unsere Privatsphäre und unsere Geschäftsgeheimnisse. Eigentlich ist es ein Skandal, dass Bürger sich vor Überwachung bzw. vor dem Staat schützen müssen. Es ist Aufgabe des Staates, seine Bürger zu schützen! Aber dieser Aufgabe kommt der deutsche Staat nicht nach. Er hat dabei versagt, seine Bürger vor Prism, Tempora und Co. zu schützen. Jetzt kommt aktuell noch die Vorratsdatenspeicherung hinzu. Wir geben ihnen Verschlüsselungswerkzeuge und das nötige Wissen an die  Hand, um ihre Mails und Dateien vor der anlasslosen Überwachung zu schützen.<br /><br />Twittern<br />Tickets:https://stuttgart.piratenpad.de/949.
+DTSTART:20161218T140000Z
+DTEND:20161218T170000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161219180000K14@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Orgatreffen, anschließend Vorstandssitzung
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:jeden zweiten Montag findet in der LGS ein Orgatreffen statt. Alle Piraten und Nicht-Piraten sind eingeladen, aktiv teilzunehmen. Die anschließende  Vorstandssitzung ist öffentlich.<br />An den übrigen Montagen findet ein Openspace statt. Damit steht die Landesgeschäftsstelle allen Interessierten jeden Montag Abend offen.<br /><br />Twittern
+DTSTART:20161219T180000Z
+DTEND:20161219T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161219190000K15@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20161219T190000Z
+DTEND:20161219T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161220180000K16@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Piratentreff Herrenberg
+LOCATION:zum Botenfischer, Nagolder Straße 14, 71083 Herrenberg
+DTSTART:20161220T180000Z
+DTEND:20161220T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161221180000K17@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Vorstandssitzung
+LOCATION:Mumble
+DESCRIPTION:http://wiki.piratenpartei.de/BW:Bezirksverband_Stuttgart/Vorstandssitzung
+DTSTART:20161221T180000Z
+DTEND:20161221T190000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161226180000K18@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:OpenSpace
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Beim OpenSpace steht die Landesgeschäftsstelle allen offen. Ob Mitglieder oder nicht, ihr könnt euch hier treffen, gemeinsam arbeiten, euch austauschen oder nur über die Piraten informieren. Alle 14 Tage.<br />Die übrigen Montage findet ein Orgatreffen statt. Ebenso offen für Gäste.<br />Damit steht die Landesgeschäftsstelle jeden Montag Abend allen Interessierten offen.<br /><br />Twittern
+DTSTART:20161226T180000Z
+DTEND:20161226T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161226190000K19@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20161226T190000Z
+DTEND:20161226T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161227180000K20@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Filder
+LOCATION:Kanonenbäck @ Rathausstraße 5, 70565 Stuttgart, Deutschland
+DESCRIPTION:Twittern
+DTSTART:20161227T180000Z
+DTEND:20161227T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20161228180000K21@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Künzelsau
+DTSTART:20161228T180000Z
+DTEND:20161228T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170102180000K22@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Orgatreffen, anschließend Vorstandssitzung
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:jeden zweiten Montag findet in der LGS ein Orgatreffen statt. Alle Piraten und Nicht-Piraten sind eingeladen, aktiv teilzunehmen. Die anschließende  Vorstandssitzung ist öffentlich.<br />An den übrigen Montagen findet ein Openspace statt. Damit steht die Landesgeschäftsstelle allen Interessierten jeden Montag Abend offen.<br /><br />Twittern
+DTSTART:20170102T180000Z
+DTEND:20170102T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170102190000K23@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20170102T190000Z
+DTEND:20170102T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170104180000K24@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:SG Öffentlichkeitsarbeit
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Jeden ersten Mittwoch im Monat trifft sich die SG Öffentlichkeitsarbeit zum ausarbeiten von Kampagnen und Aktionen. Die Treffen sind öffentlich.<br /><br />Twittern
+DTSTART:20170104T180000Z
+DTEND:20170104T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170105180000K25@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Böblingen
+LOCATION:Il Fresco, Bahnhofstraße 29, 71032 Böblingen
+DTSTART:20170105T180000Z
+DTEND:20170105T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170109180000K26@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:OpenSpace
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Beim OpenSpace steht die Landesgeschäftsstelle allen offen. Ob Mitglieder oder nicht, ihr könnt euch hier treffen, gemeinsam arbeiten, euch austauschen oder nur über die Piraten informieren. Alle 14 Tage.<br />Die übrigen Montage findet ein Orgatreffen statt. Ebenso offen für Gäste.<br />Damit steht die Landesgeschäftsstelle jeden Montag Abend allen Interessierten offen.<br /><br />Twittern
+DTSTART:20170109T180000Z
+DTEND:20170109T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170109190000K27@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20170109T190000Z
+DTEND:20170109T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170111180000K28@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Piratentreff Göppingen
+LOCATION:Pizzeria "Toscana", Mittlere Karlstraße 126, 73033 Göppingen, Deutschland
+DESCRIPTION:In Göppingen treffen wir uns alle zwei Wochen, um über Organisatorisches und aktuelle politische Themen zu diskutieren. Wie zu allen unseren Treffen kann auch hier jeder Interessent einfach unangemeldet vorbeischauen und mitdiskutieren!<br />http://goeppinger-piraten.de/treffen/goeppingen
+DTSTART:20170111T180000Z
+DTEND:20170111T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170112190000K29@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Piratentreff-West
+LOCATION:Taverna Yol @ Spittastraße 2, 70193 Stuttgart, Deutschland
+DESCRIPTION:Hier bietet sich Piraten und Interessierten aus der Region rund um Stuttgart die Möglichkeit, sich mit Gleichgesinnten zu treffen, sich auszutauschen, Politisches zu debattieren, (regionale) Aktionen zu planen und auszuführen. Jeder und Jede ist herzlich eingeladen – auch Besucher, Mitglieder anderer Parteien oder Vertreter anderer Organisationen!<br /><br />Twittern
+DTSTART:20170112T190000Z
+DTEND:20170112T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170115140000K30@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Kryptoparty – digitale Selbstverteidigung
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Auf sogenannten Kryptopartys können Interessierte, vom absoluten Laien bis hin zu IT-Fachleuten, lernen und diskutieren, wie man Emails, Dateien und Laufwerke verschlüsselt und wie man im Internet surft ohne allzu viele Daten-Spuren zu hinterlassen.<br />Teilnahme kostenlos. Bitte hier anmelden (Name oder Pseudonym eintragen genügt):  stuttgart.piratenpad.de/949<br />Wir alle haben etwas zu verbergen: Zum Beispiel unsere Privatsphäre und unsere Geschäftsgeheimnisse. Eigentlich ist es ein Skandal, dass Bürger sich vor Überwachung bzw. vor dem Staat schützen müssen. Es ist Aufgabe des Staates, seine Bürger zu schützen! Aber dieser Aufgabe kommt der deutsche Staat nicht nach. Er hat dabei versagt, seine Bürger vor Prism, Tempora und Co. zu schützen. Jetzt kommt aktuell noch die Vorratsdatenspeicherung hinzu. Wir geben ihnen Verschlüsselungswerkzeuge und das nötige Wissen an die  Hand, um ihre Mails und Dateien vor der anlasslosen Überwachung zu schützen.<br /><br />Twittern<br />Tickets:https://stuttgart.piratenpad.de/949.
+DTSTART:20170115T140000Z
+DTEND:20170115T170000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170116180000K31@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Orgatreffen, anschließend Vorstandssitzung
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:jeden zweiten Montag findet in der LGS ein Orgatreffen statt. Alle Piraten und Nicht-Piraten sind eingeladen, aktiv teilzunehmen. Die anschließende  Vorstandssitzung ist öffentlich.<br />An den übrigen Montagen findet ein Openspace statt. Damit steht die Landesgeschäftsstelle allen Interessierten jeden Montag Abend offen.<br /><br />Twittern
+DTSTART:20170116T180000Z
+DTEND:20170116T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170116190000K32@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20170116T190000Z
+DTEND:20170116T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170123180000K33@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:OpenSpace
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Beim OpenSpace steht die Landesgeschäftsstelle allen offen. Ob Mitglieder oder nicht, ihr könnt euch hier treffen, gemeinsam arbeiten, euch austauschen oder nur über die Piraten informieren. Alle 14 Tage.<br />Die übrigen Montage findet ein Orgatreffen statt. Ebenso offen für Gäste.<br />Damit steht die Landesgeschäftsstelle jeden Montag Abend allen Interessierten offen.<br /><br />Twittern
+DTSTART:20170123T180000Z
+DTEND:20170123T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170123190000K34@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20170123T190000Z
+DTEND:20170123T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170124180000K35@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Filder
+LOCATION:Kanonenbäck @ Rathausstraße 5, 70565 Stuttgart, Deutschland
+DESCRIPTION:Twittern
+DTSTART:20170124T180000Z
+DTEND:20170124T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170125180000K36@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Stammtisch Öhringen
+DTSTART:20170125T180000Z
+DTEND:20170125T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170125180000K37@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Piratentreff Göppingen
+LOCATION:Pizzeria "Toscana", Mittlere Karlstraße 126, 73033 Göppingen, Deutschland
+DESCRIPTION:In Göppingen treffen wir uns alle zwei Wochen, um über Organisatorisches und aktuelle politische Themen zu diskutieren. Wie zu allen unseren Treffen kann auch hier jeder Interessent einfach unangemeldet vorbeischauen und mitdiskutieren!<br />http://goeppinger-piraten.de/treffen/goeppingen
+DTSTART:20170125T180000Z
+DTEND:20170125T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170130180000K38@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Orgatreffen, anschließend Vorstandssitzung
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:jeden zweiten Montag findet in der LGS ein Orgatreffen statt. Alle Piraten und Nicht-Piraten sind eingeladen, aktiv teilzunehmen. Die anschließende  Vorstandssitzung ist öffentlich.<br />An den übrigen Montagen findet ein Openspace statt. Damit steht die Landesgeschäftsstelle allen Interessierten jeden Montag Abend offen.<br /><br />Twittern
+DTSTART:20170130T180000Z
+DTEND:20170130T200000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170130190000K39@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:Öffentliche Fraktionssitzung LINKE & PIRATEN
+LOCATION:Technisches Rathaus Raum 423 (4. Stock), Nördliche Ringstraße 35, 73033 Göppingen
+DESCRIPTION:Öffentliche Fraktionssitzung der Fraktion Linke & Piraten im Göppinger Gemeinderat.<br />Bitte den Eingang gegenüber der Kunsthalle benutzen! Falls die Tür abgeschlossen ist, bitte uns unter 07161-650-698 anrufen.<br />http://linke-piraten-gp.de/fraktionssitzungen/
+DTSTART:20170130T190000Z
+DTEND:20170130T210000Z
+END:VEVENT
+BEGIN:VEVENT
+UID:20170201180000K40@PDATAPIRATENBZVSTUTTGART
+DTSTAMP:20161206T150113Z
+SUMMARY:SG Öffentlichkeitsarbeit
+LOCATION:Landesgeschäftsstelle Piratenpartei Baden-Württemberg @ Stöckachstraße 53, 70190 Stuttgart, Deutschland
+DESCRIPTION:Jeden ersten Mittwoch im Monat trifft sich die SG Öffentlichkeitsarbeit zum ausarbeiten von Kampagnen und Aktionen. Die Treffen sind öffentlich.<br /><br />Twittern
+DTSTART:20170201T180000Z
+DTEND:20170201T200000Z
+END:VEVENT
+END:VCALENDAR

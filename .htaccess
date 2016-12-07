@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteBase /
+RewriteRule ^(res|data|gen)($|/) - [L]
+RewriteRule ^([a-zA-Z\-0-9]+)($|/$) index.php?key=$1
+RewriteRule ^([a-zA-Z\-0-9]+)/([a-zA-Z\-0-9]+)($|/$)  index.php?key=$1&key2=$2

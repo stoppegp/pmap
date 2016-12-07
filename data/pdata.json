@@ -1,0 +1,276 @@
+[{
+  "name": "Bezirksverband Stuttgart",
+  "slug": "bzv-stuttgart",
+  "img": "piratenbzvstgt.png",
+  "homepage": "http://www.piraten-bzv-stuttgart.de",
+  "email":  "vorstand@piraten-bzv-stuttgart.de",
+  "text": "",
+  "icals":  [
+    "https://calendar.google.com/calendar/ical/7umkmcdkvpt7un16l8sd0to5os%40group.calendar.google.com/public/basic.ics"
+    ],
+  "treffen": [{
+      "name": "Vorstandssitzung",
+      "slug": "vorstandssitzung",
+      "ort":	"üblicherweise im Mumbe",
+      "termin": {
+        "quelle": {
+          "typ":  "ical",
+          "ical": "https://calendar.google.com/calendar/ical/7umkmcdkvpt7un16l8sd0to5os%40group.calendar.google.com/public/basic.ics",
+          "suchworte":  ["Vorstandssitzung"]
+        }
+      }
+    }]
+},{
+  "name": "Kreis Göppingen",
+  "slug": "kreis-goeppingen",
+  "img": "kreis08117.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08117",
+    "geojson": "kreis08117"
+  },
+  "homepage": "http://piratenpartei-gp.de",
+  "email":  "info@piratenpartei-gp.de",
+  "text": "Die Piraten treffen sich seit 2009 regelmäßig in Göppingen.  Zu allen unseren Treffen kann jeder Interessent einfach unangemeldet vorbeischauen und mitdiskutieren! Egal ob du Pirat oder Sympathisant bist, uns kritisch gegenüberstehst oder gar einer anderen Partei angehörst: Du bist herzlich eingeladen, dir ein eigenes Bild von unseren Aktivitäten zu machen und mit uns zu diskutieren. Wir freuen uns über Gäste!",
+  "icals":  [
+    "https://calendar.google.com/calendar/ical/i96m7pkltimlcuabnslnpteb60%40group.calendar.google.com/public/basic.ics",
+    "https://calendar.google.com/calendar/ical/0cuje95f68f2j12tc83rr6p9ls%40group.calendar.google.com/public/basic.ics"
+    ],
+  "treffen": [{
+      "name": "Piratentreff Göppingen",
+      "slug": "piratentreff-goeppingen",
+      "ort":	"Pizzeria Toscana, Mittlere Karlstraße 126, 73033 Göppingen",
+      "termin": {
+        "text": "Mittwochs in geraden KW, um 19 Uhr",
+        "quelle": {
+          "typ":  "ical",
+          "ical": "https://calendar.google.com/calendar/ical/i96m7pkltimlcuabnslnpteb60%40group.calendar.google.com/public/basic.ics",
+          "suchworte":  ["Göppingen"]
+        }
+      },
+      "lat":  48.70121,
+      "lon":  9.65883
+    }]
+},{
+  "name": "Kreisverband Stuttgart",
+  "slug": "kv-stuttgart",
+  "img": "kreis08111.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08111",
+    "geojson": "kreis08111"
+  },
+  "homepage": "http://www.piratenpartei-stuttgart.de/",
+  "email":  "info@piratenpartei-stuttgart.de",
+  "text": "",
+  "icals":  [
+    "http://www.piratenpartei-stuttgart.de/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&no_html=true"
+    ],
+  "treffen": [{
+      "name": "Piratentreff Stuttgart-West",
+      "slug": "piratentreff-west",
+      "ort": "Taverna Yol, Spittastraße 2, 70193 Stuttgart",
+      "termin": {
+        "text": "Jeden zweiten Donnerstag im Monat, 20 Uhr",
+        "quelle": {
+          "typ":  "ical",
+          "ical": "http://www.piratenpartei-stuttgart.de/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&no_html=true",
+          "suchworte":  ["Piratentreff-West"]
+        }
+      },
+      "lat":  48.77509,
+      "lon":  9.15175
+    },{
+      "name": "Stammtisch Filder",
+      "slug": "stammtisch-filder",
+      "ort": "Kanonenbäck, Rathausstraße 5, 70565 Stuttgart",
+      "termin": {
+        "text": "jeden vierten Dienstag im Monat, 19 Uhr",
+        "quelle": {
+          "typ":  "ical",
+          "ical": "http://www.piratenpartei-stuttgart.de/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&no_html=true",
+          "suchworte":  ["Stammtisch Filder"]
+        }
+      },
+      "lat":  48.7180,
+      "lon":  9.1056
+    },{
+      "name": "Landesgeschäftsstelle",
+      "slug": "landesgeschaeftsstelle",
+      "ort": "Stöckachstraße 53, 70190 Stuttgart",
+      "termin": {
+        "text": "üblicherweise jeden Montag ab 19 Uhr geöffnet",
+        "quelle": {
+          "typ":  "ical",
+          "ical": "http://www.piratenpartei-stuttgart.de/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&no_html=true",
+          "suchworte":  ["Orgatreffen", "OpenSpace"]
+        }
+      },
+      "lat":  48.79225,
+      "lon":  9.20233
+    }]
+},{
+  "name": "Hohenlohekreis",
+  "slug": "hohenlohekreis",
+  "img": "kreis08126.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08126",
+    "geojson": "kreis08126"
+  },
+  "homepage": "http://wiki.piratenpartei.de/BW:Stammtisch_Hohenlohe",
+  "treffen": [{
+      "name": "Stammtisch Öhringen",
+      "slug": "stammtisch-oehringen",
+      "termin": {
+        "text": "Mittwochs, alle acht Wochen, Sportsbar im Sporthotel Öhringen",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Stammtisch_Hohenlohe",
+          "ort":  "Öhringen"
+        }
+      },
+      "lat":  49.2049,
+      "lon":  9.4884
+    },{
+      "name": "Stammtisch Künzelsau",
+      "slug": "stammtisch-kuenzelsau",
+      "termin": {
+        "text": "Mittwochs, alle acht Wochen, Dimi's Hellas Gyros",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Stammtisch_Hohenlohe",
+          "ort":  "Künzelsau"
+        }
+      },
+      "lat":  49.2801,
+      "lon":  9.6904
+    }]
+},{
+  "name": "Kreis Ludwigsburg",
+  "slug": "kreis-ludwigsburg",
+  "img": "kreis08118.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08118",
+    "geojson": "kreis08118"
+  },
+  "homepage": "http://wiki.piratenpartei.de/BW:Ludwigsburg/Stammtisch",
+  "treffen": [{
+      "name": "Stammtisch Ludwigsburg",
+      "slug": "stammtisch-ludwigsburg",
+      "termin": {
+        "text": "jeden 3. Freitag im Monat, 20 Uhr, \"Die Griechin\"",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Ludwigsburg/Stammtisch",
+          "ort":  "Ludwigsburg"
+        }
+      },
+      "lat":  48.89091,
+      "lon":  9.19039
+    }]
+},{
+  "name": "Rems-Murr-Kreis",
+  "slug": "rems-murr-kreis",
+  "img": "kreis08119.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08119",
+    "geojson": "kreis08119"
+  },
+  "homepage": "http://piraten-rmk.de",
+  "treffen": [{
+      "name": "Stammtisch Waiblingen",
+      "slug": "stammtisch-waiblingen",
+      "termin": {
+        "text": "alle zwei Wochen, montags, 19 Uhr, Pool Billard Bistro P13"
+      },
+      "lat":  48.83027,
+      "lon":  9.31320
+    },{
+      "name": "Stammtisch Welzheim",
+      "slug": "stammtisch-welzheim",
+      "termin": {
+        "text": "unregemäßig"
+      },
+      "lat":  48.8771,
+      "lon":  9.6352
+    }]
+},{
+  "name": "Kreis Esslingen",
+  "slug": "kreis-esslingen",
+  "img": "kreis08116.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08116",
+    "geojson": "kreis08116"
+  },
+  "treffen": [{
+      "name": "Stammtisch Nürtingen",
+      "slug": "stammtisch-nuertingen",
+      "termin": {
+        "text": "Samstags alle 2 Wochen, 19 Uhr, Schlachthof in Nürtingen",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/Stammtisch_N%C3%BCrtingen",
+          "ort":  "Nürtingen"
+        }
+      },
+      "lat":  48.62971,
+      "lon":  9.33387
+    }]
+},{
+  "name": "Kreis Böblingen",
+  "slug": "kreis-boeblingen",
+  "img": "kreis08115.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08115",
+    "geojson": "kreis08115"
+  },
+  "treffen": [{
+      "name": "Stammtisch Böblingen",
+      "slug": "stammtisch-boeblingen",
+      "ort": "Il Fresco, Bahnhofstraße 29, 71032 Böblingen",
+      "termin": {
+        "text": "Jeden ersten Donnerstag im Monat, 19 Uhr",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "https://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Stammtisch_B%C3%B6blingen",
+          "ort":  "Böblingen"
+        }
+      },
+      "lat":  48.68698,
+      "lon":  9.00586
+    },{
+      "name": "Piratentreff Herrenberg",
+      "slug": "piratentreff-herrenberg",
+      "ort": "zum Botenfischer, Nagolder Straße 14, 71083 Herrenberg",
+      "termin": {
+        "text": "Jeden dritten Dienstag im Monat, 19 Uhr",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Piratentreff_Herrenberg",
+          "ort":  "Herrenberg"
+        }
+      },
+      "lat":  48.59605,
+      "lon":  8.86457
+    },{
+      "name": "Stammtisch Leonberg",
+      "slug": "stammtisch-leonberg",
+      "ort": "Irish Pub Murphy's Law, Graf-Ulrich-Straße 6, 71229 Leonberg",
+      "termin": {
+        "text": "Jeden zweiten Donnerstag im Monat, 19 Uhr",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Stammtisch_Leonberg",
+          "ort":  "Leonberg"
+        }
+      },
+      "lat":  48.80204,
+      "lon":  9.01622
+    }]
+}]
+
