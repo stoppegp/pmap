@@ -13,11 +13,11 @@
 <title><?php echo PMAP_TITLE; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="<?=getBase();?>/res/favicon.ico" />
 <link rel="stylesheet" href="<?=getBase();?>/res/leaflet/leaflet.css" />
-<script src="<?=getBase();?>/res/js/jquery-3.1.1.min.js"></script>
+<script src="<?=getBase();?>/res/jquery/jquery-3.1.1.min.js"></script>
 <script src="<?=getBase();?>/res/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <script src="<?=getBase();?>/res/leaflet/leaflet.js"></script>
 <script src="<?=getBase();?>/res/leaflet/leaflet.ajax.min.js"></script>
-<script src="<?=getBase();?>/res/js/moment-with-locales.js"></script>
+<script src="<?=getBase();?>/res/moment/moment-with-locales.js"></script>
 <link rel="stylesheet" type="text/css" href="<?=getBase();?>/res/css/style.css">
 <link type="text/css" href="<?=getBase();?>/res/shariff/shariff.complete.css" rel="stylesheet">
 </head>
