@@ -40,8 +40,8 @@
             </form>
             <h2>Aktive Gruppierungen</h2>
             <div id="activegroups"></div>
-            <h2>Kalender</h2>
-            <div id="calendar"></div>
+            <h2 class="calendar" >Kalender</h2>
+            <div class="calendar" id="calendar"></div>
         </div>
     </div>
 </div>

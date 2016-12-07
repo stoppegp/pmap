@@ -698,7 +698,7 @@ $( document ).ready(function start() {
         });
 
         // Gesamtkalender laden und verarbeiten
-        $.getJSON( basePath + "/gen/calendar.json", function( data ) {
+        $.getJSON( basePath + "/gen/calendar.json").done(function( data ) {
             calendar = data;
             var html_calendar = "";
 
@@ -739,22 +739,25 @@ $( document ).ready(function start() {
             html_calendar += "</ul>";
             $("#calendar").html(html_calendar);	// Kalender befüllen	
 
-            // Ansicht zu Beginn handeln
-            if (initKey !== undefined && $.isNumeric(initKey) && initKey2 !== undefined && $.isNumeric(initKey2)) {
-                repeatUntil(100, 5, function() { startTreffen(initKey, initKey2, true); });
-                setHash(initKey,initKey2, true);
-            } else if (initKey !== undefined && $.isNumeric(initKey)) {
-                repeatUntil(100, 5, function() { startGruppe(initKey, true); });
-                setHash(initKey, undefined, true);
-            } else if (typeof initKey !== undefined && initKey === "plz" && initKey2 !== undefined && $.isNumeric(initKey2)) {
-                startPLZ(initKey2);
-                setHash("plz", initKey2, true);
-            } else {
-                repeatUntil(100, 5, function() { startMain(); });
-                setHash(undefined, undefined, true);
-            }
+        }).fail(function() {
+            $(".calendar").hide();
         });
-
+        
+        // Ansicht zu Beginn handeln
+        if (initKey !== undefined && $.isNumeric(initKey) && initKey2 !== undefined && $.isNumeric(initKey2)) {
+            repeatUntil(100, 5, function() { startTreffen(initKey, initKey2, true); });
+            setHash(initKey,initKey2, true);
+        } else if (initKey !== undefined && $.isNumeric(initKey)) {
+            repeatUntil(100, 5, function() { startGruppe(initKey, true); });
+            setHash(initKey, undefined, true);
+        } else if (typeof initKey !== undefined && initKey === "plz" && initKey2 !== undefined && $.isNumeric(initKey2)) {
+            startPLZ(initKey2);
+            setHash("plz", initKey2, true);
+        } else {
+            repeatUntil(100, 5, function() { startMain(); });
+            setHash(undefined, undefined, true);
+        }
+        
         // PLZ-suche handeln
         $( "#plzform" ).submit(function( event ) {
             var plz = $( "#plz" ).val();	// PLZ aus Suchfeld abfragen
