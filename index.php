@@ -35,7 +35,7 @@
             if (file_exists(dirname(__FILE__)."/data/text.html")) include(dirname(__FILE__)."/data/text.html");
            ?>
             <form id="plzform">
-                <input id="plz" type="text" pattern="[0-9]{5}" placeholder="PLZ eingeben..." name="plz" size="10">
+                <input id="plz" type="text" placeholder="PLZ eingeben..." name="plz" size="10">
                 <button type="submit">PLZ Suchen</button>
             </form>
             <h2>Aktive Gruppierungen</h2>

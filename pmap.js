@@ -270,7 +270,7 @@ function startPLZ( plz ) {
     if (!plzdata) {
         $.getJSON( "/data/plz.json", function( data ) {
             plzdata = data;
-            startPLZ( plz );
+            return startPLZ( plz );
         });
     } else if (plzdata[plz]) {
         var dat = plzdata[plz]; 
@@ -299,7 +299,9 @@ function startPLZ( plz ) {
                 plzmarker.openPopup();
             });
         }
+        return true;
     }
+    return false;
 }
 
 /**
@@ -763,9 +765,24 @@ $( document ).ready(function start() {
             var plz = $( "#plz" ).val();	// PLZ aus Suchfeld abfragen
             if ($.isNumeric(plz)) {			
                 setHash("plz", plz);	// Hash setzen
-                startPLZ(plz);	// Aktion: PLZ suchen
+                if (startPLZ(plz)) {    // Aktion: PLZ suchen
+                    $("#plz").get(0).setCustomValidity("");
+                } else {
+                    $("#plz").get(0).setCustomValidity("Die gesuchte PLZ wurde leider nicht gefunden.");
+                    $("#plz").get(0).reportValidity();
+                }
             }
           event.preventDefault();
+          return false;
+        });
+        $("#plz").on("input", function( e ) {
+            var val = $( "#plz" ).val();
+            if (!$.isNumeric(val) && val !== "") {
+                e.target.setCustomValidity("Eine PLZ besteht ausschließlich aus Ziffern.");
+                $("#plz").get(0).reportValidity();
+            } else {
+                e.target.setCustomValidity("");
+            }
         });
     });
 
