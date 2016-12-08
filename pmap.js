@@ -474,7 +474,7 @@ function initState() {
         pTLi = [5, 55];
         pBRi = [5, infoSize+5];
     } else if (w<800 && h<w) {
-        // smallportrait
+        // smalllandscape
         // Common-Panel links, Info-Panel rechts. Common-Panel wird bei aktivem Info-Panel ausgeblendet.
         screenState = "smalllandscape";
         $("body").removeClass("smallportrait");
