@@ -55,7 +55,7 @@ var initKey, initKey2;
 <?php getInitKeysJS(); ?>
 var basePath = "<?=getBase();?>";
 var baseURL = document.location.protocol + "//" + document.location.hostname + basePath;
-var title = "<?php echo PMAP_TITLE; ?>"
+var title = "<?php echo PMAP_TITLE; ?>";
 </script>
 <script src="<?=getBase();?>/pmap.js"></script>
 <script src="<?=getBase();?>/res/shariff/shariff.min.js"></script>
