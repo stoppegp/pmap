@@ -471,7 +471,7 @@ function initState() {
 
         pTLc = [5, commonSize+5];
         pBRc = [5, 5];
-        pTLi = [5, 5];
+        pTLi = [5, 55];
         pBRi = [5, infoSize+5];
     } else if (w<800 && h<w) {
         // smalllandscape
