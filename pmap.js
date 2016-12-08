@@ -71,7 +71,7 @@ function showInfo ( content, callbackEnd = null, callbackMid = null ) {
     if (infoOpen === false) {   // Info-Panel war bisher geschlossen
         infoOpen = true;
         $("#infocontent").html(content);
-        $("#infocontent").scrollTop(0);
+        setTimeout(function() {$("#infocontent").scrollTop(0), 50});
         if (callbackMid !== null) callbackMid();
         if (screenState === "big") {		
             $("#info").show('slide', {"direction": 'right'}, 500, function() { if (callbackEnd !== null) callbackEnd(); anGoing = false; });	
