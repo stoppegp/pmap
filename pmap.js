@@ -87,11 +87,11 @@ function showInfo ( content, callbackEnd = null, callbackMid = null ) {
         }
     } else {    // Info-Panel ist offen
         if (screenState === "big") {		
-            $("#info").hide('slide', {"direction": 'right'}, 200, function() {$("#infocontent").html(content); $("#infocontent").scrollTop(0); $("#info").show('slide', {"direction": 'right'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false; });		
+            $("#info").hide('slide', {"direction": 'right'}, 200, function() {$("#infocontent").html(content); if (callbackMid !== null) callbackMid(); $("#infocontent").scrollTop(0); $("#info").show('slide', {"direction": 'right'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false; });		
         } else if (screenState === "smallportrait") {
-            $("#info").hide('slide', {"direction": 'down'}, 200, function() {$("#infocontent").html(content); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'down'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false;  });		
+            $("#info").hide('slide', {"direction": 'down'}, 200, function() {$("#infocontent").html(content); if (callbackMid !== null) callbackMid(); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'down'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false;  });		
         } else if (screenState === "smalllandscape") {
-            $("#info").hide("slide", {"direction": 'right'}, 200, function() {$("#infocontent").html(content); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'right'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false;  });		
+            $("#info").hide("slide", {"direction": 'right'}, 200, function() {$("#infocontent").html(content); if (callbackMid !== null) callbackMid(); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'right'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false;  });		
         }
     }
 }
