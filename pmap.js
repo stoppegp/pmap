@@ -469,9 +469,9 @@ function initState() {
             $("#info").hide();
         }
 
-        pTLc = [5, commonSize-50+5];
+        pTLc = [5, commonSize+5];
         pBRc = [5, 5];
-        pTLi = [5, 55];
+        pTLi = [5, 5];
         pBRi = [5, infoSize+5];
     } else if (w<800 && h<w) {
         // smalllandscape
