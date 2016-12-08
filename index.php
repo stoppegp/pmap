@@ -26,7 +26,7 @@
 <div id="common">
     <div id="mainimgc">
         <a href="/" id="homelink">
-            <img src="<?=getBase();?>/data/img/logo.png">
+            <img alt="<?php echo PMAP_TITLE; ?>" src="<?=getBase();?>/data/img/logo.png">
         </a>
     </div>
     <div id="commonc">
