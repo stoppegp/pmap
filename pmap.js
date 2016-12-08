@@ -753,8 +753,12 @@ $( document ).ready(function start() {
             repeatUntil(100, 5, function() { startGruppe(initKey, true); });
             setHash(initKey, undefined, true);
         } else if (typeof initKey !== undefined && initKey === "plz" && initKey2 !== undefined && $.isNumeric(initKey2)) {
-            startPLZ(initKey2);
-            setHash("plz", initKey2, true);
+            if (startPLZ(initKey2)) {
+                setHash("plz", initKey2, true);
+            } else {
+                repeatUntil(100, 5, function() { startMain(); });
+                setHash(undefined, undefined, true);
+            }
         } else {
             repeatUntil(100, 5, function() { startMain(); });
             setHash(undefined, undefined, true);
