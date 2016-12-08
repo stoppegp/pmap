@@ -223,8 +223,9 @@ function showEmpty( name ) {
 
 /**
  * Info-Panel schließen
+ * @param {boolean} [nopanning] - Verhindert das Panning bei kleinen Bildschirmen
  */
-function closeInfo() {
+function closeInfo(nopanning = false) {
     anGoing = true; // Animation läuft
     infoOpen = false;  
     infoData = {};
@@ -245,7 +246,7 @@ function closeInfo() {
         // Leaflet-Attribute nach unten schieben
         $(".leaflet-bottom").animate({"bottom": 0}, 500);
         // Karte verschieben
-        map.panBy([0, -infoSize], {"duration": 0.5});
+        if (!nopanning) map.panBy([0, -infoSize], {"duration": 0.5});
     } else if (screenState === "smalllandscape") {
         // Info-Panel slide to right, Info-Panel leeren und ausblenden	
         $("#info").hide("slide", {"direction": 'right'}, 500, function() {$("#infocontent").html(""); $("#infoc").css("display", "none"); anGoing = false;});
@@ -254,7 +255,7 @@ function closeInfo() {
         // Leaflet-Attribute nach links schieben
         $(".leaflet-left").animate({"left": commonSize}, 500);
         // Karte verschieben
-        map.panBy([-infoSize, 0], {"duration": 0.5});
+        if (!nopanning) map.panBy([-infoSize, 0], {"duration": 0.5});
     }
 
 }
@@ -309,12 +310,13 @@ function startPLZ( plz ) {
  */
 function startMain( ) {
     $(".activegroup").removeClass("active");    // Aktiv-Klassen entfernen
-    $(".treffenlink").removeClass("active");	
-    closeAllPopups();
-    closeInfo();
-
+    $(".treffenlink").removeClass("active");
+    
     // Karte an BzV anpassen
     map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLc, "paddingBottomRight" : pBRc});
+    
+    closeAllPopups();
+    closeInfo(true);
 }
 
 /**
