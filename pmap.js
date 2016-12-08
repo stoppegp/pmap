@@ -78,7 +78,7 @@ function showInfo ( content, callbackEnd = null, callbackMid = null ) {
         } else if (screenState === "smallportrait") {
             $("#info").show('slide', {"direction": 'down'}, 500, function() { if (callbackEnd !== null) callbackEnd(); anGoing = false; });		
             $("#common").animate({"height": "50px"}, 500);
-            $("#common > #mainimgc").animate({"height": "50px"}, 500);
+            $("#common #mainimgc img").animate({"height": "40px"}, 500);
             $(".leaflet-bottom").animate({"bottom": infoSize}, 500);
         } else if (screenState === "smalllandscape") {
             $("#info").show('slide', {"direction": 'right'}, 500, function() { if (callbackEnd !== null) callbackEnd(); anGoing = false; });		
@@ -142,19 +142,20 @@ function showGruppe( key, key2 = undefined, callback = null ) {
 
     // Übersicht der Treffen
     if (pdata[key].treffen !== undefined) {
-        html_gruppe += "<h3>Treffen</h3>";
+        html_gruppe += "<h3>Treffen</h3><div id=\"treffen\"><ul>";
         $.each( pdata[key].treffen, function( key2a, val ) {
             var exclass = "";
             if (key2 !== undefined && key2 === key2a) exclass = "active";
-            html_gruppe += "<p><a data-key=\"" + key + "\" data-key2=\"" + key2a + "\" class=\"treffenlink " + exclass + "\" id=\"treffen-" + key + "-" + key2a + "\" href=\"" + genLink([key, key2a]) + "\"><strong>" + val.name + "</strong>";
+            html_gruppe += "<li><a data-key=\"" + key + "\" data-key2=\"" + key2a + "\" class=\"treffenlink " + exclass + "\" id=\"treffen-" + key + "-" + key2a + "\" href=\"" + genLink([key, key2a]) + "\"><strong>" + val.name + "</strong>";
             if (val.termin.text) html_gruppe += "<br>" +  val.termin.text;
             if (val.ort) html_gruppe += "<br>" +  val.ort;
             if (events !== undefined && events[key] !== undefined && events[key].treffen !== undefined && events[key].treffen[key2a] !== undefined) {
                     var datum = moment.unix(events[key].treffen[key2a]);
                     html_gruppe += "<br><small><em>Nächster Termin: " + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</em></small>";
             }
-            html_gruppe += "</a></p>";
+            html_gruppe += "</a></li>";
         });
+        html_gruppe += "</ul>";
     }
 
     // Terminübersicht
@@ -242,7 +243,7 @@ function closeInfo(nopanning = false) {
         $("#info").hide("slide", {"direction": 'down'}, 500, function() {$("#infocontent").html(""); $("#infoc").css("display", "none"); anGoing = false;});
         // Common-Panel vergrößern
         $("#common").animate({"height": commonSize}, 500);
-        $("#common > #mainimgc").animate({"height": "75px"}, 500);
+        $("#common #mainimgc img").animate({"height": "75px"}, 500);
         // Leaflet-Attribute nach unten schieben
         $(".leaflet-bottom").animate({"bottom": 0}, 500);
         // Karte verschieben
@@ -459,16 +460,16 @@ function initState() {
         if (infoOpen === true) {
             // Bei geöffnetem Info-Panel: Common-Panel verkleinern & Leaflet-Attribution verschieben
             $("#common").css("height", "50px");
-            $("#common > #mainimgc").css("height", "50px");
+            $("#common #mainimgc img").css("height", "40px");
             $(".leaflet-bottom").css("bottom", infoSize + "px");
         } else {
             // Bei geschlossenem Info-Panel: Common-Panel vergrößern & Leaflet-Attribution verschieben
             $("#common").css("height", commonSize + "px");
-            $("#common > #mainimgc").css("height", "75px");
+            $("#common #mainimgc img").css("height", "75px");
             $(".leaflet-bottom").css("bottom", 0);
             $("#info").hide();
         }
-
+        $(".leaflet-left").css("left", "0");
         pTLc = [5, commonSize+5];
         pBRc = [5, 5];
         pTLi = [5, 55];
@@ -485,6 +486,7 @@ function initState() {
         $("#info").css({"width": infoSize + "px", "height": ""});
         $("#common").css({"height": ""});
         $("#commonc").css({"width": commonSize + "px", "height": ""});
+        $("#common #mainimgc img").css("height", "");
 
         if (infoOpen === true) {
             // Bei geöffnetem Info-Panel: Common-Panel ausblenden & Leaflet-Attribution verschieben
@@ -496,7 +498,7 @@ function initState() {
             $(".leaflet-left").css("left", commonSize + "px");
             $("#info").hide();
         }
-
+        $(".leaflet-bottom").css("bottom", "0");
         pTLc = [commonSize, 0];
         pBRc = [0, 0];
         pTLi = [0, 0];
@@ -515,10 +517,12 @@ function initState() {
         $("#info").css({"width": infoSize + "px", "height": ""});
         $("#common").css({"width": commonSize + "px", "height": ""});
         $("#commonc").css({"width": commonSize + "px", "height": ""});
+        $("#common #mainimgc img").css("height", "");
 
         if (infoOpen === false) $("#info").hide();
 
         $(".leaflet-left").css("left", commonSize + "px");
+        $(".leaflet-bottom").css("bottom", "0");
 
         pTLc = [$("#common").width(), 0];
         pBRc = [0, 0];

@@ -1,5 +1,7 @@
+@piraten-orange: #FF8800;
+
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 @font-face {
@@ -95,148 +97,175 @@
 body, html {
 	margin: 0;
 	padding: 0;
-	overflow:hidden;
-	position: absolute;
-	width: 100%;
-	height: 100%;
 	font-family: 'Roboto', sans-serif;
 	font-size: 14px;
 }
+
 h1, h2 {
 	font-family: 'PoliticsHead', sans-serif;
 }
 h2 {
 	font-size: 180%;
+        margin-top: 0.8em;
+        margin-bottom: 0.5em;
 }
 h3 {
 	font-size: 140%;
 }
+
 a {
-	color: #ff8800;
+	color: @piraten-orange;
 	text-decoration: none;
 }
 a:hover, a:focus {
-	color: #ff8800;
+	color: @piraten-orange;
 	text-decoration: underline;
 }
 small {
 	font-size: 95%;
 	color: #333;
 }
-#common {
+
+.liste() {
+    h3 {
+        margin-bottom: 5px;
+    }
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        li a {
+            display: block;
+            color: black;
+            margin-left: -15px;
+            margin-right: -15px;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-top: 5px;	
+            padding-bottom: 5px;
+            text-decoration: none;
+            &:hover {
+                background-color: #ff8800;
+            }
+            &:focus {
+                background-color: #ff8800;
+            }
+            &.active {
+                background-color: #ff8800;
+            }
+        }
+    }
+}
+html.js {
+    width: 100%;
+    height: 100%;
+    overflow:hidden;
+    position: absolute;
+    #common {
 	width: 20vw;
 	height: 100%;
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-color: white;
 	box-shadow: 3px 0px 4px 0px rgba(0,0,0,0.45);
 	background-color: rgba(255, 255, 255, .95);
 	padding: 0px;
 	z-index: 99;
 	overflow: hidden;
-}
-.smallportrait #common {
+        #commonc {
+            height: 100%;
+            width: 100%;
+            right: 0;
+            top: 0;
+            position: absolute;
+            display: flex;
+            flex-flow: column;
+            #mainimgc {
+                flex: 0 1 auto;
+                background-color: white;
+                width: 100%;
+                padding: 8px;
+                z-index: 999;
+                a {
+                    display: block;
+                    img {
+                        width:100%;
+                        max-width: 300px;
+                        height:auto;
+                    }
+                }
+            }
+            #commons {
+                flex: 1 1 auto;
+                overflow-y: scroll;
+                overflow-x: hidden;
+                padding: 15px;
+                p:first-child {
+                    margin-top: 0;
+                }
+                #activegroups {
+                    .liste();
+                }
+                #calendar {
+                    .liste();
+                }
+            }
+        }
+    }
+    .smallportrait #common {
 	width: 100%;
-}
-.smalllandscape #common {
+        #commonc {
+            #mainimgc {
+                padding: 5px;
+                a {
+                    width: 100%;
+                    text-align: center;
+                    img {
+                        height:75px;
+                        width: auto;
+                    }
+                }
+            }
+        }
+    }
+    .smalllandscape #common {
 	height: 100%;
-}
-#common > #mainimgc {
-	position: absolute;
-	width: 20vw;
-	height: 7vw;
-	padding: 8px;
-	top: 0;
-	left: 0;
-	z-index: 999;
-}
-.smallportrait #common > #mainimgc {
-	width: 100%;
-	height: 75px;
-	background-color: white;
-	padding: 5px;
-}
-.smalllandscape #common > #mainimgc {
-	width: 200px;
-	height: auto;
-}
-#common > #mainimgc img {
-	max-width:100%;
-	height:auto;
-}
-.smallportrait #common >#mainimgc a {
-	display: block;
-	width: 100%;
-	height: 100%;
-	text-align: center;
-}
-.smallportrait #common > #mainimgc img {
-	max-height:100%;
-	width:auto;
-}
-#common h2 {
-	margin-bottom: 7px;
-}
-#commonc {
-	height: 100%;
-	width: 100%;
-	left: 0;
-	top: 0;
-	position: absolute;
-	padding-top: 7vw;
-}
-.smallportrait #commonc {
-	padding-top: 75px;
-}
-.smalllandscape #commonc {
-	right: 0;
-	left: auto;
-	padding-top: 75px;
-}
-#commons {
-	overflow-y: scroll;
-	overflow-x: hidden;
-	padding: 15px;
-	width: 100%;
-	height: 100%;
-	top: 0;
-}
-#calendar ul, #activegroups ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-#calendar ul li a, #activegroups ul li a, #info a.treffenlink {
-	display: block;
-	color: black;
-	margin-left: -15px;
-	margin-right: -15px;
-	padding-left: 15px;
-	padding-right: 15px;
-	padding-top: 5px;	
-	padding-bottom: 5px;
-	text-decoration: none;
-}
-#calendar h3 {
-	margin-bottom: 5px;
-}
-#calendar ul li a:hover, #calendar ul li a:focus, #activegroups ul li a:hover, #activegroups ul li a:focus, #activegroups ul li a.active, #info a.treffenlink:hover, #info a.treffenlink:focus, #info a.treffenlink.active {
-	background-color: #ff8800;
-}
-#mapid {
+        #commonc {
+            #mainimgc {
+                height: 75px;
+                padding: 5px;
+                a {
+                    img {
+                        height: 65px;
+                        width: auto;
+                    }
+                }
+            }
+        }
+    }
+    #mapid {
 	width: 100vw;
-	left: 0vw;
+	left: 0;
 	height: 100vh;
 	position: absolute;
 	z-index: 1;
-}
-
-#info {
+        .leaflet-left {
+            left: 20vw;
+        } 
+    }
+    .smallportrait #mapid {
+        .leaflet-left {
+            left: 0;
+        }
+        .leaflet-control-zoom {
+            display: none;		
+        }
+    }
+    #info {
 	position: absolute;
 	right: 0;
 	left: auto;
-	top:0;
+	top: 0;
 	bottom: auto;
 	background-color: rgba(255, 255, 255, .95);
 	height: 100%;
@@ -245,60 +274,55 @@ small {
 	box-shadow: -3px 0px 4px 0px rgba(0,0,0,0.45);
 	padding: 0px;
 	overflow: hidden;
-}
-.smallportrait #info {
+        #closelink {
+            position: absolute;
+            top: 3px;
+            right: 20px;
+            z-index: 999;
+            color: black;
+            font-size: 150%;
+        }
+        #infocontent {
+            padding: 15px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            top: 0;
+            left: 0;
+            word-wrap: break-word;
+            .kreislogo {
+                width: 80%;
+                max-width: 250px;
+                height: auto;
+            }
+            #treffen {
+                .liste();
+            }
+        }
+    }
+    .smallportrait #info {
 	right: auto;
 	left: 0;
 	top: auto;
 	bottom: 0;
 	width: 100%;
-}
-.smalllandscape #info {
+    }
+    .smalllandscape #info {
 	right: 0;
 	left: auto;
 	top: 0;
 	bottom: auto;
 	height: 100%;
-}
-#infocontent {
-	padding: 15px;
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	overflow-y: scroll;
-	overflow-x: hidden;
-	top: 0;
-	left: 0;
-        word-wrap: break-word;
-}
-#info #closelink {
-	position: absolute;
-	top: 3px;
-	right: 12px;
-	z-index: 999;
-	color: black;
-	font-size: 150%;
-}
-.kreislogo {
-	width: 80%;
-	max-width: 250px;
-	height: auto;
-}
-
-.shariff .shariff-button {
-	min-width: 1px !important;
-	flex: none !important;
-}
-.shariff .share_text {
-	display: none !important;
-}
-
-.smallportrait .leaflet-control-zoom {
-	display: none;		
-}
-.smallportrait .leaflet-left {
-	left: 0;
-}
-.leaflet-bottom {
-	bottom: 0;
+    }
+    .shariff {
+        .shariff-button {
+            min-width: 1px !important;
+            flex: none !important;
+        }
+        .share_text {
+            display: none !important;
+        }
+    }
 }
