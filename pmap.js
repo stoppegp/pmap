@@ -33,6 +33,7 @@ var popupToClose = false;	// Wird gesetzt, wenn ein Popup per Funktion geschloss
 var infoOpen = false;	// Ist das Info-Panel geöffnet?
 var infoData;	// Was ist im Info-Panel geöffnet?
 var anGoing = false;	// Läuft gerade eine Animation?
+var beforeFirstStart = true;
 
 // Leaflet-Styles
 var mainStyle = {
@@ -272,9 +273,10 @@ function startPLZ( plz ) {
     if (!plzdata) {
         $.getJSON( "/data/plz.json", function( data ) {
             plzdata = data;
-            return startPLZ( plz );
+            startPLZ( plz );
         });
     } else if (plzdata[plz]) {
+        $("#plz").get(0).setCustomValidity("");
         var dat = plzdata[plz]; 
         plzmarker.setLatLng([dat.lat, dat.lon]).addTo(map);
         var key = "0" + dat.ags.toString().substr(0,4);
@@ -289,6 +291,7 @@ function startPLZ( plz ) {
                 } else {
                     map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
                 }
+                beforeFirstStart = false;
                 plzmarker.openPopup();
             });
         } else {
@@ -297,13 +300,20 @@ function startPLZ( plz ) {
             plzpopup.setContent("<strong>" + dat.name + "</strong>");
             showEmpty( dat.name );
             repeatUntil(100, 5, function() { 
-                map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
+                map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
+                beforeFirstStart = false;
                 plzmarker.openPopup();
             });
         }
-        return true;
+    } else {
+        $("#plz").get(0).setCustomValidity("Die gesuchte PLZ wurde leider nicht gefunden.");
+        $("#plz").get(0).reportValidity();
+        if (beforeFirstStart === true) {
+            startMain();
+            setHash();
+            beforeFirstStart = false;
+        }
     }
-    return false;
 }
 
 /**
@@ -315,6 +325,8 @@ function startMain( ) {
     
     // Karte an BzV anpassen
     map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLc, "paddingBottomRight" : pBRc});
+    
+    beforeFirstStart = false;
     
     closeAllPopups();
     closeInfo(true);
@@ -335,6 +347,9 @@ function startGruppe( key , zoom = false, callback = null) {
     } else if (zoom === true) {
         map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
     }
+    
+    beforeFirstStart = false;
+    
     if (pdata[key].popup !== undefined) {
         // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
         if (!pdata[key].popup.isOpen()) { closeAllPopups(); pdata[key].layer.openPopup(); }
@@ -363,6 +378,9 @@ function startTreffen( key , key2, zoom = false, callback = null) {
     } else if (zoom === true) {
         map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
     }
+    
+    beforeFirstStart = false;
+    
     if (pdata[key].treffen[key2].popup !== undefined) {
         // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
         if (!pdata[key].treffen[key2].popup.isOpen()) { closeAllPopups(); pdata[key].treffen[key2].marker.openPopup(); }
@@ -759,12 +777,8 @@ $( document ).ready(function start() {
             repeatUntil(100, 5, function() { startGruppe(initKey, true); });
             setHash(initKey, undefined, true);
         } else if (typeof initKey !== undefined && initKey === "plz" && initKey2 !== undefined && $.isNumeric(initKey2)) {
-            if (startPLZ(initKey2)) {
-                setHash("plz", initKey2, true);
-            } else {
-                repeatUntil(100, 5, function() { startMain(); });
-                setHash(undefined, undefined, true);
-            }
+            startPLZ(initKey2);
+            setHash("plz", initKey2, true);
         } else {
             repeatUntil(100, 5, function() { startMain(); });
             setHash(undefined, undefined, true);
@@ -775,12 +789,7 @@ $( document ).ready(function start() {
             var plz = $( "#plz" ).val();	// PLZ aus Suchfeld abfragen
             if ($.isNumeric(plz)) {			
                 setHash("plz", plz);	// Hash setzen
-                if (startPLZ(plz)) {    // Aktion: PLZ suchen
-                    $("#plz").get(0).setCustomValidity("");
-                } else {
-                    $("#plz").get(0).setCustomValidity("Die gesuchte PLZ wurde leider nicht gefunden.");
-                    $("#plz").get(0).reportValidity();
-                }
+                startPLZ(plz);      // Aktion: PLZ suchen
             }
           event.preventDefault();
           return false;
