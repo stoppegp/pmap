@@ -65,7 +65,11 @@ moment.locale('de');
  * @param {function()} [callbackEnd] - Callback-Funktion, wird nach der Animation aufgerufen
  * @param {function()} [callbackMid] - Callback-Funktion, wird während der Animation aufgerufen
  */
-function showInfo ( content, callbackEnd = null, callbackMid = null ) {
+function showInfo ( content, callbackEnd, callbackMid) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof content !== "string") content = "";
+    
     $("#infoc").css("display", "block");    // Info-Div einblenden
     anGoing = true; // Animation ist gestartet
 
@@ -73,26 +77,26 @@ function showInfo ( content, callbackEnd = null, callbackMid = null ) {
         infoOpen = true;
         $("#infocontent").html(content);
         setTimeout(function() {$("#infocontent").scrollTop(0), 50});
-        if (callbackMid !== null) callbackMid();
+        if (typeof callbackMid === "function") callbackMid();
         if (screenState === "big") {		
-            $("#info").show('slide', {"direction": 'right'}, 500, function() { if (callbackEnd !== null) callbackEnd(); anGoing = false; });	
+            $("#info").show('slide', {"direction": 'right'}, 500, function() { if (typeof callbackEnd === "function") callbackEnd(); anGoing = false; });	
         } else if (screenState === "smallportrait") {
-            $("#info").show('slide', {"direction": 'down'}, 500, function() { if (callbackEnd !== null) callbackEnd(); anGoing = false; });		
+            $("#info").show('slide', {"direction": 'down'}, 500, function() { if (typeof callbackEnd === "function") callbackEnd(); anGoing = false; });		
             $("#common").animate({"height": "50px"}, 500);
             $("#common #mainimgc img").animate({"height": "40px"}, 500);
             $(".leaflet-bottom").animate({"bottom": infoSize}, 500);
         } else if (screenState === "smalllandscape") {
-            $("#info").show('slide', {"direction": 'right'}, 500, function() { if (callbackEnd !== null) callbackEnd(); anGoing = false; });		
+            $("#info").show('slide', {"direction": 'right'}, 500, function() { if (typeof callbackEnd === "function") callbackEnd(); anGoing = false; });		
             $("#common").animate({"width": 0}, 500);
             $(".leaflet-left").animate({"left": 0}, 500);
         }
     } else {    // Info-Panel ist offen
         if (screenState === "big") {		
-            $("#info").hide('slide', {"direction": 'right'}, 200, function() {$("#infocontent").html(content); if (callbackMid !== null) callbackMid(); $("#infocontent").scrollTop(0); $("#info").show('slide', {"direction": 'right'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false; });		
+            $("#info").hide('slide', {"direction": 'right'}, 200, function() {$("#infocontent").html(content); if (typeof callbackMid === "function") callbackMid(); $("#infocontent").scrollTop(0); $("#info").show('slide', {"direction": 'right'}, 200); if (typeof callbackEnd === "function") callbackEnd(); anGoing = false; });		
         } else if (screenState === "smallportrait") {
-            $("#info").hide('slide', {"direction": 'down'}, 200, function() {$("#infocontent").html(content); if (callbackMid !== null) callbackMid(); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'down'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false;  });		
+            $("#info").hide('slide', {"direction": 'down'}, 200, function() {$("#infocontent").html(content); if (typeof callbackMid === "function") callbackMid(); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'down'}, 200); if (typeof callbackEnd === "function") callbackEnd(); anGoing = false;  });		
         } else if (screenState === "smalllandscape") {
-            $("#info").hide("slide", {"direction": 'right'}, 200, function() {$("#infocontent").html(content); if (callbackMid !== null) callbackMid(); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'right'}, 200); if (callbackEnd !== null) callbackEnd(); anGoing = false;  });		
+            $("#info").hide("slide", {"direction": 'right'}, 200, function() {$("#infocontent").html(content); if (typeof callbackMid === "function") callbackMid(); $("#infocontent").scrollTop(0); $("#info").show("slide", {"direction": 'right'}, 200); if (typeof callbackEnd === "function") callbackEnd(); anGoing = false;  });		
         }
     }
 }
@@ -103,14 +107,26 @@ function showInfo ( content, callbackEnd = null, callbackMid = null ) {
  * @param {number} [key2] - Key des Treffens
  * @param {function()} [callback] - Callback-Funktion, wird am Ende der Animation ausgeführt
  */
-function showGruppe( key, key2 = undefined, callback = null ) {
+function showGruppe( key, key2, callback ) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof key !== "number" || typeof pdata[key] === "undefined") return false;
+    if (typeof key2 !== "number" || typeof pdata[key].treffen[key2] === "undefined") key2 = undefined;
+    
     // Wenn passendes Panel bereits offen und richtiges Treffen ausgewählt: Nichts tun, außer Callback
-    if (infoOpen === true && infoData !== undefined && infoData.key !== undefined && infoData.key === key && infoData.key2 === key2) { if (callback !== null) callback(); return; }
+    if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.key === "number" && infoData.key === key &&
+            ((typeof key2 === "undefined" && typeof infoData.key2 === "undefined") ||
+            (typeof infoData.key2 === "number" && typeof key2 === "number" && infoData.key2 === key2))) {
+        
+        if (typeof callback === "function") callback();
+        return;
+        
+    }
 
     // Wenn passendes Panel bereits offen und falsches Treffen ausgewählt: Richtiges Treffen auswählen, Shariff und Callback
-    if (infoOpen === true && infoData !== undefined && key === infoData.key && key2 !== infoData.key2) {
+    if (infoOpen === true &&typeof infoData !== "undefined" && typeof infoData.key === "number" && infoData.key === key) {
         $(".treffenlink").removeClass("active");
-        if (key2 !== undefined) {
+        if (typeof key2 === "number") {
             $("#treffen-" + key + "-" + key2).addClass("active");            
             initShariff(key, genLink([key, key2]), genTitle(key, key2));
         } else {
@@ -118,7 +134,7 @@ function showGruppe( key, key2 = undefined, callback = null ) {
         }
         infoData = {"key": key, "key2": key2};
         
-        if (callback !== null) callback();
+        if (typeof callback === "function") callback();
         return;
     }
 
@@ -133,24 +149,24 @@ function showGruppe( key, key2 = undefined, callback = null ) {
 
     // HTML erstellen
     var html_gruppe = "<h2>" + gruppe.name + "</h2>";
-    if (gruppe.img !== undefined) {
+    if (typeof gruppe.img === "string") {
             html_gruppe += "<img class=\"kreislogo\" src=\"" + basePath + "/data/img/" + gruppe.img + "\" alt=\"" + gruppe.name + "\">";
     }
-    if (gruppe.text) html_gruppe += "<p class=\"text\">" + gruppe.text + "</p>";
-    if (gruppe.homepage) html_gruppe += "<p><strong>Homepage:</strong><br><a href=\"" + gruppe.homepage + "\">" + gruppe.homepage + "</a></p>";
-    if (gruppe.email) html_gruppe += "<p><strong>E-Mail:</strong><br><a href=\"mailto:" + gruppe.email + "\">" + gruppe.email + "</a></p>";
+    if (typeof gruppe.text === "string") html_gruppe += "<p class=\"text\">" + gruppe.text + "</p>";
+    if (typeof gruppe.homepage === "string") html_gruppe += "<p><strong>Homepage:</strong><br><a href=\"" + gruppe.homepage + "\">" + gruppe.homepage + "</a></p>";
+    if (typeof gruppe.email === "string") html_gruppe += "<p><strong>E-Mail:</strong><br><a href=\"mailto:" + gruppe.email + "\">" + gruppe.email + "</a></p>";
     html_gruppe += '<p><div class="shariff" id="shariff' + key + '"></div></p>';
 
     // Übersicht der Treffen
-    if (pdata[key].treffen !== undefined) {
+    if (typeof pdata[key].treffen === "object") {
         html_gruppe += "<h3>Treffen</h3><div id=\"treffen\"><ul>";
         $.each( pdata[key].treffen, function( key2a, val ) {
             var exclass = "";
-            if (key2 !== undefined && key2 === key2a) exclass = "active";
+            if (typeof key2 === "number" && key2 === key2a) exclass = "active";
             html_gruppe += "<li><a data-key=\"" + key + "\" data-key2=\"" + key2a + "\" class=\"treffenlink " + exclass + "\" id=\"treffen-" + key + "-" + key2a + "\" href=\"" + genLink([key, key2a]) + "\"><strong>" + val.name + "</strong>";
-            if (val.termin.text) html_gruppe += "<br>" +  val.termin.text;
-            if (val.ort) html_gruppe += "<br>" +  val.ort;
-            if (events !== undefined && events[key] !== undefined && events[key].treffen !== undefined && events[key].treffen[key2a] !== undefined) {
+            if (typeof val.termin.text === "string") html_gruppe += "<br>" +  val.termin.text;
+            if (typeof val.ort === "string") html_gruppe += "<br>" +  val.ort;
+            if (typeof events === "object" && typeof events[key] === "object" && typeof events[key].treffen === "object" && typeof events[key].treffen[key2a] === "number") {
                     var datum = moment.unix(events[key].treffen[key2a]);
                     html_gruppe += "<br><small><em>Nächster Termin: " + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</em></small>";
             }
@@ -160,7 +176,7 @@ function showGruppe( key, key2 = undefined, callback = null ) {
     }
 
     // Terminübersicht
-    if (events && events[key] && events[key].ical) {
+    if (typeof events === "object" && typeof events[key] === "object" && typeof events[key].ical === "object") {
         html_gruppe += "<h3>Kommende Termine</h3>";
         $.each( events[key].ical, function( key, val ) {
             datum = moment.unix(val.start);
@@ -170,10 +186,10 @@ function showGruppe( key, key2 = undefined, callback = null ) {
             html_gruppe += val.title + "<br><small>" + val.location + "</small></p>";
         });
     }
-    if (key2 === undefined) {
-        showInfo(html_gruppe, function () { if (callback !== null) callback(); infoData = {"key": key}; }, function() { initShariff( key, genLink([key]), genTitle(key) ); });
+    if (typeof key2 === "number") {
+        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"key": key}; }, function() { initShariff( key, genLink([key]), genTitle(key) ); });
     } else {
-        showInfo(html_gruppe, function () { if (callback !== null) callback(); infoData = {"key": key, "key2": key2}; }, function() { initShariff( key, genLink([key, key2]), genTitle(key, key2) ); });
+        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"key": key, "key2": key2}; }, function() { initShariff( key, genLink([key, key2]), genTitle(key, key2) ); });
     }
 }
 
@@ -185,6 +201,11 @@ function showGruppe( key, key2 = undefined, callback = null ) {
  * @param {string} title
  */
 function initShariff( key, url, title ) {
+    // Funktionsparameter initialisieren
+    if (typeof key !== "number") return false;
+    if (typeof url !== "string") url = "";
+    if (typeof title !== "string") title = "";
+    
     setTimeout(function() { shariffDiv = new Shariff($("#shariff" + key), {"url":  url, "title": title, theme: "white", services: ["twitter", "facebook", "googleplus", "whatsapp", "threema", "info"]});}, 0);
 }
 
@@ -194,8 +215,11 @@ function initShariff( key, url, title ) {
  * @param {string} name - Name des gesuchten Ortes
 */
 function showEmpty( name ) {
+    // Funktionsparameter initialisieren
+    if (typeof name !== "string") name = "";
+    
     // Wenn richtiges Panel bereits geöffnet: Nichts machen.
-    if (infoOpen === true && infoData !== undefined && infoData.plzname !== undefined && infoData.plzname === name) { return; }
+    if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.plzname === "string" && infoData.plzname === name) { return; }
 
     var html_empty = "<h2>Suchergebnis</h2><p class=\"text\">Im Bereich <strong>" + name + "</strong> sind aktuell leider keine aktiven Treffen.</p>";
 
@@ -227,7 +251,11 @@ function showEmpty( name ) {
  * Info-Panel schließen
  * @param {boolean} [nopanning] - Verhindert das Panning bei kleinen Bildschirmen
  */
-function closeInfo(nopanning = false) {
+function closeInfo(nopanning) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof nopanning !== "boolean") nopanning = false;
+    
     anGoing = true; // Animation läuft
     infoOpen = false;  
     infoData = {};
@@ -267,6 +295,10 @@ function closeInfo(nopanning = false) {
  * @param {number} plz - Postleitzahl
  */
 function startPLZ( plz ) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof plz !== "number") return false;
+    
     $( "#plz" ).val(plz);   // Suchfeld füllen
 
     // Wenn PLZ-Daten noch nicht geladen wurden, erst laden und Funktion erneut aufrufen
@@ -285,7 +317,7 @@ function startPLZ( plz ) {
             // Gruppe zur Suche gefunden
             plzpopup.setContent("<strong>" + dat.name + "</strong>");
             showGruppe(kreiskeys[key]);
-            repeatUntil(100, 5, function() { 
+            repeatUntil(function() { 
                 if (pdata[kreiskeys[key]].layer !== undefined) {
                     map.fitBounds(pdata[kreiskeys[key]].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
                 } else {
@@ -293,17 +325,17 @@ function startPLZ( plz ) {
                 }
                 beforeFirstStart = false;
                 plzmarker.openPopup();
-            });
+            }, 100, 5);
         } else {
             // Keine Gruppe gefunden
             if (!plzpopup.isOpen()) closeAllPopups();
             plzpopup.setContent("<strong>" + dat.name + "</strong>");
             showEmpty( dat.name );
-            repeatUntil(100, 5, function() { 
+            repeatUntil(function() { 
                 map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
                 beforeFirstStart = false;
                 plzmarker.openPopup();
-            });
+            }, 100, 5);
         }
     } else {
         $("#plz").get(0).setCustomValidity("Die gesuchte PLZ wurde leider nicht gefunden.");
@@ -338,11 +370,16 @@ function startMain( ) {
  * @param {(boolean|Object.<L.LatLng, number>)} [zoom=false] - true für Zoom, L.LatLng&Zoom für setView
  * @param {function()} [callback] - Callback-Funktion, wird nach der Animation ausgeführt
  */
-function startGruppe( key , zoom = false, callback = null) {
+function startGruppe( key, zoom, callback) {
+
+    // Funktionsparameter initialisieren
+    if (typeof key !== "number" || typeof pdata[key] === "undefined") { startMain(); return; }
+    if (typeof zoom !== "boolean" && typeof zoom !== "object") zoom = false;
+    
     // Karte anpassen
-    if (zoom === true && pdata[key].layer !== undefined) {
+    if (zoom === true && typeof pdata[key].layer !== "undefined") {
         map.fitBounds(pdata[key].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
-    } else if (zoom.center !== undefined && zoom.zoom !== undefined) {
+    } else if (typeof zoom.center === "object" && typeof zoom.zoom === "number") {
         map.setView(zoom.center, zoom.zoom);
     } else if (zoom === true) {
         map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
@@ -350,7 +387,7 @@ function startGruppe( key , zoom = false, callback = null) {
     
     beforeFirstStart = false;
     
-    if (pdata[key].popup !== undefined) {
+    if (typeof pdata[key].popup !== "undefined") {
         // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
         if (!pdata[key].popup.isOpen()) { closeAllPopups(); pdata[key].layer.openPopup(); }
     } else {
@@ -369,11 +406,17 @@ function startGruppe( key , zoom = false, callback = null) {
  * @param {(boolean|Object.<L.LatLng, number>)} [zoom=false] - true für Zoom, L.LatLng&Zoom für setView
  * @param {function()} [callback] - Callback-Funktion, wird nach der Animation ausgeführt
  */
-function startTreffen( key , key2, zoom = false, callback = null) {
+function startTreffen( key , key2, zoom, callback) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof key !== "number" || typeof pdata[key] === "undefined") { startMain(); return; }
+    if (typeof key2 !== "number" || typeof pdata[key].treffen[key2] === "undefined") { startMain(); return; }
+    if (typeof zoom !== "boolean") zoom = false;
+    
     // Karte anpassen
-    if (zoom === true && pdata[key].layer !== undefined) {
+    if (zoom === true && typeof pdata[key].layer !== "undefined") {
         map.fitBounds(pdata[key].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
-    } else if (zoom.center !== undefined && zoom.zoom !== undefined) {
+    } else if (typeof zoom.center === "object" && typeof zoom.zoom === "number") {
         map.setView(zoom.center, zoom.zoom);
     } else if (zoom === true) {
         map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
@@ -381,7 +424,7 @@ function startTreffen( key , key2, zoom = false, callback = null) {
     
     beforeFirstStart = false;
     
-    if (pdata[key].treffen[key2].popup !== undefined) {
+    if (typeof pdata[key].treffen[key2].popup !== "undefined") {
         // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
         if (!pdata[key].treffen[key2].popup.isOpen()) { closeAllPopups(); pdata[key].treffen[key2].marker.openPopup(); }
     } else {
@@ -399,11 +442,28 @@ function startTreffen( key , key2, zoom = false, callback = null) {
  * @param {Number} key2 - key des Treffens
  * @param {boolean} replace - Wenn true, wird der aktuelle History-Eintrag ersetzt
  */
-function setHash(key = undefined, key2 = undefined, replace = false) {
-    if (key !== undefined && key2 !== undefined) var newhash = genLink([key, key2]); else newhash = genLink([key]);
+function setHash(key, key2, replace) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof replace !== "boolean") replace = false;
+    if (typeof key !== "number") key = undefined;
+    if (typeof key2 !== "number") key2 = undefined;
+    
+    if (typeof key === "number" && key2 === "number") {
+        var newhash = genLink([key, key2]);
+    } else if (typeof key === "number") {
+        var newhash = genLink([key]);
+    } else {
+        var newhash = genLink();
+    }
+    
     if (newhash.substr(1) !== window.location.pathname.substr(1) || replace === true) {
         var state = {"key": key, "key2": key2};
-        if (replace === true) history.replaceState(state, null, newhash); else history.pushState(state, null, newhash);
+        if (replace === true) {
+            history.replaceState(state, null, newhash);
+        } else {
+            history.pushState(state, null, newhash);
+        }
         setTitle(key, key2);
     }
 }
@@ -433,24 +493,23 @@ function genLink(keys) {
  * @param {(int|String)} key - key der Gruppe
  * @param {int} key2 - key des Treffens
  */
-function setTitle(key = undefined, key2 = undefined) {
+function setTitle(key, key2) {
     document.title = genTitle(key, key2);
 }
 
 /**
  * Website-Titel generieren
- * @param {(int|string)} key - key der Gruppe
+ * @param {(int|String)} key - key der Gruppe
  * @param {int} key2 - key des Treffens
  * @returns {String}
  */
-function genTitle(key = undefined, key2 = undefined) {
-    if (key !== undefined && key2 === undefined) {
-        if (pdata[key]) {
-                return pdata[key].name + " – " + title;
-        }
-    } else if (key !== undefined && key2 !== undefined) {
-        if (key === "plz" && $.isNumeric(key2)) {return "PLZ " + key2 + " – " + title;}
+function genTitle(key, key2) {
+    if (typeof key === "number" && typeof key2 === "undefined" && typeof pdata[key] !== "undefined") {
+        return pdata[key].name + " – " + title;
+    } else if (typeof key === "number" && typeof key2 === "number") {
         return pdata[key].treffen[key2].name + " – " + pdata[key].name + " – " + title;
+    } else if (typeof key === "string" && key === "plz" && typeof key2 === "number") {
+        return "PLZ " + key2 + " – " + title;
     }
     return title;
 }
@@ -555,10 +614,12 @@ function initState() {
  * @param {L.Popup} popup - Das Popup-Objekt
  */
 function onPopupAdd( popup ) {
-    popupOpen = true;
-    popup.options.autoPanPaddingTopLeft = pTLi;
-    popup.options.autoPanPaddingBottomRight = pBRi;
-    popup.update();
+    if (typeof popup === "object" && popup instanceof L.Popup) {
+        popupOpen = true;
+        popup.options.autoPanPaddingTopLeft = pTLi;
+        popup.options.autoPanPaddingBottomRight = pBRi;
+        popup.update();
+    }
 }
 
 /**
@@ -593,17 +654,24 @@ function closeAllPopups() {
 
 /**
  * Wiederholt eine Funktion bei fehlerhafter Ausführung mit zeitlichem Abstand.
- * @param {type} timeout - Zeit zwischen den Auführungen
- * @param {type} maxTries - Maximale Anzahl der Versuche
- * @param {type} callback - Auszuführende Funktion
- * @param {type} [it] - Aktuelle Versuchsnummer
+ * @param {function} callback - Auszuführende Funktion
+ * @param {numer} [timeout=200] - Zeit zwischen den Ausführungen
+ * @param {number} [maxTries=5] - Maximale Anzahl der Versuche
+ * @param {number} [it=1] - Aktuelle Versuchsnummer
  */
-function repeatUntil(timeout, maxTries, callback, it = 1) {
+function repeatUntil(callback, timeout, maxTries, it) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof callback !== "function") return false;
+    if (typeof timeout !== "number") timeout = 200;
+    if (typeof maxTries !== "number") maxTries = 5;
+    if (typeof it !== "number") it = 1;
+    
     if (it < maxTries) {
         try {
             callback();
         } catch (err) {
-            setTimeout(function() { repeatUntil(timeout, maxTries, callback, ++it); }, timeout);
+            setTimeout(function() { repeatUntil(callback, timeout, maxTries, ++it); }, timeout);
         }
     } else {
         callback();
@@ -771,16 +839,16 @@ $( document ).ready(function start() {
         
         // Ansicht zu Beginn handeln
         if (initKey !== undefined && $.isNumeric(initKey) && initKey2 !== undefined && $.isNumeric(initKey2)) {
-            repeatUntil(100, 5, function() { startTreffen(initKey, initKey2, true); });
+            repeatUntil(function() { startTreffen(initKey, initKey2, true); }, 100, 5);
             setHash(initKey,initKey2, true);
         } else if (initKey !== undefined && $.isNumeric(initKey)) {
-            repeatUntil(100, 5, function() { startGruppe(initKey, true); });
+            repeatUntil(function() { startGruppe(initKey, true); }, 100, 5);
             setHash(initKey, undefined, true);
         } else if (typeof initKey !== undefined && initKey === "plz" && initKey2 !== undefined && $.isNumeric(initKey2)) {
             startPLZ(initKey2);
             setHash("plz", initKey2, true);
         } else {
-            repeatUntil(100, 5, function() { startMain(); });
+            repeatUntil(function() { startMain(); }, 100, 5);
             setHash(undefined, undefined, true);
         }
         
