@@ -295,7 +295,6 @@ function closeInfo(nopanning) {
  * @param {number} plz - Postleitzahl
  */
 function startPLZ( plz ) {
-    
     // Funktionsparameter initialisieren
     if (typeof plz !== "number") return false;
     
@@ -443,15 +442,12 @@ function startTreffen( key , key2, zoom, callback) {
  * @param {boolean} replace - Wenn true, wird der aktuelle History-Eintrag ersetzt
  */
 function setHash(key, key2, replace) {
-    
     // Funktionsparameter initialisieren
     if (typeof replace !== "boolean") replace = false;
-    if (typeof key !== "number") key = undefined;
-    if (typeof key2 !== "number") key2 = undefined;
     
-    if (typeof key === "number" && key2 === "number") {
+    if (typeof key !== "undefined" && typeof key2 !== "undefined") {
         var newhash = genLink([key, key2]);
-    } else if (typeof key === "number") {
+    } else if (typeof key !== "undefined") {
         var newhash = genLink([key]);
     } else {
         var newhash = genLink();
@@ -855,16 +851,16 @@ $( document ).ready(function start() {
         // PLZ-suche handeln
         $( "#plzform" ).submit(function( event ) {
             var plz = $( "#plz" ).val();	// PLZ aus Suchfeld abfragen
-            if ($.isNumeric(plz)) {			
+            if (plz !== "" && !isNaN(parseInt(plz))) {			
                 setHash("plz", plz);	// Hash setzen
-                startPLZ(plz);      // Aktion: PLZ suchen
+                startPLZ(parseInt(plz));      // Aktion: PLZ suchen
             }
           event.preventDefault();
           return false;
         });
         $("#plz").on("input", function( e ) {
-            var val = $( "#plz" ).val();
-            if (!$.isNumeric(val) && val !== "") {
+            var plz = $( "#plz" ).val();
+            if (plz !== "" && isNaN(parseInt(plz))) {
                 e.target.setCustomValidity("Eine PLZ besteht ausschließlich aus Ziffern.");
                 $("#plz").get(0).reportValidity();
             } else {
