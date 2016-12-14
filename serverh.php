@@ -30,16 +30,20 @@ foreach ($pdata as $key => $val)  {
 }
 
 // URL zur Homepage
-function getURL() {
+function getURL($noprotocol = false) {
     $sn = filter_input(INPUT_SERVER, "SCRIPT_NAME");
     $snme = filter_input(INPUT_SERVER, "SERVER_NAME");
     $pp = preg_replace('/\/[^\/]+$/', '', $sn);
-    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' && $_SERVER['HTTPS'] != '') {
-        $protocol = "https";
+    if (!$noprotocol) {
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' && $_SERVER['HTTPS'] != '') {
+            $protocol = "https";
+        } else {
+            $protocol = "http";
+        }
+        return $protocol."://".$snme.$pp;
     } else {
-        $protocol = "http";
+        return "//".$snme.$pp;
     }
-    return $protocol."://".$snme.$pp;
 }
 
 // Pfad zur Homepage
