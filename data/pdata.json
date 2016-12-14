@@ -21,37 +21,6 @@
       }
     }]
 },{
-  "name": "Kreis Göppingen",
-  "slug": "kreis-goeppingen",
-  "img": "kreis08117.png",
-  "gebiet": {
-    "typ":  "kreis",
-    "nr": "08117",
-    "geojson": "kreis08117"
-  },
-  "homepage": "http://piratenpartei-gp.de",
-  "email":  "info@piratenpartei-gp.de",
-  "text": "Die Piraten treffen sich seit 2009 regelmäßig in Göppingen.  Zu allen unseren Treffen kann jeder Interessent einfach unangemeldet vorbeischauen und mitdiskutieren! Egal ob du Pirat oder Sympathisant bist, uns kritisch gegenüberstehst oder gar einer anderen Partei angehörst: Du bist herzlich eingeladen, dir ein eigenes Bild von unseren Aktivitäten zu machen und mit uns zu diskutieren. Wir freuen uns über Gäste!",
-  "icals":  [
-    "https://calendar.google.com/calendar/ical/i96m7pkltimlcuabnslnpteb60%40group.calendar.google.com/public/basic.ics",
-    "https://calendar.google.com/calendar/ical/0cuje95f68f2j12tc83rr6p9ls%40group.calendar.google.com/public/basic.ics"
-    ],
-  "treffen": [{
-      "name": "Piratentreff Göppingen",
-      "slug": "piratentreff-goeppingen",
-      "ort":	"Pizzeria Toscana, Mittlere Karlstraße 126, 73033 Göppingen",
-      "termin": {
-        "text": "Mittwochs in geraden KW, um 19 Uhr",
-        "quelle": {
-          "typ":  "ical",
-          "ical": "https://calendar.google.com/calendar/ical/i96m7pkltimlcuabnslnpteb60%40group.calendar.google.com/public/basic.ics",
-          "suchworte":  ["Göppingen"]
-        }
-      },
-      "lat":  48.70121,
-      "lon":  9.65883
-    }]
-},{
   "name": "Kreisverband Stuttgart",
   "slug": "kv-stuttgart",
   "img": "kreis08111.png",
@@ -108,6 +77,112 @@
       },
       "lat":  48.79225,
       "lon":  9.20233
+    }]
+},{
+  "name": "Kreis Böblingen",
+  "slug": "kreis-boeblingen",
+  "img": "kreis08115.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08115",
+    "geojson": "kreis08115"
+  },
+  "treffen": [{
+      "name": "Stammtisch Böblingen",
+      "slug": "stammtisch-boeblingen",
+      "ort": "Il Fresco, Bahnhofstraße 29, 71032 Böblingen",
+      "termin": {
+        "text": "Jeden ersten Donnerstag im Monat, 19 Uhr",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "https://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Stammtisch_B%C3%B6blingen",
+          "ort":  "Böblingen"
+        }
+      },
+      "lat":  48.68698,
+      "lon":  9.00586
+    },{
+      "name": "Piratentreff Herrenberg",
+      "slug": "piratentreff-herrenberg",
+      "ort": "zum Botenfischer, Nagolder Straße 14, 71083 Herrenberg",
+      "termin": {
+        "text": "Jeden dritten Dienstag im Monat, 19 Uhr",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Piratentreff_Herrenberg",
+          "ort":  "Herrenberg"
+        }
+      },
+      "lat":  48.59605,
+      "lon":  8.86457
+    },{
+      "name": "Stammtisch Leonberg",
+      "slug": "stammtisch-leonberg",
+      "ort": "Irish Pub Murphy's Law, Graf-Ulrich-Straße 6, 71229 Leonberg",
+      "termin": {
+        "text": "Jeden zweiten Donnerstag im Monat, 19 Uhr",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Stammtisch_Leonberg",
+          "ort":  "Leonberg"
+        }
+      },
+      "lat":  48.80204,
+      "lon":  9.01622
+    }]
+},{
+  "name": "Kreis Esslingen",
+  "slug": "kreis-esslingen",
+  "img": "kreis08116.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08116",
+    "geojson": "kreis08116"
+  },
+  "treffen": [{
+      "name": "Stammtisch Nürtingen",
+      "slug": "stammtisch-nuertingen",
+      "termin": {
+        "text": "Samstags alle 2 Wochen, 19 Uhr, Schlachthof in Nürtingen",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/Stammtisch_N%C3%BCrtingen",
+          "ort":  "Nürtingen"
+        }
+      },
+      "lat":  48.62971,
+      "lon":  9.33387
+    }]
+},{
+  "name": "Kreis Göppingen",
+  "slug": "kreis-goeppingen",
+  "img": "kreis08117.png",
+  "gebiet": {
+    "typ":  "kreis",
+    "nr": "08117",
+    "geojson": "kreis08117"
+  },
+  "homepage": "http://piratenpartei-gp.de",
+  "email":  "info@piratenpartei-gp.de",
+  "text": "Die Piraten treffen sich seit 2009 regelmäßig in Göppingen.  Zu allen unseren Treffen kann jeder Interessent einfach unangemeldet vorbeischauen und mitdiskutieren! Egal ob du Pirat oder Sympathisant bist, uns kritisch gegenüberstehst oder gar einer anderen Partei angehörst: Du bist herzlich eingeladen, dir ein eigenes Bild von unseren Aktivitäten zu machen und mit uns zu diskutieren. Wir freuen uns über Gäste!",
+  "icals":  [
+    "https://calendar.google.com/calendar/ical/i96m7pkltimlcuabnslnpteb60%40group.calendar.google.com/public/basic.ics",
+    "https://calendar.google.com/calendar/ical/0cuje95f68f2j12tc83rr6p9ls%40group.calendar.google.com/public/basic.ics"
+    ],
+  "treffen": [{
+      "name": "Piratentreff Göppingen",
+      "slug": "piratentreff-goeppingen",
+      "ort":	"Pizzeria Toscana, Mittlere Karlstraße 126, 73033 Göppingen",
+      "termin": {
+        "text": "Mittwochs in geraden KW, um 19 Uhr",
+        "quelle": {
+          "typ":  "ical",
+          "ical": "https://calendar.google.com/calendar/ical/i96m7pkltimlcuabnslnpteb60%40group.calendar.google.com/public/basic.ics",
+          "suchworte":  ["Göppingen"]
+        }
+      },
+      "lat":  48.70121,
+      "lon":  9.65883
     }]
 },{
   "name": "Hohenlohekreis",
@@ -196,81 +271,6 @@
       },
       "lat":  48.8771,
       "lon":  9.6352
-    }]
-},{
-  "name": "Kreis Esslingen",
-  "slug": "kreis-esslingen",
-  "img": "kreis08116.png",
-  "gebiet": {
-    "typ":  "kreis",
-    "nr": "08116",
-    "geojson": "kreis08116"
-  },
-  "treffen": [{
-      "name": "Stammtisch Nürtingen",
-      "slug": "stammtisch-nuertingen",
-      "termin": {
-        "text": "Samstags alle 2 Wochen, 19 Uhr, Schlachthof in Nürtingen",
-        "quelle": {
-          "typ":  "wiki",
-          "wiki": "http://wiki.piratenpartei.de/Stammtisch_N%C3%BCrtingen",
-          "ort":  "Nürtingen"
-        }
-      },
-      "lat":  48.62971,
-      "lon":  9.33387
-    }]
-},{
-  "name": "Kreis Böblingen",
-  "slug": "kreis-boeblingen",
-  "img": "kreis08115.png",
-  "gebiet": {
-    "typ":  "kreis",
-    "nr": "08115",
-    "geojson": "kreis08115"
-  },
-  "treffen": [{
-      "name": "Stammtisch Böblingen",
-      "slug": "stammtisch-boeblingen",
-      "ort": "Il Fresco, Bahnhofstraße 29, 71032 Böblingen",
-      "termin": {
-        "text": "Jeden ersten Donnerstag im Monat, 19 Uhr",
-        "quelle": {
-          "typ":  "wiki",
-          "wiki": "https://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Stammtisch_B%C3%B6blingen",
-          "ort":  "Böblingen"
-        }
-      },
-      "lat":  48.68698,
-      "lon":  9.00586
-    },{
-      "name": "Piratentreff Herrenberg",
-      "slug": "piratentreff-herrenberg",
-      "ort": "zum Botenfischer, Nagolder Straße 14, 71083 Herrenberg",
-      "termin": {
-        "text": "Jeden dritten Dienstag im Monat, 19 Uhr",
-        "quelle": {
-          "typ":  "wiki",
-          "wiki": "http://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Piratentreff_Herrenberg",
-          "ort":  "Herrenberg"
-        }
-      },
-      "lat":  48.59605,
-      "lon":  8.86457
-    },{
-      "name": "Stammtisch Leonberg",
-      "slug": "stammtisch-leonberg",
-      "ort": "Irish Pub Murphy's Law, Graf-Ulrich-Straße 6, 71229 Leonberg",
-      "termin": {
-        "text": "Jeden zweiten Donnerstag im Monat, 19 Uhr",
-        "quelle": {
-          "typ":  "wiki",
-          "wiki": "http://wiki.piratenpartei.de/BW:Landkreis_B%C3%B6blingen/Stammtisch_Leonberg",
-          "ort":  "Leonberg"
-        }
-      },
-      "lat":  48.80204,
-      "lon":  9.01622
     }]
 }]
 
