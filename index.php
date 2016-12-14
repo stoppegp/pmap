@@ -46,7 +46,7 @@ var title = "<?php echo PMAP_TITLE; ?>";
                 </form>
                 <h2>Aktive Gruppierungen</h2>
                 <div id="activegroups"></div>
-                <h2 class="calendar" >Kalender</h2>
+                <h2 class="calendar" >Kalender&nbsp;<a href="<?=getBase();?>/gen/calendar.ics"><img src="<?=getBase();?>/res/img/calicon.png" alt="Kalender abonnieren"></a></h2>
                 <div class="calendar" id="calendar"></div>
             </div>
     </div>
