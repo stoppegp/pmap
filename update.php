@@ -38,6 +38,8 @@ function getFile($url) {
 	plog("getFile");
 	$filehash = md5($url);
         
+    if (!is_dir(dirname(__FILE__)."/cache")) mkdir(dirname(__FILE__)."/cache");
+
         // Wenn aktueller Cache vorhanden, diesen benutzen, ansonsten neu einlesen
 	if (file_exists(dirname(__FILE__)."/cache/".$filehash) && (filemtime(dirname(__FILE__)."/cache/".$filehash) > (time()-$oktime))) {
 		plog("use cached file");
