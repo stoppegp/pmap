@@ -48,7 +48,7 @@ var gruppeStyle = {
     "opacity": 0.65
 };
 var piratenIcon = L.icon({
-    iconUrl: basePath + '/res/img/piratenicon.png',
+    iconUrl: basePath + '/res/img/piratenicon-v1.png',
     iconSize:     [24, 24], // size of the icon
     shadowSize:   [30, 20], // size of the shadow
     iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location

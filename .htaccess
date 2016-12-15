@@ -4,3 +4,9 @@ RewriteBase /
 RewriteRule ^(res|data|gen)($|/) - [L]
 RewriteRule ^([a-zA-Z\-0-9]+)($|/$) index.php?key=$1
 RewriteRule ^([a-zA-Z\-0-9]+)/([a-zA-Z\-0-9]+)($|/$)  index.php?key=$1&key2=$2
+<filesMatch ".(json|geojson|ics)$">
+Header set Cache-Control "no-cache"
+</filesMatch>
+<filesMatch ".(jpg|jpeg|png|js|css|eot|otf|svg|ttf|woff|ico)$">
+Header set Cache-Control "max-age=2628000, must-revalidate, public"
+</filesMatch>

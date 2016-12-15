@@ -11,15 +11,15 @@
     handleOG(); // Meta-Tags für Crawler generieren
 ?>
 <title><?php echo PMAP_TITLE; ?></title>
-<link rel="shortcut icon" type="image/x-icon" href="<?=getBase();?>/res/favicon.ico" />
-<link rel="stylesheet" href="<?=getBase();?>/res/leaflet/leaflet.css" />
+<link rel="shortcut icon" type="image/x-icon" href="<?=getBase();?>/res/favicon-v1.ico" />
+<link rel="stylesheet" href="<?=getBase();?>/res/leaflet-1.0.2/leaflet.css" />
 <script src="<?=getBase();?>/res/jquery/jquery-3.1.1.min.js"></script>
 <script src="<?=getBase();?>/res/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-<script src="<?=getBase();?>/res/leaflet/leaflet.js"></script>
-<script src="<?=getBase();?>/res/leaflet/leaflet.ajax.min.js"></script>
+<script src="<?=getBase();?>/res/leaflet-1.0.2/leaflet.js"></script>
+<script src="<?=getBase();?>/res/leaflet-1.0.2/leaflet.ajax.min.js"></script>
 <script src="<?=getBase();?>/res/moment/moment-with-locales.js"></script>
-<link rel="stylesheet" type="text/css" href="<?=getBase();?>/res/css/main.css">
-<link type="text/css" href="<?=getBase();?>/res/shariff/shariff.complete.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="<?=getBase();?>/res/css/main-v1.css">
+<link type="text/css" href="<?=getBase();?>/res/shariff-1.24.1/shariff.complete.css" rel="stylesheet">
 <script type="text/javascript">
 var initKey, initKey2;
 document.getElementById("html").className = "js";
@@ -46,7 +46,7 @@ var title = "<?php echo PMAP_TITLE; ?>";
                 </form>
                 <h2>Aktive Gruppierungen</h2>
                 <div id="activegroups"></div>
-                <h2 class="calendar" >Kalender&nbsp;<a href="<?=getBase();?>/gen/calendar.ics"><img src="<?=getBase();?>/res/img/calicon.png" alt="Kalender abonnieren"></a></h2>
+                <h2 class="calendar" >Kalender&nbsp;<a href="<?=getBase();?>/gen/calendar.ics"><img src="<?=getBase();?>/res/img/calicon-v1.png" alt="Kalender abonnieren"></a></h2>
                 <div class="calendar" id="calendar"></div>
             </div>
     </div>
@@ -56,7 +56,7 @@ var title = "<?php echo PMAP_TITLE; ?>";
     <a id="closelink" href="/#!">✖</a>
     <div id="infocontent"></div>
 </div>
-<script src="<?=getBase();?>/pmap.js"></script>
-<script src="<?=getBase();?>/res/shariff/shariff.min.js"></script>
+<script src="<?=getBase();?>/pmap-v1.js"></script>
+<script src="<?=getBase();?>/res/shariff-1.24.1/shariff.min.js"></script>
 </body>
 </html> 
