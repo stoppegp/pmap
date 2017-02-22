@@ -220,6 +220,20 @@
       },
       "lat":  49.2801,
       "lon":  9.6904
+    },{
+      "name": "Stammtisch Ingelfingen",
+      "slug": "stammtisch-ingelfingen",
+      "ort":    "Restaurant Sonneck",
+      "termin": {
+        "text": "Unregelmäßig",
+        "quelle": {
+          "typ":  "wiki",
+          "wiki": "http://wiki.piratenpartei.de/BW:Stammtisch_Hohenlohe",
+          "ort":  "Ingelfingen"
+        }
+      },
+      "lat":  49.3001011,
+      "lon":  9.6468544
     }]
 },{
   "name": "Kreis Ludwigsburg",
