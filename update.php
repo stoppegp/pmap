@@ -14,6 +14,7 @@ use om\IcalParser;
 
 $starttime = time();
 $LOG = array();
+$error = false;
 
 $icals = array();
 
@@ -37,9 +38,7 @@ function getFile($url) {
 	global $oktime;
 	plog("getFile");
 	$filehash = md5($url);
-        
-    if (!is_dir(dirname(__FILE__)."/cache")) mkdir(dirname(__FILE__)."/cache");
-
+    plog($filehash);
         // Wenn aktueller Cache vorhanden, diesen benutzen, ansonsten neu einlesen
 	if (file_exists(dirname(__FILE__)."/cache/".$filehash) && (filemtime(dirname(__FILE__)."/cache/".$filehash) > (time()-$oktime))) {
 		plog("use cached file");
@@ -96,9 +95,9 @@ function getnextWiki($url, $searchstring) {
          * Suche 2: Datum
          * Scuhe 3: Uhrzeit
          */
-        $pattern = '/<table>.+?(?=Ort)Ort.+?(?=<td>)<td>([a-zA-Z0-9\.\\\\\/\(\)ÄÖÜäöüß ]+).+?(?=Datum)Datum.+?(?=<td>)<td>([0-9a-zA-Z\. ]+).+?(?=Uhrzeit)Uhrzeit.+?(?=<td>)<td>([0-9:]+).+?(?=<\/table>)<\/table>/s';
+        $pattern = '/<table>.+?(?=Ort)Ort.+?(?=<td>)<td>([a-zA-Z0-9\.\\\\\/\(\)ÄÖÜäöüß ]+).+?(?=Datum)Datum.+?(?=<td>)<td>([0-9a-zA-ZäöüßÄÖÜ\. ]+).+?(?=Uhrzeit)Uhrzeit.+?(?=<td>)<td>([0-9:]+).+?(?=<\/table>)<\/table>/s';
 	preg_match_all ( $pattern , $data, $matches);
-
+        
 	if (is_array($matches) && (count($matches) >= 4)) {
 		$k = false;
                 
@@ -242,7 +241,7 @@ if (is_array($pdata) && (count($pdata) > 0)) {
 					$quelle = $treffen->termin->quelle;
 					$ical = $quelle->ical;
 					$suchworte = $quelle->suchworte;
-					if (!$ical) { plog("FAILED."); continue; }
+					if (!$ical) { plog("FAILED."); $error = true; continue; }
 					if (is_array($suchworte) && (count($suchworte) > 0)) {
 						// Suchworte ins globale Array mit Zuordnung übernehmen
                                                 foreach ($suchworte as $sv) {
@@ -254,6 +253,7 @@ if (is_array($pdata) && (count($pdata) > 0)) {
 							plog($date);
 						} else {
 							plog("FAILED.");
+                                                        $error = true;
 						}
 					}
                                 // Terminquelle: WIKI
@@ -262,7 +262,7 @@ if (is_array($pdata) && (count($pdata) > 0)) {
 					$quelle = $treffen->termin->quelle;
 					$wiki = $quelle->wiki;
 					$ort = $quelle->ort;
-					if (!$wiki) { plog("FAILED."); continue; }
+					if (!$wiki) { plog("FAILED."); $error = true; continue; }
 					if ($ort) {
 						$date = getnextWiki($wiki, $ort);
 						if ($date != false) {
@@ -270,6 +270,7 @@ if (is_array($pdata) && (count($pdata) > 0)) {
 							plog($date);
 						} else {
 							plog("FAILED.");
+                                                        $error = true;
 							removeCache($wiki); // Wenn Wiki-Datei keinen Termin beinhaltet, aus dem Cache löschen
 						}
 					}
@@ -353,6 +354,8 @@ foreach ($cdata as $val) {
 $idata .= "END:VCALENDAR";
 file_put_contents(dirname(__FILE__).'/gen/calendar.ics', str_replace("\n", "\r\n", $idata));
 
-echo (time()-$starttime)." Sekunden\n";
-echo implode("\n", $LOG);
+if ($error == true || !isset($_GET['quet'])) {
+    echo (time()-$starttime)." Sekunden\n";
+    echo implode("\n", $LOG);
+}
 ?>
