@@ -4,6 +4,7 @@
   "img": "piratenbzvstgt.png",
   "homepage": "http://www.piraten-bzv-stuttgart.de",
   "email":  "vorstand@piraten-bzv-stuttgart.de",
+  "twitter":  "PiratenBzvStgt",
   "text": "",
   "icals":  [
     "https://calendar.google.com/calendar/ical/7umkmcdkvpt7un16l8sd0to5os%40group.calendar.google.com/public/basic.ics"
@@ -11,7 +12,7 @@
   "treffen": [{
       "name": "Vorstandssitzung",
       "slug": "vorstandssitzung",
-      "ort":	"üblicherweise im Mumbe",
+      "ort":  "üblicherweise im Mumbe",
       "termin": {
         "quelle": {
           "typ":  "ical",
@@ -31,6 +32,7 @@
   },
   "homepage": "http://www.piratenpartei-stuttgart.de/",
   "email":  "info@piratenpartei-stuttgart.de",
+  "twitter":  "Piraten_S",
   "text": "",
   "icals":  [
     "http://www.piratenpartei-stuttgart.de/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&no_html=true"
@@ -156,6 +158,7 @@
 },{
   "name": "Kreis Göppingen",
   "slug": "kreis-goeppingen",
+  "twitter":  "Piraten_GP",
   "img": "kreis08117.png",
   "gebiet": {
     "typ":  "kreis",
@@ -188,6 +191,7 @@
   "name": "Hohenlohekreis",
   "slug": "hohenlohekreis",
   "img": "kreis08126.png",
+  "twitter":  "PiratenHoK",
   "gebiet": {
     "typ":  "kreis",
     "nr": "08126",
@@ -239,6 +243,7 @@
   "name": "Kreis Ludwigsburg",
   "slug": "kreis-ludwigsburg",
   "img": "kreis08118.png",
+  "twitter":  "Piraten_LB",
   "gebiet": {
     "typ":  "kreis",
     "nr": "08118",
