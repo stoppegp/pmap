@@ -66,7 +66,7 @@ function getKeys($slug, $slug2 = false) {
         $key = $slug; $go = true;
     }
 
-    if ($go && $slug2) {
+    if ($go && isset($slug2)) {
         $go = false;
         if (!is_numeric($slug2) && isset($slugToTreffen[$key][$slug2])) {
             $key2 = $slugToTreffen[$key][$slug2]; $go = true;
