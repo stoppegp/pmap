@@ -17,7 +17,7 @@
 <script src="<?=getBase();?>/res/leaflet-1.0.2/leaflet.js"></script>
 <script src="<?=getBase();?>/res/leaflet-1.0.2/leaflet.ajax.min.js"></script>
 <script src="<?=getBase();?>/res/moment/moment-with-locales.js"></script>
-<link rel="stylesheet" type="text/css" href="<?=getBase();?>/res/css/main-v1.css">
+<link rel="stylesheet" type="text/css" href="<?=getBase();?>/res/css/main.css?v=2">
 <link type="text/css" href="<?=getBase();?>/res/shariff-1.24.1/shariff.complete.css" rel="stylesheet">
 <script type="text/javascript">
 var initKey, initKey2;
@@ -55,7 +55,7 @@ var title = "<?php echo PMAP_TITLE; ?>";
     <a id="closelink" href="/#!">✖</a>
     <div id="infocontent"></div>
 </div>
-<script src="<?=getBase();?>/pmap-v1.js"></script>
+<script src="<?=getBase();?>/pmap.js?v=2"></script>
 <script src="<?=getBase();?>/res/shariff-1.24.1/shariff.min.js"></script>
 </body>
 </html> 
