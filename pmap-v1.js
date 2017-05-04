@@ -1,4 +1,4 @@
-/* global initKey, initKey2, L, basePath, moment, baseURL, title */
+/* global L, basePath, moment, baseURL, title, initData */
 
 var shariffDiv;
 
@@ -35,6 +35,14 @@ var infoData;	// Was ist im Info-Panel geöffnet?
 var anGoing = false;	// Läuft gerade eine Animation?
 var beforeFirstStart = true;
 
+// Konstanten
+var TYP_GRUPPE = 1;
+var TYP_TREFFEN = 2;
+var TYP_PLZ = 3;
+var TYP_EVENT = 4;
+
+var DEBUG_MODE = true;
+
 // Leaflet-Styles
 var mainStyle = {
     "color": "#ff7800",
@@ -60,6 +68,14 @@ var piratenIcon = L.icon({
 moment.locale('de');
 
 /**
+ * Bei aktiviertem Debug-Modus in den Log schreiben
+ * @param {string} text - Zu loggender Text
+ */
+function logDebug(text) {
+    if (DEBUG_MODE === true) console.log(text);
+}
+
+/**
  * Info-Panel einblenden
  * @param {string} content - HTML-Content
  * @param {function()} [callbackEnd] - Callback-Funktion, wird nach der Animation aufgerufen
@@ -76,7 +92,7 @@ function showInfo ( content, callbackEnd, callbackMid) {
     if (infoOpen === false) {   // Info-Panel war bisher geschlossen
         infoOpen = true;
         $("#infocontent").html(content);
-        setTimeout(function() {$("#infocontent").scrollTop(0), 50});
+        setTimeout(function() {$("#infocontent").scrollTop(0);}, 50);
         if (typeof callbackMid === "function") callbackMid();
         if (screenState === "big") {		
             $("#info").show('slide', {"direction": 'right'}, 500, function() { if (typeof callbackEnd === "function") callbackEnd(); anGoing = false; });	
@@ -103,49 +119,104 @@ function showInfo ( content, callbackEnd, callbackMid) {
 
 /**
  * Zeigt eine Gruppe im Info-Panel an
- * @param {number} key - Key der Gruppe
- * @param {number} [key2] - Key des Treffens
+ * @param {number} typ - Typ der Anzeige
+ * @param {number} data - Daten-Variable der Anzeige
  * @param {function()} [callback] - Callback-Funktion, wird am Ende der Animation ausgeführt
  */
-function showGruppe( key, key2, callback ) {
-    
-    // Funktionsparameter initialisieren
-    if (typeof key !== "number" || typeof pdata[key] === "undefined") return false;
-    if (typeof key2 !== "number" || typeof pdata[key].treffen[key2] === "undefined") key2 = undefined;
-    
-    // Wenn passendes Panel bereits offen und richtiges Treffen ausgewählt: Nichts tun, außer Callback
-    if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.key === "number" && infoData.key === key &&
-            ((typeof key2 === "undefined" && typeof infoData.key2 === "undefined") ||
-            (typeof infoData.key2 === "number" && typeof key2 === "number" && infoData.key2 === key2))) {
-        
-        if (typeof callback === "function") callback();
-        return;
-        
-    }
+function showGruppe( typ, data, callback ) {
 
-    // Wenn passendes Panel bereits offen und falsches Treffen ausgewählt: Richtiges Treffen auswählen, Shariff und Callback
-    if (infoOpen === true &&typeof infoData !== "undefined" && typeof infoData.key === "number" && infoData.key === key) {
-        $(".treffenlink").removeClass("active");
-        if (typeof key2 === "number") {
-            $("#treffen-" + key + "-" + key2).addClass("active");            
-            initShariff(key, genLink([key, key2]), genTitle(key, key2));
-        } else {
-            initShariff(key, genLink([key]), genTitle(key));
-        }
-        infoData = {"key": key, "key2": key2};
-        
-        if (typeof callback === "function") callback();
-        return;
-    }
+    switch (typ) {
+        case TYP_GRUPPE:
+            // Funktionsparameter initialisieren
+            if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined") return false;
+            
+            // Wenn passendes Panel bereits offen und kein Treffen ausgewählt: Nichts tun, außer Callback
+            
+            // Wenn passendes Gruppen-Panel bereits offen
+            if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.typ !== "undefined" && typeof infoData.gruppeId === "number" && infoData.gruppeId === data.gruppeId) {
+                // Wenn kein Treffen ausgewählt
+                if (infoData.typ === TYP_GRUPPE) {
+                    if (typeof callback === "function") callback();
+                    return;
+                } else {
+                    $(".treffenlink").removeClass("active");
+                    $(".eventlink").removeClass("active");
+                    initShariff(data.gruppeId, genLink(TYP_GRUPPE, {"gruppeId": data.gruppeId}), genTitle(TYP_GRUPPE, {"gruppeId": data.gruppeId}));
+                    infoData = {"typ": TYP_GRUPPE, "gruppeId": data.gruppeId};
 
+                    if (typeof callback === "function") callback();
+                    return;
+                }
+            }
+            
+            break;
+        case TYP_TREFFEN:
+            // Funktionsparameter initialisieren
+            logDebug(data);
+            if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined") return false;
+            if (typeof data.treffenId !== "number" || typeof pdata[data.gruppeId].treffen[data.treffenId] === "undefined") return false;
+            logDebug("TYP_TREFFEN");
+            // Wenn passendes Gruppen-Panel bereits offen
+            if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.typ !== "undefined" && typeof infoData.gruppeId === "number" && infoData.gruppeId === data.gruppeId) {
+                logDebug("richtiges Panel offen");
+                // Wenn richtiges Treffen ausgewählt
+                if (infoData.typ === TYP_TREFFEN && typeof infoData.treffenId === "number" && infoData.treffenId === data.treffenId) {
+                    logDebug("richtiges Treffen");
+                    $("#treffen-" + data.gruppeId + "-" + data.treffenId).focus();            
+                    if (typeof callback === "function") callback();
+                    return;
+                } else {
+                    logDebug("falsches Treffen");
+                    $(".treffenlink").removeClass("active");
+                    $(".eventlink").removeClass("active");
+                    $("#treffen-" + data.gruppeId + "-" + data.treffenId).addClass("active").focus();            
+                    initShariff(data.gruppeId, genLink(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}), genTitle(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}));
+                    infoData = {"typ": TYP_TREFFEN, "gruppeId": data.gruppeId, "treffenId": data.treffenId};
+                    
+                    if (typeof callback === "function") callback();
+                    return;
+                }
+            }
+            break;
+        case TYP_EVENT:
+            // Funktionsparameter initialisieren
+            logDebug(data);
+            if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined") return false;
+            if (typeof data.eventId === "undefined") return false;
+            logDebug("TYP_EVENT");
+            // Wenn passendes Gruppen-Panel bereits offen
+            if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.typ !== "undefined" && typeof infoData.gruppeId === "number" && infoData.gruppeId === data.gruppeId) {
+                logDebug("richtiges Panel offen");
+                // Wenn richtiges Treffen ausgewählt
+                if (infoData.typ === TYP_EVENT && typeof infoData.eventId !== "undefined" && infoData.eventId === data.eventId) {
+                    logDebug("richtiges Event");
+                    $("#event-" + data.gruppeId + "-" + data.eventId).focus();    
+                    if (typeof callback === "function") callback();
+                    return;
+                } else {
+                    logDebug("falsches Event");
+                    $(".treffenlink").removeClass("active");
+                    $(".eventlink").removeClass("active");
+                    $("#event-" + data.gruppeId + "-" + data.eventId).addClass("active").focus();            
+                    initShariff(data.gruppeId, genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}), genTitle(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}));
+                    infoData = {"typ": TYP_EVENT, "gruppeId": data.gruppeId, "eventId": data.eventId};
+                    
+                    if (typeof callback === "function") callback();
+                    return;
+                }
+            }
+            break;
+    }
+    
     // Ansonsten
 
     // Aktiv-Klassen entfernen, Aktiv-Klasse zur Gruppe hinzufügen
     $(".activegroup").removeClass("active");
     $(".treffenlink").removeClass("active");
-    $("#activegroup-" + key).addClass("active");
+    $(".eventlink").removeClass("active");
+    $("#activegroup-" + data.gruppeId).addClass("active");
 
-    var gruppe = pdata[key];
+    var gruppe = pdata[data.gruppeId];
 
     // HTML erstellen
     var html_gruppe = "<h2>" + gruppe.name + "</h2>";
@@ -155,19 +226,19 @@ function showGruppe( key, key2, callback ) {
     if (typeof gruppe.text === "string") html_gruppe += "<p class=\"text\">" + gruppe.text + "</p>";
     if (typeof gruppe.homepage === "string") html_gruppe += "<p><strong>Homepage:</strong><br><a href=\"" + gruppe.homepage + "\">" + gruppe.homepage + "</a></p>";
     if (typeof gruppe.email === "string") html_gruppe += "<p><strong>E-Mail:</strong><br><a href=\"mailto:" + gruppe.email + "\">" + gruppe.email + "</a></p>";
-    html_gruppe += '<p><div class="shariff" id="shariff' + key + '"></div></p>';
+    html_gruppe += '<p><div class="shariff" id="shariff' + data.gruppeId + '"></div></p>';
 
     // Übersicht der Treffen
-    if (typeof pdata[key].treffen === "object") {
+    if (typeof pdata[data.gruppeId].treffen === "object") {
         html_gruppe += "<h3>Treffen</h3><div id=\"treffen\"><ul>";
-        $.each( pdata[key].treffen, function( key2a, val ) {
+        $.each( pdata[data.gruppeId].treffen, function( key2a, val ) {
             var exclass = "";
-            if (typeof key2 === "number" && key2 === key2a) exclass = "active";
-            html_gruppe += "<li><a data-key=\"" + key + "\" data-key2=\"" + key2a + "\" class=\"treffenlink " + exclass + "\" id=\"treffen-" + key + "-" + key2a + "\" href=\"" + genLink([key, key2a]) + "\"><strong>" + val.name + "</strong>";
+            if (typ === TYP_TREFFEN && data.treffenId === key2a) exclass = "active";
+            html_gruppe += "<li><a " + genLinkData(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": key2a}) + " class=\"treffenlink " + exclass + "\" id=\"treffen-" + data.gruppeId + "-" + key2a + "\" href=\"" + genLink(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": key2a}) + "\"><strong>" + val.name + "</strong>";
             if (typeof val.termin.text === "string") html_gruppe += "<br>" +  val.termin.text;
             if (typeof val.ort === "string") html_gruppe += "<br>" +  val.ort;
-            if (typeof events === "object" && typeof events[key] === "object" && typeof events[key].treffen === "object" && typeof events[key].treffen[key2a] === "number") {
-                    var datum = moment.unix(events[key].treffen[key2a]);
+            if (typeof events === "object" && typeof events[data.gruppeId] === "object" && typeof events[data.gruppeId].treffen === "object" && typeof events[data.gruppeId].treffen[key2a] === "number") {
+                    var datum = moment.unix(events[data.gruppeId].treffen[key2a]);
                     html_gruppe += "<br><small><em>Nächster Termin: " + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</em></small>";
             }
             html_gruppe += "</a></li>";
@@ -176,37 +247,42 @@ function showGruppe( key, key2, callback ) {
     }
 
     // Terminübersicht
-    if (typeof events === "object" && typeof events[key] === "object" && typeof events[key].ical === "object") {
-        html_gruppe += "<h3>Kommende Termine</h3>";
-        $.each( events[key].ical, function( key, val ) {
+    if (typeof events === "object" && typeof events[data.gruppeId] === "object" && typeof events[data.gruppeId].ical === "object") {
+        html_gruppe += "<h3>Kommende Termine</h3><ul>";
+        $.each( events[data.gruppeId].ical, function( key3, val ) {
+            var exclass = "";
+            if (typ === TYP_EVENT && data.eventId === val.hash) exclass = "active";
             datum = moment.unix(val.start);
             datume = moment.unix(val.end);
             if (datume.isBefore(moment(), 'hour')) return true;
-            html_gruppe += "<p><small>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</small><br>";
-            html_gruppe += val.title + "<br><small>" + val.location + "</small></p>";
+            html_gruppe += "<li><a id=\"event-" + data.gruppeId + "-" + val.hash + "\" " + genLinkData(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.hash}) + " class=\"eventlink " + exclass + "\" href=\"" + genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.hash}) + "\"><small>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</small><br>";
+            html_gruppe += val.title + "<br><span class=\"eventmore\"><span>" + val.description.replace("\n", "<br>", "g") + "<br></span></span><small>" + val.location + "</small></a></li>";
         });
+        html_gruppe += "</ul>";
     }
-    if (typeof key2 === "number") {
-        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"key": key}; }, function() { initShariff( key, genLink([key]), genTitle(key) ); });
-    } else {
-        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"key": key, "key2": key2}; }, function() { initShariff( key, genLink([key, key2]), genTitle(key, key2) ); });
+    if (typ === TYP_GRUPPE) {
+        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"typ": TYP_GRUPPE, "gruppeId": data.gruppeId}; $("#infocontent .active").focus(); }, function() { initShariff( data.gruppeId, genLink(TYP_GRUPPE, {"gruppeId": data.gruppeId}), genTitle(TYP_GRUPPE, {"gruppeId": data.gruppeId}) ); });
+    } else if (typ === TYP_TREFFEN) {
+        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"typ": TYP_TREFFEN, "gruppeId": data.gruppeId, "treffenId": data.treffenId}; $("#infocontent .active").focus(); }, function() { initShariff( data.gruppeId, genLink(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}), genTitle(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}) ); });
+    } else if (typ === TYP_EVENT) {
+        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"typ": TYP_EVENT, "gruppeId": data.gruppeId, "eventId": data.eventId}; $("#infocontent .active").focus(); }, function() { initShariff( data.gruppeId, genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}), genTitle(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}) ); });
     }
 }
 
 /**
 * Initialisiert Shariff im Info-Panel
 
- * @param {number} key
+ * @param {number} gruppeId
  * @param {string} url
  * @param {string} title
  */
-function initShariff( key, url, title ) {
+function initShariff( gruppeId, url, title ) {
     // Funktionsparameter initialisieren
-    if (typeof key !== "number") return false;
+    if (typeof gruppeId !== "number") return false;
     if (typeof url !== "string") url = "";
     if (typeof title !== "string") title = "";
     
-    setTimeout(function() { shariffDiv = new Shariff($("#shariff" + key), {"url":  url, "title": title, theme: "white", services: ["twitter", "facebook", "googleplus", "whatsapp", "threema", "info"]});}, 0);
+    setTimeout(function() { shariffDiv = new Shariff($("#shariff" + gruppeId), {"url":  url, "title": title, theme: "white", services: ["twitter", "facebook", "googleplus", "whatsapp", "threema", "info"]});}, 0);
 }
 
 /**
@@ -241,8 +317,8 @@ function showEmpty( name ) {
         }			
     });
     html_empty += "<p class=\"text\">Die nächsten aktive Treffen sind diese:<ul>";
-    html_empty += "<li><a data-key=\"" + nexto1.key + "\" data-key2=\"" + nexto1.key2 + "\" href=\"" + genLink([nexto1.key, nexto1.key2]) + "\">" + nexto1.name + "</a></li>";
-    html_empty += "<li><a data-key=\"" + nexto2.key + "\" data-key2=\"" + nexto2.key2 + "\" href=\"" + genLink([nexto2.key, nexto2.key2]) + "\">" + nexto2.name + "</a></li>";
+    html_empty += "<li><a " + genLinkData(TYP_TREFFEN, {"gruppeId": nexto1.key, "treffenId": nexto1.key2}) + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": nexto1.key, "treffenId": nexto1.key2}) + "\">" + nexto1.name + "</a></li>";
+    html_empty += "<li><a " + genLinkData(TYP_TREFFEN, {"gruppeId": nexto2.key, "treffenId": nexto2.key2}) + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": nexto2.key, "treffenId": nexto2.key2}) + "\">" + nexto2.name + "</a></li>";
     html_empty += "</ul></p>Wenn du in " + name + " ein neues Treffen starten möchtest, wende dich bitte an <a href=\"mailto:vorstand@piraten-bzv-stuttgart.de\">vorstand@piraten-bzv-stuttgart.de</a>";
     showInfo(html_empty, function() { infoData = {"plzname" : name}; });
 }
@@ -315,7 +391,7 @@ function startPLZ( plz ) {
         if (kreiskeys[key] !== undefined) {
             // Gruppe zur Suche gefunden
             plzpopup.setContent("<strong>" + dat.name + "</strong>");
-            showGruppe(kreiskeys[key]);
+            showGruppe(TYP_GRUPPE, {"gruppeId": kreiskeys[key]});
             repeatUntil(function() { 
                 if (pdata[kreiskeys[key]].layer !== undefined) {
                     map.fitBounds(pdata[kreiskeys[key]].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
@@ -365,19 +441,19 @@ function startMain( ) {
 
 /**
  * Gruppe starten
- * @param {number} key - key der Gruppe
+ * @param {number} gruppeId - key der Gruppe
  * @param {(boolean|Object.<L.LatLng, number>)} [zoom=false] - true für Zoom, L.LatLng&Zoom für setView
  * @param {function()} [callback] - Callback-Funktion, wird nach der Animation ausgeführt
  */
-function startGruppe( key, zoom, callback) {
+function startGruppe( gruppeId, zoom, callback) {
 
     // Funktionsparameter initialisieren
-    if (typeof key !== "number" || typeof pdata[key] === "undefined") { startMain(); return; }
+    if (typeof gruppeId !== "number" || typeof pdata[gruppeId] === "undefined") { startMain(); return; }
     if (typeof zoom !== "boolean" && typeof zoom !== "object") zoom = false;
     
     // Karte anpassen
-    if (zoom === true && typeof pdata[key].layer !== "undefined") {
-        map.fitBounds(pdata[key].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
+    if (zoom === true && typeof pdata[gruppeId].layer !== "undefined") {
+        map.fitBounds(pdata[gruppeId].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
     } else if (typeof zoom.center === "object" && typeof zoom.zoom === "number") {
         map.setView(zoom.center, zoom.zoom);
     } else if (zoom === true) {
@@ -386,35 +462,35 @@ function startGruppe( key, zoom, callback) {
     
     beforeFirstStart = false;
     
-    if (typeof pdata[key].popup !== "undefined") {
+    if (typeof pdata[gruppeId].popup !== "undefined") {
         // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
-        if (!pdata[key].popup.isOpen()) { closeAllPopups(); pdata[key].layer.openPopup(); }
+        if (!pdata[gruppeId].popup.isOpen()) { closeAllPopups(); pdata[gruppeId].layer.openPopup(); }
     } else {
         closeAllPopups();
         // Wenn kein Popup vorhanden, wird die Karte bei kleinen Bildschirmen manuell verschoben
         if (infoOpen === false && screenState === "smallportrait") map.panBy([0, infoSize], {"duration": 0.5});
         if (infoOpen === false && screenState === "smalllandscape") map.panBy([infoSize, 0], {"duration": 0.5});
     }
-    showGruppe( key, undefined, callback );
+    showGruppe(TYP_GRUPPE, {"gruppeId": gruppeId}, callback );
 }
 
 /**
  * Treffen starten
- * @param {number} key - key der Gruppe
- * @param {number} key2 - key des Treffens
+ * @param {number} gruppeId - key der Gruppe
+ * @param {number} treffenId - key des Treffens
  * @param {(boolean|Object.<L.LatLng, number>)} [zoom=false] - true für Zoom, L.LatLng&Zoom für setView
  * @param {function()} [callback] - Callback-Funktion, wird nach der Animation ausgeführt
  */
-function startTreffen( key , key2, zoom, callback) {
+function startTreffen( gruppeId , treffenId, zoom, callback) {
     
     // Funktionsparameter initialisieren
-    if (typeof key !== "number" || typeof pdata[key] === "undefined") { startMain(); return; }
-    if (typeof key2 !== "number" || typeof pdata[key].treffen[key2] === "undefined") { startMain(); return; }
+    if (typeof gruppeId !== "number" || typeof pdata[gruppeId] === "undefined") { startMain(); return; }
+    if (typeof treffenId !== "number" || typeof pdata[gruppeId].treffen[treffenId] === "undefined") { startMain(); return; }
     if (typeof zoom !== "boolean") zoom = false;
     
     // Karte anpassen
-    if (zoom === true && typeof pdata[key].layer !== "undefined") {
-        map.fitBounds(pdata[key].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
+    if (zoom === true && typeof pdata[gruppeId].layer !== "undefined") {
+        map.fitBounds(pdata[gruppeId].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
     } else if (typeof zoom.center === "object" && typeof zoom.zoom === "number") {
         map.setView(zoom.center, zoom.zoom);
     } else if (zoom === true) {
@@ -423,90 +499,168 @@ function startTreffen( key , key2, zoom, callback) {
     
     beforeFirstStart = false;
     
-    if (typeof pdata[key].treffen[key2].popup !== "undefined") {
+    if (typeof pdata[gruppeId].treffen[treffenId].popup !== "undefined") {
         // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
-        if (!pdata[key].treffen[key2].popup.isOpen()) { closeAllPopups(); pdata[key].treffen[key2].marker.openPopup(); }
+        if (!pdata[gruppeId].treffen[treffenId].popup.isOpen()) { closeAllPopups(); pdata[gruppeId].treffen[treffenId].marker.openPopup(); }
     } else {
         closeAllPopups();
         // Wenn kein Popup vorhanden, wird die Karte bei kleinen Bildschirmen manuell verschoben
         if (infoOpen === false && screenState === "smallportrait") map.panBy([0, infoSize], {"duration": 0.5});
         if (infoOpen === false && screenState === "smalllandscape") map.panBy([infoSize, 0], {"duration": 0.5});
     }
-    showGruppe( key, key2, callback );	
+    showGruppe(TYP_TREFFEN, {"gruppeId": gruppeId, "treffenId": treffenId}, callback );	
+}
+
+/**
+ * Event starten
+ * @param {number} gruppeId - key der Gruppe
+ * @param {number} eventId - key des Events
+ * @param {(boolean|Object.<L.LatLng, number>)} [zoom=false] - true für Zoom, L.LatLng&Zoom für setView
+ * @param {function()} [callback] - Callback-Funktion, wird nach der Animation ausgeführt
+ */
+function startEvent( gruppeId , eventId, zoom, callback) {
+    
+    // Funktionsparameter initialisieren
+    if (typeof gruppeId !== "number" || typeof pdata[gruppeId] === "undefined") { startMain(); return; }
+    if (typeof eventId === "undefined") { startMain(); return; }
+    if (typeof zoom !== "boolean") zoom = false;
+    
+    // Karte anpassen
+    if (zoom === true && typeof pdata[gruppeId].layer !== "undefined") {
+        map.fitBounds(pdata[gruppeId].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
+    } else if (typeof zoom.center === "object" && typeof zoom.zoom === "number") {
+        map.setView(zoom.center, zoom.zoom);
+    } else if (zoom === true) {
+        map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
+    }
+    
+    beforeFirstStart = false;
+    
+    closeAllPopups();
+    // Wenn kein Popup vorhanden, wird die Karte bei kleinen Bildschirmen manuell verschoben
+    if (infoOpen === false && screenState === "smallportrait") map.panBy([0, infoSize], {"duration": 0.5});
+    if (infoOpen === false && screenState === "smalllandscape") map.panBy([infoSize, 0], {"duration": 0.5});
+    
+    showGruppe(TYP_EVENT, {"gruppeId": gruppeId, "eventId": eventId}, callback );	
 }
 
 /**
  * Neuen History-Eintrag hinzufügen und Titel setzen
- * @param {(Number|string)} key - key der Gruppe
- * @param {Number} key2 - key des Treffens
+ * @param {number} typ - Typ der Anzeige
+ * @param {number} data - Daten-Variable der Anzeige
  * @param {boolean} replace - Wenn true, wird der aktuelle History-Eintrag ersetzt
  */
-function setHash(key, key2, replace) {
+function setHash(typ, data, replace) {
+    logDebug("setHash - " + typ);
     // Funktionsparameter initialisieren
-    if (typeof replace !== "boolean") replace = false;
+    if (typeof replace !== "boolean") replace = false;  
     
-    if (typeof key !== "undefined" && typeof key2 !== "undefined") {
-        var newhash = genLink([key, key2]);
-    } else if (typeof key !== "undefined") {
-        var newhash = genLink([key]);
-    } else {
-        var newhash = genLink();
-    }
+    var newhash = genLink(typ, data);
     
     if (newhash.substr(1) !== window.location.pathname.substr(1) || replace === true) {
-        var state = {"key": key, "key2": key2};
+        var state = {"typ": typ, "data": data};
         if (replace === true) {
             history.replaceState(state, null, newhash);
         } else {
             history.pushState(state, null, newhash);
         }
-        setTitle(key, key2);
+        setTitle(typ, data);
     }
 }
 
 /**
- * Link generieren
- * @param {Array.number,Object.<number, number>),(Object.<String, number>)} keys - keys
-  * @returns {String}  
+ * Generiert eine Link-URL
+ * @param {number} typ - Typ der Anzeige
+ * @param {number} data - Daten-Variable der Anzeige
+ * @returns {String}
  */
-function genLink(keys) {
-    if (keys === undefined) return baseURL + "/";
-    if (keys.length === 2 && keys[0] !== undefined && keys[1] !== undefined) {
-        if (keys[0] === "plz" && $.isNumeric(keys[1])) return baseURL + "/plz/" + keys[1]; else if (keys[0] === "plz") return baseURL + "/";
-        var part1, part2;
-        if (pdata[keys[0]].slug !== undefined) part1 = pdata[keys[0]].slug; else part1 = keys[0];		
-        if (pdata[keys[0]] !== undefined && pdata[keys[0]].treffen !== undefined && pdata[keys[0]].treffen[keys[1]].slug !== undefined) part2 = pdata[keys[0]].treffen[keys[1]].slug; else part2 = keys[1];	
-        return baseURL + "/" + part1 + "/" + part2;	
-    } else if (keys.length === 1 && keys[0] !== undefined) {
-        if (pdata[keys[0]].slug !== undefined) return baseURL + "/" + pdata[keys[0]].slug; else return baseURL + "/" + keys[0];		
+function genLink(typ, data) {
+    if (typeof typ === "undefined") return baseURL + "/";
+    if (typeof data === "undefined") return baseURL + "/";
+    
+    switch (typ) {
+        case TYP_TREFFEN:
+            if (typeof data.gruppeId !== "number" || typeof data.treffenId !== "number") return baseURL + "/";
+            if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].slug !== undefined) part1 = pdata[data.gruppeId].slug; else part1 = data.gruppeId;		
+            if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].treffen !== undefined && pdata[data.gruppeId].treffen[data.treffenId].slug !== undefined) part2 = pdata[data.gruppeId].treffen[data.treffenId].slug; else part2 = data.treffenId;	
+            return baseURL + "/" + part1 + "/" + part2;
+            break;
+        case TYP_GRUPPE:
+            if (typeof data.gruppeId !== "number") return baseURL + "/";
+            if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].slug !== undefined) return baseURL + "/" + pdata[data.gruppeId].slug; else return baseURL + "/" + data.gruppeId;	
+            break;
+        case TYP_EVENT:
+            if (typeof data.gruppeId !== "number" || typeof data.eventId === "undefined") return baseURL + "/";
+            if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].slug !== undefined) part1 = pdata[data.gruppeId].slug; else part1 = data.gruppeId;		
+            return baseURL + "/" + part1 + "/event/" + data.eventId;
+            break;
     }
+    
+    return baseURL + "/";
+}
 
-    return baseURL + "/" + keys.join("/");
+/**
+ * Generiert die JS-Daten für einen Link
+ * @param {number} typ - Typ der Anzeige
+ * @param {number} data - Daten-Variable der Anzeige
+ * @returns {String}
+ */
+function genLinkData(typ, data) {
+    switch (typ) {
+        case TYP_GRUPPE:
+            if (typeof data === "undefined" || typeof data.gruppeId !== "number") return "";
+            return 'data-typ="' + TYP_GRUPPE + '" data-gruppeid="' + data.gruppeId + '"';
+            break;
+        case TYP_TREFFEN:
+            if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof data.treffenId !== "number") return "";
+            return 'data-typ="' + TYP_TREFFEN + '" data-gruppeid="' + data.gruppeId + '" data-treffenid="' + data.treffenId + '"';
+            break;
+        case TYP_EVENT:
+            if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof data.eventId === "undefined") return "";
+            return 'data-typ="' + TYP_EVENT + '" data-gruppeid="' + data.gruppeId + '" data-eventid="' + data.eventId + '"';
+            break;
+    }
+    return "";
 }
 
 /**
  * Website-Titel setzen
- * @param {(int|String)} key - key der Gruppe
- * @param {int} key2 - key des Treffens
+ * @param {number} typ - Typ der Anzeige
+ * @param {number} data - Daten-Variable der Anzeige
  */
-function setTitle(key, key2) {
-    document.title = genTitle(key, key2);
+function setTitle(typ, data) {
+    logDebug("setTitle");
+    document.title = genTitle(typ, data);
 }
 
 /**
  * Website-Titel generieren
- * @param {(int|String)} key - key der Gruppe
- * @param {int} key2 - key des Treffens
+ * @param {number} typ - Typ der Anzeige
+ * @param {number} data - Daten-Variable der Anzeige
  * @returns {String}
  */
-function genTitle(key, key2) {
-    if (typeof key === "number" && typeof key2 === "undefined" && typeof pdata[key] !== "undefined") {
-        return pdata[key].name + " – " + title;
-    } else if (typeof key === "number" && typeof key2 === "number") {
-        return pdata[key].treffen[key2].name + " – " + pdata[key].name + " – " + title;
-    } else if (typeof key === "string" && key === "plz" && typeof key2 === "number") {
-        return "PLZ " + key2 + " – " + title;
+function genTitle(typ, data) {
+    logDebug("genTitle - " + typ);
+    logDebug(data);
+    if (typeof typ === "undefined") return title;
+    if (typeof data === "undefined") return title;
+    
+    switch (typ) {
+        case TYP_TREFFEN:
+            if (typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined" || typeof pdata[data.gruppeId].name === "undefined") return title;
+            if (typeof data.treffenId !== "number" || typeof pdata[data.gruppeId].treffen[data.treffenId] === "undefined" || typeof pdata[data.gruppeId].treffen[data.treffenId].name === "undefined") return pdata[data.gruppeId].name + " – " + title;
+            return pdata[data.gruppeId].treffen[data.treffenId].name + " – " + pdata[data.gruppeId].name + " – " + title;
+            break;
+        case TYP_GRUPPE:
+        case TYP_EVENT:
+            if (typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined" || typeof pdata[data.gruppeId].name === "undefined") return title;
+            return pdata[data.gruppeId].name + " – " + title;
+            break;
+        case TYP_PLZ:
+            if (typeof data.plz !== "number") return title;
+            return "PLZ " + data.plz + " – " + title;
     }
+
     return title;
 }
 
@@ -667,6 +821,7 @@ function repeatUntil(callback, timeout, maxTries, it) {
         try {
             callback();
         } catch (err) {
+            logDebug(err);
             setTimeout(function() { repeatUntil(callback, timeout, maxTries, ++it); }, timeout);
         }
     } else {
@@ -701,19 +856,26 @@ $( document ).ready(function start() {
     plzmarker.bindPopup(plzpopup);
     plzmarker.on("click", function() {
         plzmarker.openPopup();	// PLZ-Popup öffnent
-        setHash("plz", plzmarker.plz);	// Hash setzen
+        setHash(TYP_PLZ, {"plz": plzmarker.plz});	// Hash setzen
         startPLZ( plzmarker.plz , true );	// Aktion: PLZ suchen
     });  
 
     // Links umschreiben
-    $(document).on("click", "a[data-key]:not([data-key2])", function() {
+    $(document).on("click", "a[data-typ="+ TYP_GRUPPE + "][data-gruppeid]", function() {
         var linko = $(this);
-        startGruppe(linko.data("key"), true, function () {setHash(linko.data("key"));});
+        startGruppe(linko.data("gruppeid"), true, function () {setHash(TYP_GRUPPE, {"gruppeId": linko.data("gruppeid")});});
         return false;
     });
-    $(document).on("click", "a[data-key][data-key2]", function() {
+    $(document).on("click", "a[data-typ="+ TYP_TREFFEN + "][data-gruppeid][data-treffenid]", function() {
         var linko = $(this);
-        startTreffen(linko.data("key"), linko.data("key2"), true, function () {setHash(linko.data("key"), linko.data("key2"));});
+        logDebug(linko.data("gruppeid"));
+        startTreffen(linko.data("gruppeid"), linko.data("treffenid"), true, function () {setHash(TYP_TREFFEN, {"gruppeId": linko.data("gruppeid"), "treffenId": linko.data("treffenid")});});
+        return false;
+    });
+    $(document).on("click", "a[data-typ="+ TYP_EVENT + "][data-gruppeid][data-eventid]", function() {
+        var linko = $(this);
+        logDebug("eventlink");
+        startEvent(linko.data("gruppeid"), linko.data("eventid"), true, function () {setHash(TYP_EVENT, {"gruppeId": linko.data("gruppeid"), "eventId": linko.data("eventid")});});
         return false;
     });
 
@@ -723,7 +885,7 @@ $( document ).ready(function start() {
         var html_activegroup = "<ul>";
         $.each( data, function( key, val ) {
             if (val.slug !== undefined) slugToGruppe[val.slug] = key; 			// Slug-Zuordnung
-            html_activegroup += "<li><a data-key=\"" + key + "\" class=\"activegroup\" id=\"activegroup-" + key + "\" href=\"" + genLink([key]) + "\">" + val.name + "</a></li>";
+            html_activegroup += "<li><a " + genLinkData(TYP_GRUPPE, {"gruppeId": key}) + " class=\"activegroup\" id=\"activegroup-" + key + "\" href=\"" + genLink(TYP_GRUPPE, {"gruppeId": key}) + "\">" + val.name + "</a></li>";
 
             if (val.gebiet !== undefined) {
                 // Zurdnung Kreisschlüssel -> Gruppennr
@@ -738,7 +900,7 @@ $( document ).ready(function start() {
                         pdata[key].layer.bindPopup(pdata[key].popup);
                         pdata[key].layer.on("click", function(e) {
                             if (anGoing === true) return;	// Abbrechen, wenn wereits eine Aktion läuft
-                            setHash(key);	// Hash setzen
+                            setHash(TYP_GRUPPE, {"gruppeId": key});	// Hash setzen
                             startGruppe(key, false);	// Aktion: Gruppe starten
                         });
                     }, style:gruppeStyle});
@@ -771,7 +933,7 @@ $( document ).ready(function start() {
                         pdata[key].treffen[key2].marker.on("click", function(e) {
                             if (anGoing === true) return;	// Abbrechen, wenn wereits eine Aktion läuft
                             startTreffen(key, key2, false);	// Hash setzen
-                            setHash(key, key2);	// Aktion: Treffen starten
+                            setHash(TYP_TREFFEN, {"gruppeId": key, "treffenId": key2});	// Aktion: Treffen starten
                         });
                     }
 
@@ -818,11 +980,14 @@ $( document ).ready(function start() {
                 // Termin-Einträge
                 html_calendar += "<li>";
 
-                // Mit Treffen verbinden, wenn möglich
-                if (val.key !== undefined && val.key2 !== undefined && pdata[val.key] !== undefined && pdata[val.key].treffen[val.key2] !== undefined) {
-                    html_calendar += "<a data-key=\"" + val.key + "\" data-key2=\"" + val.key2 + "\" href=\"" + genLink([val.key, val.key2])  + "\">";
+
+                // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
+                if (val.key !== undefined && val.hash !== undefined && pdata[val.key] !== undefined) {
+                    html_calendar += "<a " + genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": val.hash})  + " href=\"" + genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": val.hash})  + "\">";
+                } else if (val.key !== undefined && val.key2 !== undefined && pdata[val.key] !== undefined && pdata[val.key].treffen[val.key2] !== undefined) {
+                    html_calendar += "<a " + genLinkData(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + "\">";
                 } else if (val.key !== undefined && pdata[val.key] !== undefined) {
-                    html_calendar += "<a data-key=\"" + val.key + "\" href=\"" + genLink([val.key]) + "\">";
+                    html_calendar += "<a " + genLinkData(TYP_GRUPPE, {"gruppeId": val.key})  + "\" href=\"" + genLink(TYP_GRUPPE, {"gruppeId": val.key}) + "\">";
                 } 
                 html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
             });
@@ -834,17 +999,27 @@ $( document ).ready(function start() {
         });
         
         // Ansicht zu Beginn handeln
-        if (initKey !== undefined && $.isNumeric(initKey) && initKey2 !== undefined && $.isNumeric(initKey2)) {
-            repeatUntil(function() { startTreffen(initKey, initKey2, true); }, 100, 5);
-            setHash(initKey,initKey2, true);
-        } else if (initKey !== undefined && $.isNumeric(initKey)) {
-            repeatUntil(function() { startGruppe(initKey, true); }, 100, 5);
-            setHash(initKey, undefined, true);
-        } else if (typeof initKey !== undefined && initKey === "plz" && initKey2 !== undefined && $.isNumeric(initKey2)) {
-            startPLZ(initKey2);
-            setHash("plz", initKey2, true);
+        if (typeof initData !== "undefined" && typeof initData.typ !== "undefined") {
+            if (initData.typ === TYP_GRUPPE && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined") {
+                repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 5);
+                setHash(TYP_GRUPPE, {"gruppeId": initData.gruppeId}, true);
+            } else if (initData.typ === TYP_TREFFEN && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
+                && typeof initData.treffenId === "number" && typeof pdata[initData.gruppeId].treffen[initData.treffenId] !== "undefined") {
+                repeatUntil(function() { startTreffen(initData.gruppeId, initData.treffenId, true); }, 200, 5);
+                setHash(TYP_TREFFEN, {"gruppeId": initData.gruppeId, "treffenId": initData.treffenId}, true);
+            } else if (initData.typ === TYP_PLZ && typeof initData.plz === "number") {
+                startPLZ(initData.plz);
+                setHash(TYP_PLZ, {"plz": initData.plz}, true);
+            } else if (initData.typ === TYP_EVENT && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
+                && typeof initData.eventId !== "undefined") {
+                repeatUntil(function() { startEvent(initData.gruppeId, initData.eventId, true); }, 200, 5);
+                setHash(TYP_EVENT, {"gruppeId": initData.gruppeId, "eventId": initData.eventId}, true);
+            } else {
+                repeatUntil(function() { startMain(); }, 200, 5);
+                setHash(undefined, undefined, true);
+            }
         } else {
-            repeatUntil(function() { startMain(); }, 100, 5);
+            repeatUntil(function() { startMain(); }, 200, 5);
             setHash(undefined, undefined, true);
         }
         
@@ -852,7 +1027,7 @@ $( document ).ready(function start() {
         $( "#plzform" ).submit(function( event ) {
             var plz = $( "#plz" ).val();	// PLZ aus Suchfeld abfragen
             if (plz !== "" && !isNaN(parseInt(plz))) {			
-                setHash("plz", plz);	// Hash setzen
+                setHash(TYP_PLZ, {"plz": parseInt(plz)});	// Hash setzen
                 startPLZ(parseInt(plz));      // Aktion: PLZ suchen
             }
           event.preventDefault();
@@ -874,26 +1049,26 @@ $( document ).ready(function start() {
         // Prüfen, ob State-Objekt vorhanden
         if (e.originalEvent.state === null) { setTitle(); startMain(); return; }
 
-        key = e.originalEvent.state.key;
-        key2 = e.originalEvent.state.key2;
+        typ = e.originalEvent.state.typ;
+        data = e.originalEvent.state.data;
 
-        if ($.isNumeric(key)) {
-            if (key2 !== undefined && $.isNumeric(key2)) {
-                // Aktion: Treffen
-                setTitle(key, key2);
-                startTreffen(key, key2, {"center": e.originalEvent.state.center, "zoom": e.originalEvent.state.zoom});
-            } else {
-                // Aktion: Gruppe
-                setTitle(key);
-                startGruppe(key, {"center": e.originalEvent.state.mapCenter, "zoom": e.originalEvent.state.mapZoom});
-            }
-        } else if (key === "plz" && $.isNumeric(key2)) {
-            // Aktion: PLZ suchen
-            setTitle("plz", key2);
-            startPLZ(key2);
-        } else {
-            setTitle();
-            startMain();
+        setTitle(typ, data);
+        
+        switch (typ) {
+            case TYP_TREFFEN:
+                startTreffen(data.gruppeId, data.treffenId, {"center": e.originalEvent.state.center, "zoom": e.originalEvent.state.zoom});
+                break;
+            case TYP_EVENT:
+                startEvent(data.gruppeId, data.eventId, {"center": e.originalEvent.state.center, "zoom": e.originalEvent.state.zoom});
+                break;
+            case TYP_GRUPPE:
+                startGruppe(data.gruppeId, {"center": e.originalEvent.state.mapCenter, "zoom": e.originalEvent.state.mapZoom});
+                break;
+            case TYP_PLZ:
+                startPLZ(data.plz);
+                break;
+            default:
+                startMain();
         }
     });
 

@@ -326,3 +326,17 @@ html.js {
         }
     }
 }
+.eventlink span.eventmore {
+    max-height: 0;
+    position: relative;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    display: block;
+    transition: max-height 0.5s;
+    font-style: italic;
+    font-size: 95%;
+}
+.eventlink.active span.eventmore {
+    max-height: 200px;
+}

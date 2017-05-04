@@ -191,7 +191,8 @@ function getIcal($calfile, $suchworte) {
 				"description" => $ev['DESCRIPTION'],
 				"start" => $ev['DTSTART']->getTimestamp(),
 				"starta" => $ev['DTSTART']->format('d.m.Y'),
-				"end" => $ev['DTEND']->getTimestamp()
+				"end" => $ev['DTEND']->getTimestamp(),
+                "hash" => md5($ev['SUMMARY'].$ev['DTSTART']->format('d.m.Y'))
 			);
                         
                         // Falls Termin zu einem Treffen passt, Verbindung hinzufügen
