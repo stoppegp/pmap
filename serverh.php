@@ -164,8 +164,8 @@ function handleOG() {
                     $imgurl = $url.'/data/img/'.$pdata[$key]->img;
                     $imgwidth = $size[0];		
                     $imgheight = $size[1];
-            } else if ($size = getimagesize('data/img/piratenbzvstgt.png')) {
-                    $imgurl = $url.'data/img/piratenbzvstgt.png';
+            } else if ($size = getimagesize('data/img/logo.png')) {
+                    $imgurl = $url.'data/img/logo.png';
                     $imgwidth = $size[0];		
                     $imgheight = $size[1];
             }
