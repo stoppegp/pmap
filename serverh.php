@@ -5,12 +5,23 @@ define('TYP_TREFFEN', 2);
 define('TYP_PLZ', 3);
 define('TYP_EVENT', 4);
 
-include(dirname(__FILE__).'/data/config.inc.php');
+if(file_exists(dirname(__FILE__).'/data/config.inc.php')){
+    include(dirname(__FILE__).'/data/config.inc.php');
+} else {
+    echo "Das DATA-Verzeichnis ist nicht vollständig.";
+    exit();
+}
 
 // PData laden
-$data = file_get_contents(dirname(__FILE__).'/data/pdata.json', FILE_USE_INCLUDE_PATH);
-$pdata = json_decode($data);
-if ($pdata === null) {
+if(file_exists(dirname(__FILE__).'/data/pdata.json')){
+    $data = file_get_contents(dirname(__FILE__).'/data/pdata.json', FILE_USE_INCLUDE_PATH);
+    $pdata = json_decode($data);
+    if ($pdata === null) {
+        echo "Das DATA-Verzeichnis ist nicht vollständig.";
+        exit();
+    }
+} else {
+    echo "Das DATA-Verzeichnis ist nicht vollständig.";
     exit();
 }
 
