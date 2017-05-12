@@ -41,7 +41,7 @@ var TYP_TREFFEN = 2;
 var TYP_PLZ = 3;
 var TYP_EVENT = 4;
 
-var DEBUG_MODE = true;
+var DEBUG_MODE = false;
 
 // Leaflet-Styles
 var mainStyle = {
