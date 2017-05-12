@@ -836,7 +836,7 @@ $( document ).ready(function start() {
 
     // Map initialisieren
     map = L.map('mapid', {attributionControl: false });
-    var osmUrl = 'http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg';
+    var osmUrl = 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg';
     var osmAttrib = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.';
     var osm = new L.TileLayer(osmUrl, {minZoom: 6, maxZoom: 19, attribution: osmAttrib});		
     map.addLayer(osm);
