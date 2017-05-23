@@ -16,6 +16,10 @@ $starttime = time();
 $LOG = array();
 $error = false;
 
+if(file_exists(dirname(__FILE__).'/data/sconfig/geocode.inc.php')){
+    include(dirname(__FILE__).'/data/sconfig/geocode.inc.php');
+}
+
 $icals = array();
 
 if (isset($_REQUEST['force']) && ($_REQUEST['force'] == 1)) $oktime = 0;
@@ -72,6 +76,18 @@ function getFile($url) {
 			return $data;
 		}
 	}
+}
+
+function getGeocode($address) {
+    if (!defined("GEOCODE_API")) return false;
+    $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address)."&language=de&region=de&key=".GEOCODE_API;
+    $data = getFile($url);
+    if (!$data) return false;
+    $json = json_decode($data);
+    if (isset($json, $json->results, $json->results[0], $json->results[0]->geometry, $json->results[0]->geometry->location))
+        return $json->results[0]->geometry->location;
+    else
+        return false;
 }
 
 /**
@@ -194,6 +210,10 @@ function getIcal($calfile, $suchworte) {
 				"end" => $ev['DTEND']->getTimestamp(),
                 "hash" => md5($ev['SUMMARY'].$ev['DTSTART']->format('d.m.Y'))
 			);
+            if ($geo = getGeocode($ev['LOCATION'])) {
+                $jsEvt['lat'] = $geo->lat;
+                $jsEvt['lon'] = $geo->lng;
+            }
                         
                         // Falls Termin zu einem Treffen passt, Verbindung hinzufügen
 			if (is_array($suchworte) && (count($suchworte) > 0)) {
@@ -308,6 +328,7 @@ foreach ($erg as $key => $val) {
 		foreach ($val['ical'] as $key2 => $val2) {
 			$newev = $val2;
 			$newev['key'] = $key;
+			$newev['evkey'] = $key2;
 			$events[] = $newev;
 			$starts[] = $val2['start'];
 		}
