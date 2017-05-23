@@ -197,7 +197,7 @@ function handleOG() {
             }
         }
 
-	echo '<meta name="twitter:card" content="summary">';
+	echo '<meta name="twitter:card" content="summary_large_image">';
 	if (isset($title)) echo '<meta property="og:title" content="'.$title.'" /><meta name="twitter:title" content="'.$title.'">';
 	if (isset($desc)) echo '<meta property="og:description" content="'.$desc.'" /><meta name="twitter:description" content="'.$desc.'">';
 	if (isset($imgurl)) echo '<meta property="og:image" content="'.$imgurl.'" /><meta name="twitter:image" content="'.$imgurl.'">';
