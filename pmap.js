@@ -969,55 +969,6 @@ $( document ).ready(function start() {
         html_activegroup += "</ul>";
         $("#activegroups").html(html_activegroup);	// Gruppenübersicht befüllen
 
-        // Gesamtkalender laden und verarbeiten
-        $.getJSON( basePath + "/gen/calendar.json").done(function( data ) {
-            calendar = data;
-            var html_calendar = "";
-
-            var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
-            var today = moment().startOf('day');	// Aktuelles Datum
-            var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
-            var count = 0;	// Schleifenzähler
-            $.each( data, function( key, val ) {
-                var datum = moment.unix(val.start);	// Event-Startdatumzeit
-                if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
-                // Tages-Überschriften erzeugen
-                if (!datum.isSame(adatum, 'day')) {
-                    if (count !== 0) html_calendar += "</ul>";
-                        var datumstring = "";
-                        if (datum.isSame(today, 'day')) {
-                            datumstring = "Heute";
-                        } else if (datum.isSame(tomorrow, 'day')) {
-                            datumstring = "Morgen";
-                        } else {
-                            datumstring = datum.format("dddd, D. MMMM");
-                        }
-                    html_calendar += "<h3>" + datumstring + "</h3><ul>";
-                    count++;
-                }
-                adatum = datum;
-
-                // Termin-Einträge
-                html_calendar += "<li>";
-
-
-                // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
-                if (val.key !== undefined && val.evkey !== undefined && pdata[val.key] !== undefined) {
-                    html_calendar += "<a " + genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey})  + " href=\"" + genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey})  + "\">";
-                } else if (val.key !== undefined && val.key2 !== undefined && pdata[val.key] !== undefined && pdata[val.key].treffen[val.key2] !== undefined) {
-                    html_calendar += "<a " + genLinkData(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + "\">";
-                } else if (val.key !== undefined && pdata[val.key] !== undefined) {
-                    html_calendar += "<a " + genLinkData(TYP_GRUPPE, {"gruppeId": val.key})  + "\" href=\"" + genLink(TYP_GRUPPE, {"gruppeId": val.key}) + "\">";
-                } 
-                html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
-            });
-            html_calendar += "</ul>";
-            $("#calendar").html(html_calendar);	// Kalender befüllen	
-
-        }).fail(function() {
-            $(".calendar").hide();
-        });
-        
         // Events (pro Gruppe) laden
         $.getJSON( basePath + "/gen/events.json", function( data ) {
             events = data;
@@ -1053,6 +1004,56 @@ $( document ).ready(function start() {
                 repeatUntil(function() { startMain(); }, 200, 5);
                 setHash(undefined, undefined, true);
             }
+
+            // Gesamtkalender laden und verarbeiten
+            $.getJSON( basePath + "/gen/calendar.json").done(function( data ) {
+                calendar = data;
+                var html_calendar = "";
+
+                var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
+                var today = moment().startOf('day');	// Aktuelles Datum
+                var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
+                var count = 0;	// Schleifenzähler
+                $.each( data, function( key, val ) {
+                    var datum = moment.unix(val.start);	// Event-Startdatumzeit
+                    if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
+                    // Tages-Überschriften erzeugen
+                    if (!datum.isSame(adatum, 'day')) {
+                        if (count !== 0) html_calendar += "</ul>";
+                            var datumstring = "";
+                            if (datum.isSame(today, 'day')) {
+                                datumstring = "Heute";
+                            } else if (datum.isSame(tomorrow, 'day')) {
+                                datumstring = "Morgen";
+                            } else {
+                                datumstring = datum.format("dddd, D. MMMM");
+                            }
+                        html_calendar += "<h3>" + datumstring + "</h3><ul>";
+                        count++;
+                    }
+                    adatum = datum;
+
+                    // Termin-Einträge
+                    html_calendar += "<li>";
+
+
+                    // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
+                    if (val.key !== undefined && val.evkey !== undefined && pdata[val.key] !== undefined) {
+                        html_calendar += "<a " + genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey})  + " href=\"" + genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey})  + "\">";
+                    } else if (val.key !== undefined && val.key2 !== undefined && pdata[val.key] !== undefined && pdata[val.key].treffen[val.key2] !== undefined) {
+                        html_calendar += "<a " + genLinkData(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + "\">";
+                    } else if (val.key !== undefined && pdata[val.key] !== undefined) {
+                        html_calendar += "<a " + genLinkData(TYP_GRUPPE, {"gruppeId": val.key})  + "\" href=\"" + genLink(TYP_GRUPPE, {"gruppeId": val.key}) + "\">";
+                    } 
+                    html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
+                });
+                html_calendar += "</ul>";
+                $("#calendar").html(html_calendar);	// Kalender befüllen	
+
+            }).fail(function() {
+                $(".calendar").hide();
+            });
+
         });
         
         // PLZ-suche handeln
