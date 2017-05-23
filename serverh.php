@@ -116,10 +116,10 @@ function getData() {
         $r_data = array("plz" => $slug2);
     } else if (isset($slug, $slug2, $slug3) && ("event" == $slug2) && !is_numeric($slug) && isset($slugToKreis[$slug])) {
         $r_typ = TYP_EVENT;
-        $r_data = array("gruppeId" => $slugToKreis[$slug], "eventId" => $slug3);
+        $r_data = array("gruppeId" => $slugToKreis[$slug], "eventHash" => $slug3);
     } else if (isset($slug, $slug2, $slug3) && ("event" == $slug2) && is_numeric($slug)) {
         $r_typ = TYP_EVENT;
-        $r_data = array("gruppeId" => $slug, "eventId" => $slug3);
+        $r_data = array("gruppeId" => $slug, "eventHash" => $slug3);
     } else if (isset($slug) && !is_numeric($slug) && isset($slugToKreis[$slug])) {
         $r_typ = TYP_GRUPPE;
         $r_data = array("gruppeId" => $slugToKreis[$slug]);
