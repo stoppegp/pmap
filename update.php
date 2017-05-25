@@ -84,10 +84,21 @@ function getGeocode($address) {
     $data = getFile($url);
     if (!$data) return false;
     $json = json_decode($data);
-    if (isset($json, $json->results, $json->results[0], $json->results[0]->geometry, $json->results[0]->geometry->location))
-        return $json->results[0]->geometry->location;
-    else
+    if (isset($json, $json->results, $json->results[0], $json->results[0]->geometry, $json->results[0]->geometry->location)) {
+        $rar = array();
+        $rar['loc'] = $json->results[0]->geometry->location;
+        if (isset($json->results[0]->address_components) && is_array($json->results[0]->address_components) && (count($json->results[0]->address_components) > 0)) {
+            foreach ($json->results[0]->address_components as $ac) {
+                if (in_array("locality", $ac->types)) {
+                    $rar['ort'] = $ac->long_name;
+                    break;
+                }
+            }
+        }
+        return $rar;
+    } else {
         return false;
+    }
 }
 
 /**
@@ -211,8 +222,9 @@ function getIcal($calfile, $suchworte) {
                 "hash" => md5($ev['SUMMARY'].$ev['DTSTART']->format('d.m.Y'))
 			);
             if ($geo = getGeocode($ev['LOCATION'])) {
-                $jsEvt['lat'] = $geo->lat;
-                $jsEvt['lon'] = $geo->lng;
+                $jsEvt['lat'] = $geo['loc']->lat;
+                $jsEvt['lon'] = $geo['loc']->lng;
+                if (isset($geo['ort'])) $jsEvt['ort'] = $geo['ort'];
             }
                         
                         // Falls Termin zu einem Treffen passt, Verbindung hinzufügen
@@ -343,6 +355,11 @@ foreach ($erg as $key => $val) {
 			);
 			if (isset($pdata[$key]->treffen[$key2]->ort)) $newev['location'] = $pdata[$key]->treffen[$key2]->ort;
 			if (isset($pdata[$key]->treffen[$key2]->text)) $newev['description'] = $pdata[$key]->treffen[$key2]->text;
+            if (isset($pdata[$key]->treffen[$key2]->ort)) {
+                if ($geo = getGeocode($pdata[$key]->treffen[$key2]->ort)) {
+                    if (isset($geo['ort'])) $newev['ort'] = $geo['ort'];
+                }
+            }
 			$events[] = $newev;
 			$starts[] = $val2;
 		}
