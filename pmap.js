@@ -545,7 +545,7 @@ function startEvent( gruppeId , eventId, zoom, callback) {
     if (typeof dat.lat !== "undefined") {
         eventmarker.setLatLng([dat.lat, dat.lon]).addTo(map);
         var datum = moment.unix(dat.start);
-        eventpopup.setContent("<strong>" + dat.title + "</strong><br>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + "<br>" + dat.location + "<p>" + dat.description + "</p>");
+        eventpopup.setContent("<strong>" + dat.title + "</strong><br>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + "Uhr <br>" + dat.location + "<p>" + dat.description + "</p>");
         eventmarker.openPopup();
     }
 
