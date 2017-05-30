@@ -36,7 +36,7 @@ foreach ($pdata as $key => $val)  {
     if (isset($val->slug)) {
         $slugToKreis[$val->slug] = $key;
     }
-    if (is_array($val->treffen)) {			
+    if (isset($val->treffen) && is_array($val->treffen)) {			
 		$stt = array();
 		foreach ($val->treffen as $key2 => $val2)  {
                     if (isset($val2->slug)) {
