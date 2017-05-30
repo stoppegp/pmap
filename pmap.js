@@ -228,6 +228,7 @@ function showGruppe( typ, data, callback ) {
     if (typeof gruppe.text === "string") html_gruppe += "<p class=\"text\">" + gruppe.text + "</p>";
     if (typeof gruppe.homepage === "string") html_gruppe += "<p><strong>Homepage:</strong><br><a href=\"" + gruppe.homepage + "\">" + gruppe.homepage + "</a></p>";
     if (typeof gruppe.email === "string") html_gruppe += "<p><strong>E-Mail:</strong><br><a href=\"mailto:" + gruppe.email + "\">" + gruppe.email + "</a></p>";
+    if (typeof gruppe.twitter === "string") html_gruppe += "<p><strong>Twitter:</strong><br><a href=\"https://twitter.com/" + gruppe.twitter + "\">@" + gruppe.twitter + "</a></p>";
     html_gruppe += '<p><div class="shariff" id="shariff' + data.gruppeId + '"></div></p>';
 
     // Übersicht der Treffen
