@@ -161,7 +161,11 @@ function getnextIcal($calfile, $searcharray) {
 	} else {
 		if (!($data = getFile($calfile))) return false;
 		$ical = new IcalParser();
-		$ical->parseString($data);
+                try {
+                    $ical->parseString($data);
+                } catch (InvalidArgumentException $e) {
+                    return false;
+                }
 		$icals[$calfilehash] = $ical;
 	}
 	
