@@ -847,6 +847,22 @@ function repeatUntil(callback, timeout, maxTries, it) {
     }
 }
 
+function genSchema(title, location, startDate, url) {
+    var html = "";
+    html += "<script type='application/ld+json'>\n{";
+
+    html += '"@context": "http://www.schema.org",';
+    html += '"@type": "Event",';
+    html += '"name": "' + title + '",';
+    html += '"url": "' + url + '",';
+    html += '"startDate": "' + startDate + '",';
+    html += '"location": { "@type" : "place", "address": "' + location + '" }';
+
+    html += "}\n</script>";
+
+    return html;
+}
+
 $( document ).ready(function start() {
     // Layout der Fenstergröße anpassen	
     initState();
@@ -1037,15 +1053,20 @@ $( document ).ready(function start() {
                     // Termin-Einträge
                     html_calendar += "<li>";
 
-
                     // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
                     if (val.key !== undefined && val.evkey !== undefined && pdata[val.key] !== undefined) {
-                        html_calendar += "<a " + genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey})  + " href=\"" + genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey})  + "\">";
+                        var linkData = genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey});
+                        var link = genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey});
+                        html_calendar += genSchema(val.title, val.location, datum.format(), link);
                     } else if (val.key !== undefined && val.key2 !== undefined && pdata[val.key] !== undefined && pdata[val.key].treffen[val.key2] !== undefined) {
-                        html_calendar += "<a " + genLinkData(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2})  + "\">";
-                    } else if (val.key !== undefined && pdata[val.key] !== undefined) {
-                        html_calendar += "<a " + genLinkData(TYP_GRUPPE, {"gruppeId": val.key})  + "\" href=\"" + genLink(TYP_GRUPPE, {"gruppeId": val.key}) + "\">";
+                        var linkData = genLinkData(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2});
+                        var link = genLink(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2});
+                        html_calendar += genSchema(val.title, pdata[val.key].treffen[val.key2].ort, datum.format(), link);
+                    } else {
+                        var linkData = genLinkData(TYP_GRUPPE, {"gruppeId": val.key});
+                        var link = genLink(TYP_GRUPPE, {"gruppeId": val.key});
                     } 
+                    html_calendar += "<a " + linkData  + "\" href=\"" + link + "\">";
                     html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
                 });
                 html_calendar += "</ul>";
