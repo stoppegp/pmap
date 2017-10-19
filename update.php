@@ -189,7 +189,7 @@ function getnextIcal($calfile, $searcharray) {
 /**
  * Nächste Termine einer ICAL laden
  */
-function getIcal($calfile, $suchworte) {
+function getIcal($calfile, $suchworte, $exclude = array(), $filter = array()) {
 	global $icals, $ic;
 	plog("ICAL-Termine laden");
 	$calfilehash = md5($calfile);
@@ -230,11 +230,29 @@ function getIcal($calfile, $suchworte) {
                 $jsEvt['lon'] = $geo['loc']->lng;
                 if (isset($geo['ort'])) $jsEvt['ort'] = $geo['ort'];
             }
-                        
+                     
+            // Falls Filter-Liste aktiv und Termin nicht in Filter--Liste, überspringen
+			if (is_array($filter) && (count($filter) > 0)) {
+				foreach ($filter as $skey => $val0) {
+					if (!stripos(" ".$ev['SUMMARY'], $val0) != 0) {
+						continue 2;
+					}
+				}
+			}
+
+            // Falls Termin in Exclude-Liste, überspringen
+			if (is_array($exclude) && (count($exclude) > 0)) {
+				foreach ($exclude as $skey => $val0) {
+					if (stripos(" ".$ev['SUMMARY'], $val0) != 0) {
+						continue 2;
+					}
+				}
+			}
+   
                         // Falls Termin zu einem Treffen passt, Verbindung hinzufügen
 			if (is_array($suchworte) && (count($suchworte) > 0)) {
 				foreach ($suchworte as $skey => $val0) {
-					if (strpos(" ".$ev['SUMMARY'], $skey) != 0) {
+					if (stripos(" ".$ev['SUMMARY'], $skey) != 0) {
 						$jsEvt['key'] = $val0['key'];
 						$jsEvt['key2'] = $val0['key2'];
 					}
@@ -322,7 +340,21 @@ if (is_array($pdata) && (count($pdata) > 0)) {
 			$starts = array();	
 			foreach ($val->icals as $ikey => $ical) {
 				plog("ical ".$ikey);
-				$ret = getIcal($ical, $asuchworte);
+                if (isset($ical->url)) {
+                    if (isset($ical->exclude)) {
+                        $exclude = $ical->exclude;
+                    } else {
+                        $exclude = array();
+                    }
+                    if (isset($ical->filter)) {
+                        $filter = $ical->filter;
+                    } else {
+                        $filter = array();
+                    }
+                    $ret = getIcal($ical->url, $asuchworte, $exclude, $filter);
+                } else {
+    				$ret = getIcal($ical, $asuchworte);
+                }
 				$events = array_merge($events, $ret[0]);
 				$starts = array_merge($starts, $ret[1]);
 			}		
