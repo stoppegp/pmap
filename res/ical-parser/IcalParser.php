@@ -14,6 +14,9 @@ class IcalParser {
 	public $data;
 
 	/** @var array */
+	public $changed_recurrences;
+
+	/** @var array */
 	public $windows_timezones = [
 		'Dateline Standard Time' => 'Etc/GMT+12',
 		'UTC-11' => 'Etc/GMT+11',
@@ -183,7 +186,14 @@ class IcalParser {
 						if (!empty($recurrences)) {
 							$this->data[$section][$currCounter]['RECURRENCES'] = $recurrences;
 						}
-					}
+					} else if (!empty($event['RECURRENCE-ID']) && !empty($event['UID'])) {
+                        if (!is_array($this->changed_recurrences)) $this->changed_recurrences = array();
+                        if (is_array($this->changed_recurrences[$event['UID']])) {
+                            $this->changed_recurrences[$event['UID']][] = $event['RECURRENCE-ID'];
+                        } else {
+                            $this->changed_recurrences[$event['UID']] = array($event['RECURRENCE-ID']);
+                        }
+                    }
 					continue 2; // while
 					break;
 				case 'END:DAYLIGHT':
@@ -265,13 +275,17 @@ class IcalParser {
 						} catch (\Exception $e) {
 							$middle[$match['key']] = $match['value'];
 						}
+					} else if ($match['key'] === 'ENCODING') {
+						if ($match['value'] === 'QUOTED-PRINTABLE'){
+							$value = quoted_printable_decode($value);
+						}
 					}
 				}
 			}
 		}
 
 		// process simple dates with timezone
-		if (in_array($key, ['DTSTAMP', 'LAST-MODIFIED', 'CREATED', 'DTSTART', 'DTEND'])) {
+		if (in_array($key, ['DTSTAMP', 'LAST-MODIFIED', 'CREATED', 'DTSTART', 'DTEND', 'RECURRENCE-ID'])) {
 			try {
 				$value = new \DateTime($value, ($timezone ?: $this->timezone));
 			} catch (\Exception $e) {
@@ -397,6 +411,7 @@ class IcalParser {
 				} else {
 					$recurrences = $event['RECURRENCES'];
 					$event['RECURRING'] = true;
+					$event['DTEND'] = !empty($event['DTEND']) ? $event['DTEND'] : $event['DTSTART'];
 					$eventInterval = $event['DTSTART']->diff($event['DTEND']);
 
 					$firstEvent = true;
@@ -408,9 +423,16 @@ class IcalParser {
 							$newEvent['DTEND'] = clone($recurDate);
 							$newEvent['DTEND']->add($eventInterval);
 						}
+						$firstEvent = false;
+                        echo "HALLO";
+                        if (isset($this->changed_recurrences[$event['UID']]) && is_array($this->changed_recurrences[$event['UID']])) {
+                            foreach ($this->changed_recurrences[$event['UID']] as $cdatek => $cdatev) {
+                                if ($cdatev == $recurDate) continue 2;
+                            }                        
+                        }
 
 						$events[] = $newEvent;
-						$firstEvent = false;
+
 					}
 				}
 			}
