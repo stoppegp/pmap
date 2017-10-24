@@ -424,7 +424,6 @@ class IcalParser {
 							$newEvent['DTEND']->add($eventInterval);
 						}
 						$firstEvent = false;
-                        echo "HALLO";
                         if (isset($this->changed_recurrences[$event['UID']]) && is_array($this->changed_recurrences[$event['UID']])) {
                             foreach ($this->changed_recurrences[$event['UID']] as $cdatek => $cdatev) {
                                 if ($cdatev == $recurDate) continue 2;
