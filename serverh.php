@@ -199,7 +199,7 @@ function handleOG() {
 
 	echo '<meta name="twitter:card" content="summary_large_image">';
 	if (isset($title)) echo '<meta property="og:title" content="'.$title.'" /><meta name="twitter:title" content="'.$title.'">';
-	if (isset($desc)) echo '<meta property="og:description" content="'.$desc.'" /><meta name="twitter:description" content="'.$desc.'">';
+	if (isset($desc)) echo '<meta name="description" content="'.$desc.'" /><meta property="og:description" content="'.$desc.'" /><meta name="twitter:description" content="'.$desc.'">';
 	if (isset($imgurl)) echo '<meta property="og:image" content="'.$imgurl.'" /><meta name="twitter:image" content="'.$imgurl.'">';
 	if (isset($imgwidth)) echo '<meta property="og:image:width" content="'.$imgwidth.'" />';
 	if (isset($imgheight)) echo '<meta property="og:image:height" content="'.$imgheight.'" />';
