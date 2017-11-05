@@ -852,7 +852,7 @@ function genSchema(title, location, startDate, url) {
     var el = document.createElement("script");
     el.type = 'application/ld+json';
     el.text = JSON.stringify({ "@context": "http://schema.org",  "@type": "Event", "name": title, "url": url, "startDate": startDate, "location": { "@type": "place", "address": location } });
-    document.querySelector('head').appendChild(el);
+    document.querySelector('body').appendChild(el);
 
 }
 
