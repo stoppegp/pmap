@@ -114,12 +114,12 @@ function getData() {
     if (isset($slug) && ($slug == "plz") && isset($slug2) && is_numeric($slug2)) {
         $r_typ = TYP_PLZ;
         $r_data = array("plz" => $slug2);
-    } else if (isset($slug, $slug2, $slug3) && ("event" == $slug2) && !is_numeric($slug) && isset($slugToKreis[$slug])) {
+    } else if (isset($slug, $slug2) && !is_numeric($slug) && isset($slugToKreis[$slug])) {
         $r_typ = TYP_EVENT;
-        $r_data = array("gruppeId" => $slugToKreis[$slug], "eventHash" => $slug3);
-    } else if (isset($slug, $slug2, $slug3) && ("event" == $slug2) && is_numeric($slug)) {
+        $r_data = array("gruppeId" => $slugToKreis[$slug], "eventHash" => $slug2);
+    } else if (isset($slug, $slug2) && is_numeric($slug)) {
         $r_typ = TYP_EVENT;
-        $r_data = array("gruppeId" => $slug, "eventHash" => $slug3);
+        $r_data = array("gruppeId" => $slug, "eventHash" => $slug2);
     } else if (isset($slug) && !is_numeric($slug) && isset($slugToKreis[$slug])) {
         $r_typ = TYP_GRUPPE;
         $r_data = array("gruppeId" => $slugToKreis[$slug]);
@@ -130,15 +130,6 @@ function getData() {
         $gruppeId = $slug;
     }
 
-    if (isset($slug2, $r_typ) && (TYP_GRUPPE === $r_typ)) {
-        if (!is_numeric($slug2) && isset($slugToTreffen[$gruppeId][$slug2])) {
-            $r_typ = TYP_TREFFEN;
-            $r_data['treffenId'] = $slugToTreffen[$gruppeId][$slug2];
-        } else if (is_numeric($slug2) && isset($pdata[$key]->treffen[$slug2])) {
-            $r_typ = TYP_TREFFEN;
-            $r_data['treffenId'] = $slug2;
-        }		
-    }
     if (isset($r_typ, $r_data)) {
         $r_data['typ'] = $r_typ;
         return $r_data;

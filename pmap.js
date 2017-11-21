@@ -10,6 +10,7 @@ var plzdata;	// Daten aus plz.json
 var kreiskeys = [];	// Zuordnung Kreisschlüssel->Gruppen
 var slugToGruppe = {};	// Zuordnung Kreis-Slug -> Gruppennr
 var slugToTreffen = {};	// Zuordnung Gruppennr+Treffen-Slug -> Treffennr
+var orte = [];
 
 // Layout-Variablen
 var infoSize;	// Größe des Info-Panels
@@ -68,6 +69,7 @@ var piratenIcon = L.icon({
 
 // Moment() initialisieren
 moment.locale('de');
+var today = moment().startOf('day');	// Aktuelles Datum
 
 /**
  * Bei aktiviertem Debug-Modus in den Log schreiben
@@ -141,7 +143,6 @@ function showGruppe( typ, data, callback ) {
                     if (typeof callback === "function") callback();
                     return;
                 } else {
-                    $(".treffenlink").removeClass("active");
                     $(".eventlink").removeClass("active");
                     initShariff(data.gruppeId, genLink(TYP_GRUPPE, {"gruppeId": data.gruppeId}), genTitle(TYP_GRUPPE, {"gruppeId": data.gruppeId}));
                     infoData = {"typ": TYP_GRUPPE, "gruppeId": data.gruppeId};
@@ -151,34 +152,6 @@ function showGruppe( typ, data, callback ) {
                 }
             }
             
-            break;
-        case TYP_TREFFEN:
-            // Funktionsparameter initialisieren
-            logDebug(data);
-            if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined") return false;
-            if (typeof data.treffenId !== "number" || typeof pdata[data.gruppeId].treffen[data.treffenId] === "undefined") return false;
-            logDebug("TYP_TREFFEN");
-            // Wenn passendes Gruppen-Panel bereits offen
-            if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.typ !== "undefined" && typeof infoData.gruppeId === "number" && infoData.gruppeId === data.gruppeId) {
-                logDebug("richtiges Panel offen");
-                // Wenn richtiges Treffen ausgewählt
-                if (infoData.typ === TYP_TREFFEN && typeof infoData.treffenId === "number" && infoData.treffenId === data.treffenId) {
-                    logDebug("richtiges Treffen");
-                    $("#treffen-" + data.gruppeId + "-" + data.treffenId).focus();            
-                    if (typeof callback === "function") callback();
-                    return;
-                } else {
-                    logDebug("falsches Treffen");
-                    $(".treffenlink").removeClass("active");
-                    $(".eventlink").removeClass("active");
-                    $("#treffen-" + data.gruppeId + "-" + data.treffenId).addClass("active").focus();            
-                    initShariff(data.gruppeId, genLink(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}), genTitle(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}));
-                    infoData = {"typ": TYP_TREFFEN, "gruppeId": data.gruppeId, "treffenId": data.treffenId};
-                    
-                    if (typeof callback === "function") callback();
-                    return;
-                }
-            }
             break;
         case TYP_EVENT:
             // Funktionsparameter initialisieren
@@ -197,7 +170,6 @@ function showGruppe( typ, data, callback ) {
                     return;
                 } else {
                     logDebug("falsches Event");
-                    $(".treffenlink").removeClass("active");
                     $(".eventlink").removeClass("active");
                     $("#event-" + data.gruppeId + "-" + data.eventId).addClass("active").focus();            
                     initShariff(data.gruppeId, genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}), genTitle(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}));
@@ -214,7 +186,6 @@ function showGruppe( typ, data, callback ) {
 
     // Aktiv-Klassen entfernen, Aktiv-Klasse zur Gruppe hinzufügen
     $(".activegroup").removeClass("active");
-    $(".treffenlink").removeClass("active");
     $(".eventlink").removeClass("active");
     $("#activegroup-" + data.gruppeId).addClass("active");
 
@@ -231,42 +202,35 @@ function showGruppe( typ, data, callback ) {
     if (typeof gruppe.twitter === "string") html_gruppe += "<p><strong>Twitter:</strong><br><a href=\"https://twitter.com/" + gruppe.twitter + "\">@" + gruppe.twitter + "</a></p>";
     html_gruppe += '<p><div class="shariff" id="shariff' + data.gruppeId + '"></div></p>';
 
-    // Übersicht der Treffen
-    if (typeof pdata[data.gruppeId].treffen === "object") {
-        html_gruppe += "<h3>Treffen</h3><div id=\"treffen\"><ul>";
-        $.each( pdata[data.gruppeId].treffen, function( key2a, val ) {
-            var exclass = "";
-            if (typ === TYP_TREFFEN && data.treffenId === key2a) exclass = "active";
-            html_gruppe += "<li><a " + genLinkData(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": key2a}) + " class=\"treffenlink " + exclass + "\" id=\"treffen-" + data.gruppeId + "-" + key2a + "\" href=\"" + genLink(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": key2a}) + "\"><strong>" + val.name + "</strong>";
-            if (typeof val.termin.text === "string") html_gruppe += "<br>" +  val.termin.text;
-            if (typeof val.ort === "string") html_gruppe += "<br>" +  val.ort;
-            if (typeof events === "object" && typeof events[data.gruppeId] === "object" && typeof events[data.gruppeId].treffen === "object" && typeof events[data.gruppeId].treffen[key2a] === "number") {
-                    var datum = moment.unix(events[data.gruppeId].treffen[key2a]);
-                    html_gruppe += "<br><small><em>Nächster Termin: " + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</em></small>";
+    // Terminübersicht
+    if (typeof events !== "object") {
+        events = {};
+        $.each(calendar, function ( key, val ) {
+            if (!$.isArray(events[val.key])) {
+                events[val.key] = [];
             }
-            html_gruppe += "</a></li>";
+            val.eventId = key;
+            events[val.key].push(val);
         });
-        html_gruppe += "</ul>";
+        console.log(calendar);        
+        console.log(events);
     }
 
-    // Terminübersicht
-    if (typeof events === "object" && typeof events[data.gruppeId] === "object" && typeof events[data.gruppeId].ical === "object") {
-        html_gruppe += "<h3>Kommende Termine</h3><ul>";
-        $.each( events[data.gruppeId].ical, function( key3, val ) {
+    if (typeof events === "object" && $.isArray(events[data.gruppeId])) {
+        html_gruppe += "<div id=\"treffen\"><h3>Kommende Termine</h3><ul>";
+        $.each( events[data.gruppeId], function( key3, val ) {
             var exclass = "";
-            if (typ === TYP_EVENT && data.eventId == key3) exclass = "active";
+            if (typ === TYP_EVENT && data.eventId == val.eventId) exclass = "active";
             datum = moment.unix(val.start);
             datume = moment.unix(val.end);
             if (datume.isBefore(moment(), 'hour')) return true;
-            html_gruppe += "<li><a id=\"event-" + data.gruppeId + "-" + key3 + "\" " + genLinkData(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": key3}) + " class=\"eventlink " + exclass + "\" href=\"" + genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": key3}) + "\"><small>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</small><br>";
+            html_gruppe += "<li><a id=\"event-" + data.gruppeId + "-" + val.eventId + "\" " + genLinkData(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + " class=\"eventlink " + exclass + "\" href=\"" + genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + "\"><small>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</small><br>";
             html_gruppe += val.title + "<br><span class=\"eventmore\"><span>" + val.description.replace("\n", "<br>", "g") + "<br></span></span><small>" + val.location + "</small></a></li>";
         });
         html_gruppe += "</ul>";
     }
     if (typ === TYP_GRUPPE) {
         showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"typ": TYP_GRUPPE, "gruppeId": data.gruppeId}; $("#infocontent .active").focus(); }, function() { initShariff( data.gruppeId, genLink(TYP_GRUPPE, {"gruppeId": data.gruppeId}), genTitle(TYP_GRUPPE, {"gruppeId": data.gruppeId}) ); });
-    } else if (typ === TYP_TREFFEN) {
-        showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"typ": TYP_TREFFEN, "gruppeId": data.gruppeId, "treffenId": data.treffenId}; $("#infocontent .active").focus(); }, function() { initShariff( data.gruppeId, genLink(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}), genTitle(TYP_TREFFEN, {"gruppeId": data.gruppeId, "treffenId": data.treffenId}) ); });
     } else if (typ === TYP_EVENT) {
         showInfo(html_gruppe, function () { if (typeof callback === "function") callback(); infoData = {"typ": TYP_EVENT, "gruppeId": data.gruppeId, "eventId": data.eventId}; $("#infocontent .active").focus(); }, function() { initShariff( data.gruppeId, genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}), genTitle(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": data.eventId}) ); });
     }
@@ -293,36 +257,58 @@ function initShariff( gruppeId, url, title ) {
 
  * @param {string} name - Name des gesuchten Ortes
 */
-function showEmpty( name ) {
+function showEmpty( name, kreiskey = null ) {
     // Funktionsparameter initialisieren
     if (typeof name !== "string") name = "";
     
     // Wenn richtiges Panel bereits geöffnet: Nichts machen.
     if (infoOpen === true && typeof infoData !== "undefined" && typeof infoData.plzname === "string" && infoData.plzname === name) { return; }
 
-    var html_empty = "<h2>Suchergebnis</h2><p class=\"text\">Im Bereich <strong>" + name + "</strong> sind aktuell leider keine aktiven Treffen.</p>";
+    if (typeof kreiskey == "number" && typeof pdata[kreiskey] !== "undefined") {
+        
+        var kreis = pdata[kreiskey];
+        var html_empty = "<h2>Suchergebnis</h2><p class=\"text\">Im Bereich <strong>" + name + "</strong> sind Piraten aktiv!</p>";
+        html_empty += "<p><a href=\"" + genLink(TYP_GRUPPE, {"gruppeId": kreiskey}) + "\"" + genLinkData(TYP_GRUPPE, {"gruppeId": kreiskey}) + "><strong>Zu den Piraten im " + kreis.name + "!</strong></a></p>";
+
+    } else {
+
+        var html_empty = "<h2>Suchergebnis</h2><p class=\"text\">Im Bereich <strong>" + name + "</strong> sind aktuell leider keine aktiven Treffen.</p>";
+        html_empty += "<p>Wenn du in " + name + " ein neues Treffen starten möchtest, wende dich bitte an <a href=\"mailto:vorstand@piraten-bzv-stuttgart.de\">vorstand@piraten-bzv-stuttgart.de</a></p>";
+
+    }
+
+    html_empty += "<h3>Treffen in der Nähe</h3>";
 
     // NÄchstgelegene Treffen suchen
-    var nextdist1 = 9999999;
-    var nextdist2 = 9999999;
-    var nexto1;
-    var nexto2;
-    $.each( treffenmarkers, function( key, val ) {
+    var sortOrte = [];
+    $.each( orte, function( key, val ) {
+        console.log(val);		
         var dist = map.distance(plzmarker.getLatLng(), val.marker.getLatLng());
-        if (nextdist1 > dist) {
-            nextdist2 = nextdist1;
-            nextdist1 = dist;
-            nexto2 = nexto1;
-            nexto1 = val;
-        } else if (nextdist2 > dist) {
-            nextdist2 = dist;
-            nexto2 = val;
-        }			
+        console.log(dist);
+        sortOrte.push({"dist": dist, "key": key});
     });
-    html_empty += "<p class=\"text\">Die nächsten aktive Treffen sind diese:<ul>";
-    html_empty += "<li><a " + genLinkData(TYP_TREFFEN, {"gruppeId": nexto1.key, "treffenId": nexto1.key2}) + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": nexto1.key, "treffenId": nexto1.key2}) + "\">" + nexto1.name + "</a></li>";
-    html_empty += "<li><a " + genLinkData(TYP_TREFFEN, {"gruppeId": nexto2.key, "treffenId": nexto2.key2}) + " href=\"" + genLink(TYP_TREFFEN, {"gruppeId": nexto2.key, "treffenId": nexto2.key2}) + "\">" + nexto2.name + "</a></li>";
-    html_empty += "</ul></p>Wenn du in " + name + " ein neues Treffen starten möchtest, wende dich bitte an <a href=\"mailto:vorstand@piraten-bzv-stuttgart.de\">vorstand@piraten-bzv-stuttgart.de</a>";
+    sortOrte = sortOrte.sort(function (a, b) {
+        return a.dist - b.dist;
+    });
+    console.log(sortOrte);
+    
+    var cOrt = 0;
+    $.each(sortOrte, function (key, val) {
+        var ort = orte[val.key];
+        html_empty += "<p><strong>" + ort.ort + "</strong>, " + ort.strasse + "</p><ul>";
+        var cEvent = 0;
+        $.each(ort.events, function(key2, val2) {
+            var event = calendar[val2];
+            if (event.moment.isBefore(today)) return;
+            var linkData = genLinkData(TYP_EVENT, {"gruppeId": event.key, "eventId": val2});
+            var link = genLink(TYP_EVENT, {"gruppeId": event.key, "eventId": val2});
+            html_empty += "<li>" +  event.moment.calendar() + ": <a href=\"" + link + "\" " + linkData + " >" + event.title + "</a></li>";
+            if (++cEvent >= 3) return false;
+        });
+        html_empty += "</ul>";
+        if (++cOrt >= 3 && (val.dist > 30000 || cOrt > 5)) return false;
+    });
+    
     showInfo(html_empty, function() { infoData = {"plzname" : name}; });
 }
 
@@ -341,7 +327,6 @@ function closeInfo(nopanning) {
 
     // Aktiv-Klassen entfernen
     $(".activegroup").removeClass("active");
-    $(".treffenlink").removeClass("active");
 
     if (screenState === "big") {
         // Info-Panel slide to right, Info-Panel leeren und ausblenden
@@ -393,14 +378,11 @@ function startPLZ( plz ) {
         plzmarker.plz = plz;
         if (kreiskeys[key] !== undefined) {
             // Gruppe zur Suche gefunden
+            if (!plzpopup.isOpen()) closeAllPopups();
             plzpopup.setContent("<strong>" + dat.name + "</strong>");
-            showGruppe(TYP_GRUPPE, {"gruppeId": kreiskeys[key]});
+            showEmpty( dat.name , kreiskeys[key] );
             repeatUntil(function() { 
-                if (pdata[kreiskeys[key]].layer !== undefined) {
-                    map.fitBounds(pdata[kreiskeys[key]].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
-                } else {
-                    map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
-                }
+                map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
                 beforeFirstStart = false;
                 plzmarker.openPopup();
             }, 100, 5);
@@ -431,7 +413,6 @@ function startPLZ( plz ) {
  */
 function startMain( ) {
     $(".activegroup").removeClass("active");    // Aktiv-Klassen entfernen
-    $(".treffenlink").removeClass("active");
     
     // Karte an BzV anpassen
     map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLc, "paddingBottomRight" : pBRc});
@@ -477,42 +458,6 @@ function startGruppe( gruppeId, zoom, callback) {
     showGruppe(TYP_GRUPPE, {"gruppeId": gruppeId}, callback );
 }
 
-/**
- * Treffen starten
- * @param {number} gruppeId - key der Gruppe
- * @param {number} treffenId - key des Treffens
- * @param {(boolean|Object.<L.LatLng, number>)} [zoom=false] - true für Zoom, L.LatLng&Zoom für setView
- * @param {function()} [callback] - Callback-Funktion, wird nach der Animation ausgeführt
- */
-function startTreffen( gruppeId , treffenId, zoom, callback) {
-    
-    // Funktionsparameter initialisieren
-    if (typeof gruppeId !== "number" || typeof pdata[gruppeId] === "undefined") { startMain(); return; }
-    if (typeof treffenId !== "number" || typeof pdata[gruppeId].treffen[treffenId] === "undefined") { startMain(); return; }
-    if (typeof zoom !== "boolean") zoom = false;
-    
-    // Karte anpassen
-    if (zoom === true && typeof pdata[gruppeId].layer !== "undefined") {
-        map.fitBounds(pdata[gruppeId].layer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});
-    } else if (typeof zoom.center === "object" && typeof zoom.zoom === "number") {
-        map.setView(zoom.center, zoom.zoom);
-    } else if (zoom === true) {
-        map.fitBounds(mainlayer.getBounds(), {"paddingTopLeft": pTLi, "paddingBottomRight" : pBRi});;
-    }
-    
-    beforeFirstStart = false;
-    
-    if (typeof pdata[gruppeId].treffen[treffenId].popup !== "undefined") {
-        // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
-        if (!pdata[gruppeId].treffen[treffenId].popup.isOpen()) { closeAllPopups(); pdata[gruppeId].treffen[treffenId].marker.openPopup(); }
-    } else {
-        closeAllPopups();
-        // Wenn kein Popup vorhanden, wird die Karte bei kleinen Bildschirmen manuell verschoben
-        if (infoOpen === false && screenState === "smallportrait") map.panBy([0, infoSize], {"duration": 0.5});
-        if (infoOpen === false && screenState === "smalllandscape") map.panBy([infoSize, 0], {"duration": 0.5});
-    }
-    showGruppe(TYP_TREFFEN, {"gruppeId": gruppeId, "treffenId": treffenId}, callback );	
-}
 
 /**
  * Event starten
@@ -542,17 +487,19 @@ function startEvent( gruppeId , eventId, zoom, callback) {
     
     closeAllPopups();
 
-    dat = events[gruppeId].ical[eventId];
-    if (typeof dat.lat !== "undefined") {
-        eventmarker.setLatLng([dat.lat, dat.lon]).addTo(map);
-        var datum = moment.unix(dat.start);
-        eventpopup.setContent("<strong>" + dat.title + "</strong><br>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr<br>" + dat.location + "<p>" + dat.description + "</p>");
-        eventmarker.openPopup();
+    dat = calendar[eventId];
+
+    if (typeof calendar[eventId].location_key !== "undefined" && typeof orte[calendar[eventId].location_key].popup !== "undefined") {
+        // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
+        orte[calendar[eventId].location_key].popup.setContent("<strong>" + dat.title + "</strong><br>" + dat.moment.calendar() + " Uhr<br>" + dat.location + "<p>" + dat.description + "</p>");
+        if (!orte[calendar[eventId].location_key].popup.isOpen()) { closeAllPopups(); orte[calendar[eventId].location_key].marker.openPopup(); }
+    } else {
+        closeAllPopups();
+        // Wenn kein Popup vorhanden, wird die Karte bei kleinen Bildschirmen manuell verschoben
+        if (infoOpen === false && screenState === "smallportrait") map.panBy([0, infoSize], {"duration": 0.5});
+        if (infoOpen === false && screenState === "smalllandscape") map.panBy([infoSize, 0], {"duration": 0.5});
     }
 
-    // Wenn kein Popup vorhanden, wird die Karte bei kleinen Bildschirmen manuell verschoben
-    if (infoOpen === false && screenState === "smallportrait") map.panBy([0, infoSize], {"duration": 0.5});
-    if (infoOpen === false && screenState === "smalllandscape") map.panBy([infoSize, 0], {"duration": 0.5});
     
     showGruppe(TYP_EVENT, {"gruppeId": gruppeId, "eventId": eventId}, callback );	
 }
@@ -592,24 +539,18 @@ function genLink(typ, data) {
     if (typeof data === "undefined") return baseURL + "/";
     
     switch (typ) {
-        case TYP_TREFFEN:
-            if (typeof data.gruppeId !== "number" || typeof data.treffenId !== "number") return baseURL + "/";
-            if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].slug !== undefined) part1 = pdata[data.gruppeId].slug; else part1 = data.gruppeId;		
-            if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].treffen !== undefined && pdata[data.gruppeId].treffen[data.treffenId].slug !== undefined) part2 = pdata[data.gruppeId].treffen[data.treffenId].slug; else part2 = data.treffenId;	
-            return baseURL + "/" + part1 + "/" + part2;
-            break;
         case TYP_GRUPPE:
             if (typeof data.gruppeId !== "number") return baseURL + "/";
             if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].slug !== undefined) return baseURL + "/" + pdata[data.gruppeId].slug; else return baseURL + "/" + data.gruppeId;	
             break;
         case TYP_EVENT:
-            if (typeof data.gruppeId !== "number" || typeof data.eventId === "undefined") return baseURL + "/";
+            if (typeof data.gruppeId !== "number") return baseURL + "/";
             if (pdata[data.gruppeId] !== undefined && pdata[data.gruppeId].slug !== undefined) part1 = pdata[data.gruppeId].slug; else part1 = data.gruppeId;		
-            if (events !== undefined && events[data.gruppeId] !== undefined && events[data.gruppeId].ical !== undefined && events[data.gruppeId].ical[data.eventId] !== undefined)
-                part2 = events[data.gruppeId].ical[data.eventId].hash;
+            if (data.eventId !== undefined && calendar[data.eventId] !== undefined && calendar[data.eventId].hash !== undefined)
+                part2 = calendar[data.eventId].hash;
             else
-                part2 = data.eventId;		
-            return baseURL + "/" + part1 + "/event/" + part2;
+                part2 = '';		
+            return baseURL + "/" + part1 + "/" + part2;
             break;
     }
     
@@ -627,10 +568,6 @@ function genLinkData(typ, data) {
         case TYP_GRUPPE:
             if (typeof data === "undefined" || typeof data.gruppeId !== "number") return "";
             return 'data-typ="' + TYP_GRUPPE + '" data-gruppeid="' + data.gruppeId + '"';
-            break;
-        case TYP_TREFFEN:
-            if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof data.treffenId !== "number") return "";
-            return 'data-typ="' + TYP_TREFFEN + '" data-gruppeid="' + data.gruppeId + '" data-treffenid="' + data.treffenId + '"';
             break;
         case TYP_EVENT:
             if (typeof data === "undefined" || typeof data.gruppeId !== "number" || typeof data.eventId === "undefined") return "";
@@ -663,15 +600,13 @@ function genTitle(typ, data) {
     if (typeof data === "undefined") return title;
     
     switch (typ) {
-        case TYP_TREFFEN:
-            if (typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined" || typeof pdata[data.gruppeId].name === "undefined") return title;
-            if (typeof data.treffenId !== "number" || typeof pdata[data.gruppeId].treffen[data.treffenId] === "undefined" || typeof pdata[data.gruppeId].treffen[data.treffenId].name === "undefined") return pdata[data.gruppeId].name + " – " + title;
-            return pdata[data.gruppeId].treffen[data.treffenId].name + " – " + pdata[data.gruppeId].name + " – " + title;
-            break;
         case TYP_GRUPPE:
-        case TYP_EVENT:
             if (typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined" || typeof pdata[data.gruppeId].name === "undefined") return title;
             return pdata[data.gruppeId].name + " – " + title;
+            break;
+        case TYP_EVENT:
+            if (typeof data.gruppeId !== "number" || typeof pdata[data.gruppeId] === "undefined" || typeof pdata[data.gruppeId].name === "undefined" || typeof data.eventId !== "number" || typeof calendar[data.eventId] === "undefined") return title;
+            return calendar[data.eventId].title + " – " + pdata[data.gruppeId].name + " – " + title;
             break;
         case TYP_PLZ:
             if (typeof data.plz !== "number") return title;
@@ -901,12 +836,6 @@ $( document ).ready(function start() {
         startGruppe(linko.data("gruppeid"), true, function () {setHash(TYP_GRUPPE, {"gruppeId": linko.data("gruppeid")});});
         return false;
     });
-    $(document).on("click", "a[data-typ="+ TYP_TREFFEN + "][data-gruppeid][data-treffenid]", function() {
-        var linko = $(this);
-        logDebug(linko.data("gruppeid"));
-        startTreffen(linko.data("gruppeid"), linko.data("treffenid"), true, function () {setHash(TYP_TREFFEN, {"gruppeId": linko.data("gruppeid"), "treffenId": linko.data("treffenid")});});
-        return false;
-    });
     $(document).on("click", "a[data-typ="+ TYP_EVENT + "][data-gruppeid][data-eventid]", function() {
         var linko = $(this);
         logDebug("eventlink");
@@ -942,62 +871,108 @@ $( document ).ready(function start() {
                     pdata[key].layer.addTo(map);
                 }
             }
-
-            // Treffen verarbeiten
-            if (val.treffen !== undefined && val.treffen.length > 0) {
-                var stt = {};
-                $.each( val.treffen, function( key2, val2 ) {
-                    if (val2.slug !== undefined) stt[val2.slug] = key2; // Zuordnung Gruppennr+Treffen-Slug -> Treffen
-                    if (val2.lat !== undefined & val2.lon !== undefined) {
-                        // Marker zu Karte hinzufügen
-                        pdata[key].treffen[key2].marker = new L.marker([val2.lat, val2.lon], {icon: piratenIcon}).addTo(map);
-
-                        // Marker in globalem Array zusammenfassen
-                        var dm =  [];
-                        dm.key = key;
-                        dm.key2 = key2;
-                        dm.name = val2.name;
-                        dm.marker = pdata[key].treffen[key2].marker;
-                        treffenmarkers.push(dm);
-
-                        // Popup erstellen
-                        var popUpContent = "<strong>" + val2.name + "</strong>";
-                        if (val2.ort !== undefined) popUpContent += "<br>" + val2.ort;
-                        pdata[key].treffen[key2].popup = new L.popup().setContent(popUpContent);
-                        pdata[key].treffen[key2].marker.bindPopup(pdata[key].treffen[key2].popup);
-                        pdata[key].treffen[key2].marker.on("click", function(e) {
-                            if (anGoing === true) return;	// Abbrechen, wenn wereits eine Aktion läuft
-                            startTreffen(key, key2, false);	// Hash setzen
-                            setHash(TYP_TREFFEN, {"gruppeId": key, "treffenId": key2});	// Aktion: Treffen starten
-                        });
-                    }
-
-                });
-                slugToTreffen[key] = stt;	// Zuordnung Gruppennr+Treffen-Slug -> Treffen
-            }
         });
         html_activegroup += "</ul>";
         $("#activegroups").html(html_activegroup);	// Gruppenübersicht befüllen
 
-        // Events (pro Gruppe) laden
-        $.getJSON( basePath + "/gen/events.json", function( data ) {
-            events = data;
+        $.getJSON( basePath + "/gen/orte.json", function( data ) {
+            orte = data;
+
+            $.each(orte, function( key, ort ) {
+                orte[key].marker = new L.marker([ort.loc.lat, ort.loc.lng], {icon: piratenIcon}).addTo(map);
+
+                // Popup erstellen
+                var popUpContent = "<strong>" + ort.strasse + " " + ort.nr + ", " + ort.ort + "</strong><br>";
+                orte[key].popup = new L.popup().setContent(popUpContent);
+                orte[key].marker.bindPopup(orte[key].popup);
+                orte[key].marker.on("click", function(e) {
+                    var today = moment().startOf('day');	// Aktuelles Datum
+                    var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
+                    var popUpContent = "<strong>" + ort.strasse + " " + ort.nr + ", " + ort.ort + "</strong><br>";
+                    $.each(ort.events, function (key, eventkey) {
+                        if (calendar[eventkey].moment.isBefore(today, 'day')) {
+                            return;
+                        }
+                        var datumstring = "";
+                        if (calendar[eventkey].moment.isSame(today, 'day')) {
+                            datumstring = "Heute";
+                        } else if (calendar[eventkey].moment.isSame(tomorrow, 'day')) {
+                            datumstring = "Morgen";
+                        } else {
+                            datumstring = calendar[eventkey].moment.format("dddd, D. MMMM");
+                        }
+                        datumstring = calendar[eventkey].moment.calendar();
+                        var linkData = genLinkData(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
+                        var link = genLink(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
+                        popUpContent += "<p>" + datumstring + ":<br><strong><a " + linkData + " href=\"" + link + "\">" + calendar[eventkey].title + "</a></strong></p>";
+                    });
+                    orte[key].popup.setContent(popUpContent);
+                });
+
+            });
+
+        });
+
+        // Events laden
+        $.getJSON( basePath + "/gen/calendar.json", function( data ) {
+
+            calendar = data;
+
+            var html_calendar = "";
+
+            var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
+
+            var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
+            var count = 0;	// Schleifenzähler
+            $.each( data, function( key, val ) {
+                var datum = moment.unix(val.start);	// Event-Startdatumzeit
+                calendar[key].moment = datum;
+                if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
+                // Tages-Überschriften erzeugen
+                if (!datum.isSame(adatum, 'day')) {
+                    if (count !== 0) html_calendar += "</ul>";
+                        var datumstring = "";
+                        if (datum.isSame(today, 'day')) {
+                            datumstring = "Heute";
+                        } else if (datum.isSame(tomorrow, 'day')) {
+                            datumstring = "Morgen";
+                        } else {
+                            datumstring = datum.format("dddd, D. MMMM");
+                        }
+                    html_calendar += "<h3>" + datumstring + "</h3><ul>";
+                    count++;
+                }
+                adatum = datum;
+
+                // Termin-Einträge
+                html_calendar += "<li>";
+
+                // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
+                if (val.key !== undefined && val.hash !== undefined && pdata[val.key] !== undefined) {
+                    var linkData = genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
+                    var link = genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
+                    genSchema(val.title, val.location, datum.format(), link);
+                } else {
+                    var linkData = genLinkData(TYP_GRUPPE, {"gruppeId": val.key});
+                    var link = genLink(TYP_GRUPPE, {"gruppeId": val.key});
+                } 
+                html_calendar += "<a " + linkData  + " href=\"" + link + "\">";
+                html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
+            });
+            html_calendar += "</ul>";
+            $("#calendar").html(html_calendar);	// Kalender befüllen
 
             // Ansicht zu Beginn handeln
             if (typeof initData !== "undefined" && typeof initData.typ !== "undefined") {
                 if (initData.typ === TYP_GRUPPE && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined") {
                     repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 5);
                     setHash(TYP_GRUPPE, {"gruppeId": initData.gruppeId}, true);
-                } else if (initData.typ === TYP_TREFFEN && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
-                    && typeof initData.treffenId === "number" && typeof pdata[initData.gruppeId].treffen[initData.treffenId] !== "undefined") {
-                    repeatUntil(function() { startTreffen(initData.gruppeId, initData.treffenId, true); }, 200, 5);
-                    setHash(TYP_TREFFEN, {"gruppeId": initData.gruppeId, "treffenId": initData.treffenId}, true);
                 } else if (initData.typ === TYP_PLZ && typeof initData.plz === "number") {
                     startPLZ(initData.plz);
                     setHash(TYP_PLZ, {"plz": initData.plz}, true);
                 } else if (initData.typ === TYP_EVENT && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
-                    && typeof initData.eventHash !== "undefined" && typeof events[initData.gruppeId] !== "undefined" && typeof events[initData.gruppeId].ical !== "undefined") {
-                    $.each(events[initData.gruppeId].ical, function (key2, val2) {
+                    && typeof initData.eventHash !== "undefined") {
+                    $.each(calendar, function (key2, val2) {
                         if (val2.hash == initData.eventHash) {
                             var eventId = key2;
                             repeatUntil(function() { startEvent(initData.gruppeId, eventId, true); }, 200, 5);
@@ -1015,60 +990,8 @@ $( document ).ready(function start() {
                 setHash(undefined, undefined, true);
             }
 
-            // Gesamtkalender laden und verarbeiten
-            $.getJSON( basePath + "/gen/calendar.json").done(function( data ) {
-                calendar = data;
-                var html_calendar = "";
-
-                var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
-                var today = moment().startOf('day');	// Aktuelles Datum
-                var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
-                var count = 0;	// Schleifenzähler
-                $.each( data, function( key, val ) {
-                    var datum = moment.unix(val.start);	// Event-Startdatumzeit
-                    if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
-                    // Tages-Überschriften erzeugen
-                    if (!datum.isSame(adatum, 'day')) {
-                        if (count !== 0) html_calendar += "</ul>";
-                            var datumstring = "";
-                            if (datum.isSame(today, 'day')) {
-                                datumstring = "Heute";
-                            } else if (datum.isSame(tomorrow, 'day')) {
-                                datumstring = "Morgen";
-                            } else {
-                                datumstring = datum.format("dddd, D. MMMM");
-                            }
-                        html_calendar += "<h3>" + datumstring + "</h3><ul>";
-                        count++;
-                    }
-                    adatum = datum;
-
-                    // Termin-Einträge
-                    html_calendar += "<li>";
-
-                    // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
-                    if (val.key !== undefined && val.evkey !== undefined && pdata[val.key] !== undefined) {
-                        var linkData = genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey});
-                        var link = genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": val.evkey});
-                        genSchema(val.title, val.location, datum.format(), link);
-                    } else if (val.key !== undefined && val.key2 !== undefined && pdata[val.key] !== undefined && pdata[val.key].treffen[val.key2] !== undefined) {
-                        var linkData = genLinkData(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2});
-                        var link = genLink(TYP_TREFFEN, {"gruppeId": val.key, "treffenId": val.key2});
-                        genSchema(val.title, pdata[val.key].treffen[val.key2].ort, datum.format(), link);
-                    } else {
-                        var linkData = genLinkData(TYP_GRUPPE, {"gruppeId": val.key});
-                        var link = genLink(TYP_GRUPPE, {"gruppeId": val.key});
-                    } 
-                    html_calendar += "<a " + linkData  + " href=\"" + link + "\">";
-                    html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
-                });
-                html_calendar += "</ul>";
-                $("#calendar").html(html_calendar);	// Kalender befüllen	
-
-            }).fail(function() {
+        }).fail(function() {
                 $(".calendar").hide();
-            });
-
         });
         
         // PLZ-suche handeln
@@ -1103,9 +1026,6 @@ $( document ).ready(function start() {
         setTitle(typ, data);
         
         switch (typ) {
-            case TYP_TREFFEN:
-                startTreffen(data.gruppeId, data.treffenId, {"center": e.originalEvent.state.center, "zoom": e.originalEvent.state.zoom});
-                break;
             case TYP_EVENT:
                 startEvent(data.gruppeId, data.eventId, {"center": e.originalEvent.state.center, "zoom": e.originalEvent.state.zoom});
                 break;

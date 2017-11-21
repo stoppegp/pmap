@@ -91,7 +91,19 @@ function getGeocode($address) {
             foreach ($json->results[0]->address_components as $ac) {
                 if (in_array("locality", $ac->types)) {
                     $rar['ort'] = $ac->long_name;
-                    break;
+                    continue;
+                }
+                if (in_array("route", $ac->types)) {
+                    $rar['strasse'] = $ac->long_name;
+                    continue;
+                }
+                if (in_array("street_number", $ac->types)) {
+                    $rar['nr'] = $ac->long_name;
+                    continue;
+                }
+                if (in_array("postal_code", $ac->types)) {
+                    $rar['plz'] = $ac->long_name;
+                    continue;
                 }
             }
         }
@@ -144,6 +156,55 @@ function getnextWiki($url, $searchstring) {
 	}
 }
 
+function getWiki($url, $searchstring, $key0) {
+	plog("getWiki");
+	if (!($data = getFile($url))) return false;
+	
+        /**
+         * Benötigte Informationen verarbeiten.
+         * Suche 1: Ortsname
+         * Suche 2: Datum
+         * Scuhe 3: Uhrzeit
+         */
+//        $pattern = '/<table>.+?(?=Ort)Ort.+?(?=<td>)<td>([a-zA-Z0-9\.\\\\\/\(\)ÄÖÜäöüß ]+).+?(?=Datum)Datum.+?(?=<td>)<td>([0-9a-zA-ZäöüßÄÖÜ\. ]+).+?(?=Uhrzeit)Uhrzeit.+?(?=<td>)<td>([0-9:]+).+?(?=<\/table>)<\/table>/s';
+        $pattern = '/<table>.+?(?=Ort)Ort.+?(?=<td>)<td>([a-zA-Z0-9\.\\\\\/\(\)ÄÖÜäöüß ]+).+?(?=Datum)Datum.+?(?=<td>)<td>([0-9a-zA-ZäöüßÄÖÜ\. ]+).+?(?=Uhrzeit)Uhrzeit.+?(?=<td>)<td>([0-9:]+).+?(?=Lokal)Lokal.+?(?=<td>)<td><a.+?(?=>)>([0-9a-zA-ZäöüßÄÖÜ\. ]+).+?(?=Adresse)Adresse.+?(?=<td>)<td><a.+?(?=>)>([0-9a-zA-ZäöüßÄÖÜ\. ]+).+?(?=<\/table>)<\/table>/s';
+	preg_match_all ( $pattern , $data, $matches);
+        
+	if (is_array($matches) && (count($matches) >= 4)) {
+		$k = false;
+                
+                // Ort der Treffer mit gesuchtem Ort vergleichen
+		foreach ($matches[1] as $key => $val) {
+			if ($searchstring == $val) {
+				$k = $key;
+				break;
+			}
+		}
+		if ($k === false) return false; // Passender Ort nicht dabei.
+		$search = array(" Januar ", " Februar ", " März ", " April ", " Mai ", " Juni ", " Juli ", " August ", " September ", " Oktober ", " November ", " Dezember ");
+		$replace = array("01.", "02.", "03.", "04.", "05.", "06.", "07.", "08.", "09.", "10.", "11.", "12.");
+        $time = strtotime(str_replace($search, $replace, $matches[2][$k])." ".$matches[3][$k]);
+        $location = $matches[4][$k].", ".$matches[5][$k].", ".$searchstring;
+		$jsEvt = array(
+			"title" => "Stammtisch ".$searchstring,
+			"location" => $location,
+			"description" => "",
+			"start" => $time,
+			"starta" => date('d.m.Y', $time),
+            "hash" => md5($searchstring.$time.$location),
+            "key" => $key0
+		);
+
+        if ($geo = getGeocode($location)) {
+            $jsEvt['location_detail'] = $geo;
+        }
+
+		return array(array($jsEvt), array($jsEvt['start']));
+	} else {
+		return false;   // Nichts gefunden.
+	}
+}
+
 /**
  * Nächsten Termin eines Stammtisches aus ICAL auslesen
  * @param String $calfile - URL zur ICAL-Datei
@@ -189,7 +250,7 @@ function getnextIcal($calfile, $searcharray) {
 /**
  * Nächste Termine einer ICAL laden
  */
-function getIcal($calfile, $suchworte, $exclude = array(), $filter = array()) {
+function getIcal($calfile, $key, $exclude = array(), $filter = array()) {
 	global $icals, $ic;
 	plog("ICAL-Termine laden");
 	$calfilehash = md5($calfile);
@@ -223,12 +284,11 @@ function getIcal($calfile, $suchworte, $exclude = array(), $filter = array()) {
 				"start" => $ev['DTSTART']->getTimestamp(),
 				"starta" => $ev['DTSTART']->format('d.m.Y'),
 				"end" => $ev['DTEND']->getTimestamp(),
-                "hash" => md5($ev['SUMMARY'].$ev['DTSTART']->format('d.m.Y'))
+                "hash" => md5($ev['SUMMARY'].$ev['DTSTART']->format('d.m.Y')),
+                "key" => $key
 			);
             if ($geo = getGeocode($ev['LOCATION'])) {
-                $jsEvt['lat'] = $geo['loc']->lat;
-                $jsEvt['lon'] = $geo['loc']->lng;
-                if (isset($geo['ort'])) $jsEvt['ort'] = $geo['ort'];
+                $jsEvt['location_detail'] = $geo;
             }
                      
             // Falls Filter-Liste aktiv und Termin nicht in Filter--Liste, überspringen
@@ -249,15 +309,6 @@ function getIcal($calfile, $suchworte, $exclude = array(), $filter = array()) {
 				}
 			}
    
-                        // Falls Termin zu einem Treffen passt, Verbindung hinzufügen
-			if (is_array($suchworte) && (count($suchworte) > 0)) {
-				foreach ($suchworte as $skey => $val0) {
-					if (stripos(" ".$ev['SUMMARY'], $skey) != 0) {
-						$jsEvt['key'] = $val0['key'];
-						$jsEvt['key2'] = $val0['key2'];
-					}
-				}
-			}
 			$data[] = $jsEvt;
 			$starts[] = $jsEvt['start'];
 		}
@@ -280,13 +331,15 @@ $erg = array();
 
 /* TERMINE einlesen */
 if (is_array($pdata) && (count($pdata) > 0)) {
+    $events = array();
+    $starts = array();
 	foreach ($pdata as $key => $val) {
 		plog("Datensatz ".$key." | ".$val->name);	
 		
                 $asuchworte = array();	// Gesammelte ICAL-Suchworte
                 
                 // Nächste Termine der einzelnen Treffen finden
-		if (is_array($val->treffen) && (count($val->treffen) > 0)) {
+/*		if (is_array($val->treffen) && (count($val->treffen) > 0)) {
 			foreach ($val->treffen as $tkey => $treffen) {
 				plog("treffen ".$tkey);
                                 
@@ -331,47 +384,90 @@ if (is_array($pdata) && (count($pdata) > 0)) {
 					}
 				}
 			}
-		}
-                
-                // ICAL-Termine einlesen
-		if (isset($val->icals) && is_array($val->icals) && (count($val->icals) > 0)) {
-			plog("ICALS gefunden");
-			$events = array();			
-			$starts = array();	
-			foreach ($val->icals as $ikey => $ical) {
-				plog("ical ".$ikey);
-                if (isset($ical->url)) {
-                    if (isset($ical->exclude)) {
-                        $exclude = $ical->exclude;
+		}*/
+
+        // Events einlesen
+        if (isset($val->events)) {
+			plog("Events gefunden");    
+            
+		    $events[$key] = array();			
+		    $starts[$key] = array();
+
+            // ICAL-Termine einlesen
+		    if (isset($val->events->ical) && is_array($val->events->ical) && (count($val->events->ical) > 0)) {
+			    plog("ICALS gefunden");	
+			    foreach ($val->events->ical as $ikey => $ical) {
+				    plog("ical ".$ikey);
+                    if (isset($ical->url)) {
+                        if (isset($ical->exclude)) {
+                            $exclude = $ical->exclude;
+                        } else {
+                            $exclude = array();
+                        }
+                        if (isset($ical->filter)) {
+                            $filter = $ical->filter;
+                        } else {
+                            $filter = array();
+                        }
+                        $ret = getIcal($ical->url, $key, $exclude, $filter);
                     } else {
-                        $exclude = array();
+        				$ret = getIcal($ical, $key);
                     }
-                    if (isset($ical->filter)) {
-                        $filter = $ical->filter;
-                    } else {
-                        $filter = array();
+				    $events[$key] = array_merge($events[$key], $ret[0]);
+				    $starts[$key] = array_merge($starts[$key], $ret[1]);
+			    }		
+		    }
+
+		    if (isset($val->events->wiki) && is_array($val->events->wiki) && (count($val->events->wiki) > 0)) {
+			    plog("WIKI gefunden");
+                foreach ($val->events->wiki as $wkey => $wiki) {
+                    if (isset($wiki->url, $wiki->ort)) {
+                        $ret = getWiki($wiki->url, $wiki->ort, $key);
+				        $events[$key] = array_merge($events[$key], $ret[0]);
+				        $starts[$key] = array_merge($starts[$key], $ret[1]);
                     }
-                    $ret = getIcal($ical->url, $asuchworte, $exclude, $filter);
-                } else {
-    				$ret = getIcal($ical, $asuchworte);
                 }
-				$events = array_merge($events, $ret[0]);
-				$starts = array_merge($starts, $ret[1]);
-			}		
-			array_multisort($starts, $events);
-			$erg[$key]['ical'] = $events;
-		}
+            }
+			array_multisort($starts[$key], $events[$key]);
+        }
 	}
 }
 // Eingelesene Daten abspeichern
-$ergdata = json_encode($erg, JSON_FORCE_OBJECT);
+$ergdata = json_encode($events, JSON_FORCE_OBJECT);
 file_put_contents(dirname(__FILE__)."/gen/events.json", $ergdata);
 
 // Gesamtkalender erstellen
 plog("combined calendar");
-$events = array();
-$starts = array();
-foreach ($erg as $key => $val) {
+$eventsg = array();
+$startsg = array();
+foreach ($events as $key => $item) {
+    $eventsg = array_merge($eventsg, $item);
+    $startsg = array_merge($startsg, $starts[$key]);
+}
+array_multisort($startsg, $eventsg);
+
+$orte = array();
+$orteh = array();
+foreach ($eventsg as $key => $val) {
+        echo "NA";
+var_dump($val);
+    if (isset($val['location_detail'], $val['location_detail']['loc'], $val['location_detail']['loc']->lat, $val['location_detail']['loc']->lng)) {
+        echo "JA";
+        $lh = md5($val['location_detail']['loc']->lat.$val['location_detail']['loc']->lng);
+        if (!in_array($lh, array_keys($orteh))) {
+            $th = count($orte);
+            $orte[$th] = $val['location_detail'];
+            $orte[$th]['events'] = array($key);
+            $orteh[$lh] = $th;
+            $eventsg[$key]['location_key'] = $th;
+        } else {
+            $eventsg[$key]['location_key'] = $orteh[$lh];
+            $orte[$orteh[$lh]]['events'][] = $key;
+        }
+    }
+}
+var_dump($orte);
+/*foreach ($erg as $key => $val) {
 	if (isset($val['ical'])) {
 		foreach ($val['ical'] as $key2 => $val2) {
 			$newev = $val2;
@@ -401,8 +497,9 @@ foreach ($erg as $key => $val) {
 		}
 	}
 }
-array_multisort($starts, $events);
-file_put_contents(dirname(__FILE__)."/gen/calendar.json", json_encode($events, JSON_FORCE_OBJECT));
+array_multisort($starts, $events);*/
+file_put_contents(dirname(__FILE__)."/gen/calendar.json", json_encode($eventsg, JSON_FORCE_OBJECT));
+file_put_contents(dirname(__FILE__)."/gen/orte.json", json_encode($orte, JSON_FORCE_OBJECT));
 
 // Gesamt-ICAL erzeugen
 plog("ICAL");
@@ -412,7 +509,7 @@ VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN\n
 START;
 date_default_timezone_set('UTC');
-$cdata = $events;
+$cdata = $eventsg;
 $co = 0;
 foreach ($cdata as $val) {
 	$uid = date("YmdHis", $val['start'])."K".$co++."@PDATAPIRATENBZVSTUTTGART";

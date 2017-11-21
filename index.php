@@ -43,7 +43,7 @@ var title = "<?php echo PMAP_TITLE; ?>";
                     <input id="plz" type="text" placeholder="PLZ eingeben..." name="plz" size="10">
                     <button type="submit">PLZ Suchen</button>
                 </form>
-                <h2>Aktive Gruppierungen</h2>
+                <h2>Lokale Gruppen</h2>
                 <div id="activegroups"></div>
                 <h2 class="calendar" >Kalender&nbsp;<a href="<?=getBase();?>/gen/calendar.ics"><img src="<?=getBase();?>/res/img/calicon-v1.png" alt="Kalender abonnieren"></a></h2>
                 <div class="calendar" id="calendar"></div>
