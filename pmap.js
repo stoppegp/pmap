@@ -68,7 +68,17 @@ var piratenIcon = L.icon({
 });
 
 // Moment() initialisieren
-moment.locale('de');
+moment.locale('de', {
+    calendar : {
+        lastDay : '[Gestern um] LT [Uhr]',
+        sameDay : '[Heute um] LT [Uhr]',
+        nextDay : '[Morgen um] LT [Uhr]',
+        lastWeek : '[letzten] dddd [um] LT [Uhr]',
+        nextWeek : 'dddd [um] LT [Uhr]',
+        sameElse : 'LLLL [Uhr]'
+    }
+});
+
 var today = moment().startOf('day');	// Aktuelles Datum
 
 /**
@@ -491,7 +501,7 @@ function startEvent( gruppeId , eventId, zoom, callback) {
 
     if (typeof calendar[eventId].location_key !== "undefined" && typeof orte[calendar[eventId].location_key].popup !== "undefined") {
         // Wenn richtiges Popup nicht geöffnet, werden vorher alle anderen Popups geschlossen
-        orte[calendar[eventId].location_key].popup.setContent("<strong>" + dat.title + "</strong><br>" + dat.moment.calendar() + " Uhr<br>" + dat.location + "<p>" + dat.description + "</p>");
+        orte[calendar[eventId].location_key].popup.setContent("<strong>" + dat.title + "</strong><br>" + dat.moment.calendar() + "<br>" + dat.location + "<p>" + dat.description + "</p>");
         if (!orte[calendar[eventId].location_key].popup.isOpen()) { closeAllPopups(); orte[calendar[eventId].location_key].marker.openPopup(); }
     } else {
         closeAllPopups();
@@ -893,15 +903,7 @@ $( document ).ready(function start() {
                         if (calendar[eventkey].moment.isBefore(today, 'day')) {
                             return;
                         }
-                        var datumstring = "";
-                        if (calendar[eventkey].moment.isSame(today, 'day')) {
-                            datumstring = "Heute";
-                        } else if (calendar[eventkey].moment.isSame(tomorrow, 'day')) {
-                            datumstring = "Morgen";
-                        } else {
-                            datumstring = calendar[eventkey].moment.format("dddd, D. MMMM");
-                        }
-                        datumstring = calendar[eventkey].moment.calendar();
+                        var datumstring = calendar[eventkey].moment.calendar();
                         var linkData = genLinkData(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
                         var link = genLink(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
                         popUpContent += "<p>" + datumstring + ":<br><strong><a " + linkData + " href=\"" + link + "\">" + calendar[eventkey].title + "</a></strong></p>";
