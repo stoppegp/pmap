@@ -162,8 +162,8 @@ function handleOG() {
 
             if (isset($pdata[$key]->name)) $title = $pdata[$key]->name." – ".PMAP_TITLE; else $title = PMAP_TITLE;
             if (isset($pdata[$key]->text) && (trim($pdata[$key]->text) != "")) $desc = $pdata[$key]->text; else $desc=PMAP_DESC;
-            if (isset($pdata[$key]->img) && ($size = getimagesize('data/img/'.$pdata[$key]->img))) {
-                    $imgurl = $url.'/data/img/'.$pdata[$key]->img;
+            if (isset($pdata[$key]->{'img-social'}) && ($size = getimagesize('data/img/'.$pdata[$key]->{'img-social'}))) {
+                    $imgurl = $url.'/data/img/'.$pdata[$key]->{'img-social'};
                     $imgwidth = $size[0];		
                     $imgheight = $size[1];
             } else if ($size = getimagesize('data/img/logo.png')) {
