@@ -234,7 +234,7 @@ function showGruppe( typ, data, callback ) {
             datum = moment.unix(val.start);
             datume = moment.unix(val.end);
             if (datume.isBefore(moment(), 'hour')) return true;
-            html_gruppe += "<li><a id=\"event-" + data.gruppeId + "-" + val.eventId + "\" " + genLinkData(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + " class=\"eventlink " + exclass + "\" href=\"" + genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + "\"><small>" + datum.format("ddd, DD.MM.YYYY, HH:mm") + " Uhr</small><br>";
+            html_gruppe += "<li><a id=\"event-" + data.gruppeId + "-" + val.eventId + "\" " + genLinkData(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + " class=\"eventlink " + exclass + "\" href=\"" + genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + "\"><small>" + datum.calendar() + "</small><br>";
             html_gruppe += val.title + "<br><span class=\"eventmore\"><span>" + val.description.replace("\n", "<br>", "g") + "<br></span></span><small>" + val.location + "</small></a></li>";
         });
         html_gruppe += "</ul>";
