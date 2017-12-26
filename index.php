@@ -26,8 +26,10 @@ document.getElementById("html").className = "js";
 var basePath = "<?=getBase();?>";
 var baseURL = document.location.protocol + "//" + document.location.hostname + basePath;
 var title = "<?php echo PMAP_TITLE; ?>";
-var pdata = <?php echo $pdata_raw; ?>
+var pdata = <?php echo $pdata_raw; ?>;
+var calendar = <?php echo $cdata_raw; ?>;
 </script>
+<?php echo getOG(); ?>
 </head>
 
 <body>

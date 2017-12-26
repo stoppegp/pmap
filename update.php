@@ -83,16 +83,24 @@ function getFile($url) {
 	}
 }
 
-function getGeocode($address) {
+function getGeocode($address, $name = false) {
     if (!defined("GEOCODE_API")) return false;
     $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address)."&language=de&region=de&key=".GEOCODE_API;
     $data = getFile($url);
     if (!$data) return false;
+
+    if ($name === false) {
+        if (strpos($address, "@") !== false) {
+            $pos = strpos($address, "@");
+            $name = trim(substr($address, 0, $pos));
+        }
+    }
+
     $json = json_decode($data);
     if (isset($json, $json->results, $json->results[0], $json->results[0]->geometry, $json->results[0]->geometry->location)) {
         $rar = array();
         $rar['loc'] = $json->results[0]->geometry->location;
-
+        if ($name !== false) $rar['name'] = $name;
         if (isset($json->results[0]->address_components) && is_array($json->results[0]->address_components) && (count($json->results[0]->address_components) > 0)) {
             foreach ($json->results[0]->address_components as $ac) {
                 if (in_array("locality", $ac->types)) {
@@ -117,11 +125,24 @@ function getGeocode($address) {
     } else {
         if (strpos($address, "@") !== false) {
             $pos = strpos($address, "@");
-            return getGeocode(substr($address, $pos+1));
+            return getGeocode(substr($address, $pos+1), $name);
         } else {
             return false;
         }
     }
+}
+
+function strFromLocationDetail($geo) {
+    $ret = "";
+    if (isset($geo['name'])) $ret .= $geo['name']." @ ";
+    if (isset($geo['strasse'])) {
+        $ret .= $geo['strasse'];
+        if (isset($geo['nr'])) $ret .= " ".$geo['nr'];
+        $ret .= ", ";
+    }
+    if (isset($geo['plz'])) $ret .= $geo['plz']." ";
+    if (isset($geo['ort'])) $ret .= $geo['ort'];
+    return $ret;
 }
 
 /**
@@ -206,7 +227,7 @@ function getWiki($url, $searchstring, $key0) {
             "key" => $key0
 		);
 
-        if ($geo = getGeocode($location)) {
+        if ($geo = getGeocode($location, $matches[4][$k])) {
             $jsEvt['location_detail'] = $geo;
         }
 
@@ -486,6 +507,9 @@ foreach ($eventsg as $key => $val) {
                 $eventsg[$key]['location_key'] = $th;
                 $orte[$th]->events[] = $key;
             }
+            if (isset($ldata[$currentl]->name)) {
+                    $eventsg[$key]['location_detail']['name'] = $ldata[$currentl]->name;
+            }
         } else {
             $th0 = count($ldata);
             $th = count($orte);
@@ -494,6 +518,9 @@ foreach ($eventsg as $key => $val) {
             $orte[$th]->events = array($key);
             $ldata[$th0]->lkey = $th;
             $eventsg[$key]['location_key'] = $th;
+        }
+        if (isset($eventsg[$key]['location_detail'])) {
+            $eventsg[$key]['location'] = strFromLocationDetail($eventsg[$key]['location_detail']);
         }
 
 /*        $lh = md5($val['location_detail']['loc']->lat.$val['location_detail']['loc']->lng);

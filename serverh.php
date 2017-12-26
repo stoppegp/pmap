@@ -25,6 +25,13 @@ if(file_exists(dirname(__FILE__).'/data/pdata.json')){
     exit();
 }
 
+// Kalender laden
+if(file_exists(dirname(__FILE__).'/gen/calendar.json')){
+    $cdata_raw = file_get_contents(dirname(__FILE__).'/gen/calendar.json', FILE_USE_INCLUDE_PATH);
+    $cdata = json_decode($cdata_raw);
+}
+
+
 $slug = filter_input(INPUT_GET, "key", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $slug2 = filter_input(INPUT_GET, "key2", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
 $slug3 = filter_input(INPUT_GET, "key3", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
@@ -154,7 +161,6 @@ function handleOG() {
 	$std = true;
 	$url = getURL();
         $data = getData();
-            
         try {
             if ($data['typ'] !== TYP_GRUPPE && $data['typ'] !== TYP_TREFFEN && $data['typ'] !== TYP_EVENT) throw new Exception("");
             if (!isset($data['gruppeId'])) throw new Exception("");
@@ -172,11 +178,6 @@ function handleOG() {
                     $imgheight = $size[1];
             }
 
-            if ($data['typ'] === TYP_TREFFEN && isset($data['treffenId'])) {
-                $key2 = $data['treffenId'];
-                if (isset($pdata[$key]->treffen[$key2]->name)) $title = $pdata[$key]->treffen[$key2]->name." – ".$pdata[$key]->name." – ".PMAP_TITLE;
-                if (isset($pdata[$key]->treffen[$key2]->text) && (trim($pdata[$key]->treffen[$key2]->text) != "")) $desc = $$pdata[$key]->treffen[$key2]->text;
-            }
 
         } catch (Exception $e)    {
             $title = PMAP_TITLE;
@@ -196,5 +197,54 @@ function handleOG() {
 	if (isset($imgheight)) echo '<meta property="og:image:height" content="'.$imgheight.'" />';
 }
 
+function getOG() {
+    global $cdata, $pdata;
+    $data = getData();
+    $ret = "";
+    if ((count($cdata) > 0)) {
+        foreach ($cdata as $key => $val) {
+            
+            switch ($data['typ']) {
+                case TYP_GRUPPE:
+                    if ($val->key != $data['gruppeId']) continue 2;
+                    break;
+                case TYP_EVENT:
+                    if ($val->hash != $data['eventHash']) continue 2;
+                    break;
+            }
+
+            $jobj = new stdClass();
+            $jobj->{"@context"} = "http://schema.org";
+            $jobj->{"@type"} = "Event";
+            $jobj->name = $val->title;
+            $startDate = new DateTime("@".round($val->start));
+            $jobj->startDate = $startDate->format(DateTime::ATOM);
+            if (isset($val->description)) $jobj->description = $val->description;
+            if (isset($val->end)) {
+                $endDate = new DateTime("@".round($val->end));
+                $jobj->endDate = $endDate->format(DateTime::ATOM);
+            }
+            $key = $val->key;
+            if (isset($pdata[$key],$pdata[$key]->{"img-social"})) $jobj->image = getURL()."/data/img/".$pdata[$key]->{"img-social"};
+            $jobj->location->{"@type"} = "place";
+            if (isset($val->location_detail)) {
+                if (isset($val->location_detail->plz)) $jobj->location->address->postalCode = $val->location_detail->plz;
+                if (isset($val->location_detail->strasse)) {
+                    $jobj->location->address->streetAddress = $val->location_detail->strasse;
+                    if (isset($val->location_detail->nr)) $jobj->location->address->streetAddress .= " ".$val->location_detail->nr;
+                }
+                if (isset($val->location_detail->ort)) $jobj->location->address->addressLocality = $val->location_detail->ort;
+                if (isset($val->location_detail->name)) $jobj->location->name = $val->location_detail->name;
+            } else {
+                $jobj->location->address = $val->location;
+            }
+            $ret .= '<script type="application/ld+json">'.json_encode($jobj)."</script>\n";
+            //var_dump(json_encode($jobj));
+        }
+    }
+     return $ret;
+}
 
 ?>
+
+

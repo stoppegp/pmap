@@ -790,14 +790,6 @@ function repeatUntil(callback, timeout, maxTries, it) {
     }
 }
 
-function genSchema(title, location, startDate, url) {
-    
-    var el = document.createElement("script");
-    el.type = 'application/ld+json';
-    el.text = JSON.stringify({ "@context": "http://schema.org",  "@type": "Event", "name": title, "url": url, "startDate": startDate, "location": { "@type": "place", "address": location } });
-    document.querySelector('body').appendChild(el);
-
-}
 
 $( document ).ready(function start() {
     // Layout der Fenstergröße anpassen	
@@ -927,85 +919,77 @@ $( document ).ready(function start() {
     });
 
     // Events laden
-    $.getJSON( basePath + "/gen/calendar.json", function( data ) {
+    var html_calendar = "";
 
-        calendar = data;
+    var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
 
-        var html_calendar = "";
+    var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
+    var count = 0;	// Schleifenzähler
+    $.each( calendar, function( key, val ) {
+        var datum = moment.unix(val.start);	// Event-Startdatumzeit
+        calendar[key].moment = datum;
+        if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
+        // Tages-Überschriften erzeugen
+        if (!datum.isSame(adatum, 'day')) {
+            if (count !== 0) html_calendar += "</ul>";
+                var datumstring = "";
+                if (datum.isSame(today, 'day')) {
+                    datumstring = "Heute";
+                } else if (datum.isSame(tomorrow, 'day')) {
+                    datumstring = "Morgen";
+                } else {
+                    datumstring = datum.format("dddd, D. MMMM");
+                }
+            html_calendar += "<h3>" + datumstring + "</h3><ul>";
+            count++;
+        }
+        adatum = datum;
 
-        var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
+        // Termin-Einträge
+        html_calendar += "<li>";
 
-        var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
-        var count = 0;	// Schleifenzähler
-        $.each( data, function( key, val ) {
-            var datum = moment.unix(val.start);	// Event-Startdatumzeit
-            calendar[key].moment = datum;
-            if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
-            // Tages-Überschriften erzeugen
-            if (!datum.isSame(adatum, 'day')) {
-                if (count !== 0) html_calendar += "</ul>";
-                    var datumstring = "";
-                    if (datum.isSame(today, 'day')) {
-                        datumstring = "Heute";
-                    } else if (datum.isSame(tomorrow, 'day')) {
-                        datumstring = "Morgen";
-                    } else {
-                        datumstring = datum.format("dddd, D. MMMM");
-                    }
-                html_calendar += "<h3>" + datumstring + "</h3><ul>";
-                count++;
-            }
-            adatum = datum;
+        // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
+        if (val.key !== undefined && val.hash !== undefined && pdata[val.key] !== undefined) {
+            var linkData = genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
+            var link = genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
+        } else {
+            var linkData = genLinkData(TYP_GRUPPE, {"gruppeId": val.key});
+            var link = genLink(TYP_GRUPPE, {"gruppeId": val.key});
+        } 
+        html_calendar += "<a " + linkData  + " href=\"" + link + "\">";
+        html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
+    });
+    html_calendar += "</ul>";
+    $("#calendar").html(html_calendar);	// Kalender befüllen
 
-            // Termin-Einträge
-            html_calendar += "<li>";
+    // Ansicht zu Beginn handeln
+    if (typeof initData !== "undefined" && typeof initData.typ !== "undefined") {
+        if (initData.typ === TYP_GRUPPE && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined") {
+            repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 5);
+            setHash(TYP_GRUPPE, {"gruppeId": initData.gruppeId}, true);
+        } else if (initData.typ === TYP_PLZ && typeof initData.plz === "number") {
+            startPLZ(initData.plz);
+            setHash(TYP_PLZ, {"plz": initData.plz}, true);
+        } else if (initData.typ === TYP_EVENT && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
+            && typeof initData.eventHash !== "undefined") {
+            $.each(calendar, function (key2, val2) {
+                if (val2.hash == initData.eventHash) {
+                    var eventId = key2;
+                    repeatUntil(function() { startEvent(initData.gruppeId, eventId, true); }, 200, 5);
+                    setHash(TYP_EVENT, {"gruppeId": initData.gruppeId, "eventId": eventId}, true);
+                    return false;
+                }
 
-            // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
-            if (val.key !== undefined && val.hash !== undefined && pdata[val.key] !== undefined) {
-                var linkData = genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
-                var link = genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
-                genSchema(val.title, val.location, datum.format(), link);
-            } else {
-                var linkData = genLinkData(TYP_GRUPPE, {"gruppeId": val.key});
-                var link = genLink(TYP_GRUPPE, {"gruppeId": val.key});
-            } 
-            html_calendar += "<a " + linkData  + " href=\"" + link + "\">";
-            html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
-        });
-        html_calendar += "</ul>";
-        $("#calendar").html(html_calendar);	// Kalender befüllen
-
-        // Ansicht zu Beginn handeln
-        if (typeof initData !== "undefined" && typeof initData.typ !== "undefined") {
-            if (initData.typ === TYP_GRUPPE && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined") {
-                repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 5);
-                setHash(TYP_GRUPPE, {"gruppeId": initData.gruppeId}, true);
-            } else if (initData.typ === TYP_PLZ && typeof initData.plz === "number") {
-                startPLZ(initData.plz);
-                setHash(TYP_PLZ, {"plz": initData.plz}, true);
-            } else if (initData.typ === TYP_EVENT && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
-                && typeof initData.eventHash !== "undefined") {
-                $.each(calendar, function (key2, val2) {
-                    if (val2.hash == initData.eventHash) {
-                        var eventId = key2;
-                        repeatUntil(function() { startEvent(initData.gruppeId, eventId, true); }, 200, 5);
-                        setHash(TYP_EVENT, {"gruppeId": initData.gruppeId, "eventId": eventId}, true);
-                        return false;
-                    }
-
-                })
-            } else {
-                repeatUntil(function() { startMain(); }, 200, 5);
-                setHash(undefined, undefined, true);
-            }
+            })
         } else {
             repeatUntil(function() { startMain(); }, 200, 5);
             setHash(undefined, undefined, true);
         }
+    } else {
+        repeatUntil(function() { startMain(); }, 200, 5);
+        setHash(undefined, undefined, true);
+    }
 
-    }).fail(function() {
-            $(".calendar").hide();
-    });
     
     // PLZ-suche handeln
     $( "#plzform" ).submit(function( event ) {
