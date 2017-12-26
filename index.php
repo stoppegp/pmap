@@ -10,7 +10,15 @@
     handleOG(); // Meta-Tags für Crawler generieren
 ?>
 <title><?php echo PMAP_TITLE; ?></title>
+<?php
+if (file_exists("data/img/favicon.ico")) {
+    ?>
+<link rel="shortcut icon" type="image/x-icon" href="<?=getBase();?>/data/img/favicon.ico" />
+    <?php
+} else {
+?>
 <link rel="shortcut icon" type="image/x-icon" href="<?=getBase();?>/res/favicon-v1.ico" />
+<?php } ?>
 <link rel="stylesheet" href="<?=getBase();?>/res/leaflet-1.0.2/leaflet.css" />
 <script src="<?=getBase();?>/res/jquery/jquery-3.1.1.min.js"></script>
 <script src="<?=getBase();?>/res/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
