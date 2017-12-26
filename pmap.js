@@ -222,8 +222,6 @@ function showGruppe( typ, data, callback ) {
             val.eventId = key;
             events[val.key].push(val);
         });
-        console.log(calendar);        
-        console.log(events);
     }
 
     if (typeof events === "object" && $.isArray(events[data.gruppeId])) {
@@ -890,7 +888,6 @@ $( document ).ready(function start() {
 
             $.each(orte, function( key, ort ) {
                 orte[key].marker = new L.marker([ort.loc.lat, ort.loc.lng], {icon: piratenIcon}).addTo(map);
-                console.log(ort);
                 // Popup erstellen
                 var popUpContent = "<strong>";
                 if (ort.name !== undefined) {
