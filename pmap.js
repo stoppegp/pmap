@@ -890,15 +890,31 @@ $( document ).ready(function start() {
 
             $.each(orte, function( key, ort ) {
                 orte[key].marker = new L.marker([ort.loc.lat, ort.loc.lng], {icon: piratenIcon}).addTo(map);
-
+                console.log(ort);
                 // Popup erstellen
-                var popUpContent = "<strong>" + ort.strasse + " " + ort.nr + ", " + ort.ort + "</strong><br>";
+                var popUpContent = "<strong>";
+                if (ort.name !== undefined) {
+                    popUpContent += ort.name + "</strong><br>";
+                }
+                popUpContent += ort.strasse;
+                if (ort.nr !== undefined) {
+                    popUpContent += " " + ort.nr;
+                }
+                popUpContent += ", " + ort.ort + "<br>";
                 orte[key].popup = new L.popup().setContent(popUpContent);
                 orte[key].marker.bindPopup(orte[key].popup);
                 orte[key].marker.on("click", function(e) {
                     var today = moment().startOf('day');	// Aktuelles Datum
                     var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
-                    var popUpContent = "<strong>" + ort.strasse + " " + ort.nr + ", " + ort.ort + "</strong><br>";
+                    var popUpContent = "<strong>";
+                    if (ort.name !== undefined) {
+                        popUpContent += ort.name + "</strong><br>";
+                    }
+                    popUpContent += ort.strasse;
+                    if (ort.nr !== undefined) {
+                        popUpContent += " " + ort.nr;
+                    }
+                    popUpContent += ", " + ort.ort + "<br>";
                     $.each(ort.events, function (key, eventkey) {
                         if (calendar[eventkey].moment.isBefore(today, 'day')) {
                             return;

@@ -35,6 +35,11 @@ $string = str_replace(array("\r\n", "\r", "\n"), "<br />", $string);
 return $string;
 }
 
+function latLngDist($lat1, $lng1, $lat2, $lng2) {
+    $dy = abs($lat1-$lat2)*111000;
+    $dx = abs($lng1-$lng2)*111000*cos(($lat1+$lat2)/2);
+    return sqrt($dy*$dy+$dx*$dx);
+}
 /**
  * Holt den Inhalt einer URL per curl oder aus dem Cache
  */
@@ -87,6 +92,7 @@ function getGeocode($address) {
     if (isset($json, $json->results, $json->results[0], $json->results[0]->geometry, $json->results[0]->geometry->location)) {
         $rar = array();
         $rar['loc'] = $json->results[0]->geometry->location;
+
         if (isset($json->results[0]->address_components) && is_array($json->results[0]->address_components) && (count($json->results[0]->address_components) > 0)) {
             foreach ($json->results[0]->address_components as $ac) {
                 if (in_array("locality", $ac->types)) {
@@ -109,7 +115,12 @@ function getGeocode($address) {
         }
         return $rar;
     } else {
-        return false;
+        if (strpos($address, "@") !== false) {
+            $pos = strpos($address, "@");
+            return getGeocode(substr($address, $pos+1));
+        } else {
+            return false;
+        }
     }
 }
 
@@ -325,6 +336,10 @@ plog("START");
 $data = file_get_contents(dirname(__FILE__).'/data/pdata.json', FILE_USE_INCLUDE_PATH);
 $pdata = json_decode($data);
 
+// LOCATIONS einlesen
+$data = file_get_contents(dirname(__FILE__).'/data/locations.json', FILE_USE_INCLUDE_PATH);
+$ldata = json_decode($data);
+
 plog("PDATA geladen");
 
 $erg = array();
@@ -449,11 +464,39 @@ array_multisort($startsg, $eventsg);
 $orte = array();
 $orteh = array();
 foreach ($eventsg as $key => $val) {
-        echo "NA";
-var_dump($val);
     if (isset($val['location_detail'], $val['location_detail']['loc'], $val['location_detail']['loc']->lat, $val['location_detail']['loc']->lng)) {
-        echo "JA";
-        $lh = md5($val['location_detail']['loc']->lat.$val['location_detail']['loc']->lng);
+        $currentl = false;
+        $currentld = 11;
+        foreach ($ldata as $lkey => $lval) {
+            $dist = latLngDist($val['location_detail']['loc']->lat, $val['location_detail']['loc']->lng, $lval->loc->lat, $lval->loc->lng);
+            if (($dist <= 10) && ($dist <= $currentld)) {
+                $currentl = $lkey;
+                $currentld = $dist;
+            }
+        }
+        if ($currentl !== false) {
+            if (!isset($ldata[$currentl]->lkey)) {
+                $th = count($orte);
+                $orte[$th] = $ldata[$currentl];
+                $orte[$th]->events = array($key);
+                $ldata[$currentl]->lkey = $th;
+                $eventsg[$key]['location_key'] = $th;
+            } else {
+                $th = $ldata[$currentl]->lkey;
+                $eventsg[$key]['location_key'] = $th;
+                $orte[$th]->events[] = $key;
+            }
+        } else {
+            $th0 = count($ldata);
+            $th = count($orte);
+            $ldata[$th0] = (object) $val['location_detail'];
+            $orte[$th] = $ldata[$th0];
+            $orte[$th]->events = array($key);
+            $ldata[$th0]->lkey = $th;
+            $eventsg[$key]['location_key'] = $th;
+        }
+
+/*        $lh = md5($val['location_detail']['loc']->lat.$val['location_detail']['loc']->lng);
         if (!in_array($lh, array_keys($orteh))) {
             $th = count($orte);
             $orte[$th] = $val['location_detail'];
@@ -463,7 +506,7 @@ var_dump($val);
         } else {
             $eventsg[$key]['location_key'] = $orteh[$lh];
             $orte[$orteh[$lh]]['events'][] = $key;
-        }
+        }*/
     }
 }
 var_dump($orte);
