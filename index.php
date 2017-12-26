@@ -26,6 +26,7 @@ document.getElementById("html").className = "js";
 var basePath = "<?=getBase();?>";
 var baseURL = document.location.protocol + "//" + document.location.hostname + basePath;
 var title = "<?php echo PMAP_TITLE; ?>";
+var pdata = <?php echo $pdata_raw; ?>
 </script>
 </head>
 

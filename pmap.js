@@ -851,44 +851,56 @@ $( document ).ready(function start() {
         return false;
     });
 
-    // PData laden und verarbeiten
-    $.getJSON( basePath + "/data/pdata.json", function( data ) {
-        pdata = data;
-        var html_activegroup = "<ul>";
-        $.each( data, function( key, val ) {
-            if (val.slug !== undefined) slugToGruppe[val.slug] = key; 			// Slug-Zuordnung
-            html_activegroup += "<li><a " + genLinkData(TYP_GRUPPE, {"gruppeId": key}) + " class=\"activegroup\" id=\"activegroup-" + key + "\" href=\"" + genLink(TYP_GRUPPE, {"gruppeId": key}) + "\">" + val.name + "</a></li>";
+    // PData verarbeiten
+    var html_activegroup = "<ul>";
+    $.each( pdata, function( key, val ) {
+        if (val.slug !== undefined) slugToGruppe[val.slug] = key; 			// Slug-Zuordnung
+        html_activegroup += "<li><a " + genLinkData(TYP_GRUPPE, {"gruppeId": key}) + " class=\"activegroup\" id=\"activegroup-" + key + "\" href=\"" + genLink(TYP_GRUPPE, {"gruppeId": key}) + "\">" + val.name + "</a></li>";
 
-            if (val.gebiet !== undefined) {
-                // Zurdnung Kreisschlüssel -> Gruppennr
-                if (val.gebiet.typ !== undefined && val.gebiet.nr !== undefined && val.gebiet.typ === "kreis") {
-                    kreiskeys[val.gebiet.nr] = key;
-                }
-                // Layer zur Karte hinzufügen
-                if (val.gebiet.geojson !== undefined) {
-                    pdata[key].layer = new L.GeoJSON.AJAX(basePath + "/data/geojson/" + val.gebiet.geojson + '.geojson', {onEachFeature: function initlayer(feature, layer) {
-                        // Popup erstellen						
-                        pdata[key].popup = new L.popup().setContent("<strong>" + val.name + "</strong>");
-                        pdata[key].layer.bindPopup(pdata[key].popup);
-                        pdata[key].layer.on("click", function(e) {
-                            if (anGoing === true) return;	// Abbrechen, wenn wereits eine Aktion läuft
-                            setHash(TYP_GRUPPE, {"gruppeId": key});	// Hash setzen
-                            startGruppe(key, false);	// Aktion: Gruppe starten
-                        });
-                    }, style:gruppeStyle});
-                    pdata[key].layer.addTo(map);
-                }
+        if (val.gebiet !== undefined) {
+            // Zurdnung Kreisschlüssel -> Gruppennr
+            if (val.gebiet.typ !== undefined && val.gebiet.nr !== undefined && val.gebiet.typ === "kreis") {
+                kreiskeys[val.gebiet.nr] = key;
             }
-        });
-        html_activegroup += "</ul>";
-        $("#activegroups").html(html_activegroup);	// Gruppenübersicht befüllen
+            // Layer zur Karte hinzufügen
+            if (val.gebiet.geojson !== undefined) {
+                pdata[key].layer = new L.GeoJSON.AJAX(basePath + "/data/geojson/" + val.gebiet.geojson + '.geojson', {onEachFeature: function initlayer(feature, layer) {
+                    // Popup erstellen						
+                    pdata[key].popup = new L.popup().setContent("<strong>" + val.name + "</strong>");
+                    pdata[key].layer.bindPopup(pdata[key].popup);
+                    pdata[key].layer.on("click", function(e) {
+                        if (anGoing === true) return;	// Abbrechen, wenn wereits eine Aktion läuft
+                        setHash(TYP_GRUPPE, {"gruppeId": key});	// Hash setzen
+                        startGruppe(key, false);	// Aktion: Gruppe starten
+                    });
+                }, style:gruppeStyle});
+                pdata[key].layer.addTo(map);
+            }
+        }
+    });
+    html_activegroup += "</ul>";
+    $("#activegroups").html(html_activegroup);	// Gruppenübersicht befüllen
 
-        $.getJSON( basePath + "/gen/orte.json", function( data ) {
-            orte = data;
+    $.getJSON( basePath + "/gen/orte.json", function( data ) {
+        orte = data;
 
-            $.each(orte, function( key, ort ) {
-                orte[key].marker = new L.marker([ort.loc.lat, ort.loc.lng], {icon: piratenIcon}).addTo(map);
-                // Popup erstellen
+        $.each(orte, function( key, ort ) {
+            orte[key].marker = new L.marker([ort.loc.lat, ort.loc.lng], {icon: piratenIcon}).addTo(map);
+            // Popup erstellen
+            var popUpContent = "<strong>";
+            if (ort.name !== undefined) {
+                popUpContent += ort.name + "</strong><br>";
+            }
+            popUpContent += ort.strasse;
+            if (ort.nr !== undefined) {
+                popUpContent += " " + ort.nr;
+            }
+            popUpContent += ", " + ort.ort + "<br>";
+            orte[key].popup = new L.popup().setContent(popUpContent);
+            orte[key].marker.bindPopup(orte[key].popup);
+            orte[key].marker.on("click", function(e) {
+                var today = moment().startOf('day');	// Aktuelles Datum
+                var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
                 var popUpContent = "<strong>";
                 if (ort.name !== undefined) {
                     popUpContent += ort.name + "</strong><br>";
@@ -898,136 +910,121 @@ $( document ).ready(function start() {
                     popUpContent += " " + ort.nr;
                 }
                 popUpContent += ", " + ort.ort + "<br>";
-                orte[key].popup = new L.popup().setContent(popUpContent);
-                orte[key].marker.bindPopup(orte[key].popup);
-                orte[key].marker.on("click", function(e) {
-                    var today = moment().startOf('day');	// Aktuelles Datum
-                    var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
-                    var popUpContent = "<strong>";
-                    if (ort.name !== undefined) {
-                        popUpContent += ort.name + "</strong><br>";
+                $.each(ort.events, function (key, eventkey) {
+                    if (calendar[eventkey].moment.isBefore(today, 'day')) {
+                        return;
                     }
-                    popUpContent += ort.strasse;
-                    if (ort.nr !== undefined) {
-                        popUpContent += " " + ort.nr;
-                    }
-                    popUpContent += ", " + ort.ort + "<br>";
-                    $.each(ort.events, function (key, eventkey) {
-                        if (calendar[eventkey].moment.isBefore(today, 'day')) {
-                            return;
-                        }
-                        var datumstring = calendar[eventkey].moment.calendar();
-                        var linkData = genLinkData(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
-                        var link = genLink(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
-                        popUpContent += "<p>" + datumstring + ":<br><strong><a " + linkData + " href=\"" + link + "\">" + calendar[eventkey].title + "</a></strong></p>";
-                    });
-                    orte[key].popup.setContent(popUpContent);
+                    var datumstring = calendar[eventkey].moment.calendar();
+                    var linkData = genLinkData(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
+                    var link = genLink(TYP_EVENT, {"gruppeId": calendar[eventkey].key, "eventId": eventkey});
+                    popUpContent += "<p>" + datumstring + ":<br><strong><a " + linkData + " href=\"" + link + "\">" + calendar[eventkey].title + "</a></strong></p>";
                 });
-
+                orte[key].popup.setContent(popUpContent);
             });
 
         });
 
-        // Events laden
-        $.getJSON( basePath + "/gen/calendar.json", function( data ) {
+    });
 
-            calendar = data;
+    // Events laden
+    $.getJSON( basePath + "/gen/calendar.json", function( data ) {
 
-            var html_calendar = "";
+        calendar = data;
 
-            var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
+        var html_calendar = "";
 
-            var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
-            var count = 0;	// Schleifenzähler
-            $.each( data, function( key, val ) {
-                var datum = moment.unix(val.start);	// Event-Startdatumzeit
-                calendar[key].moment = datum;
-                if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
-                // Tages-Überschriften erzeugen
-                if (!datum.isSame(adatum, 'day')) {
-                    if (count !== 0) html_calendar += "</ul>";
-                        var datumstring = "";
-                        if (datum.isSame(today, 'day')) {
-                            datumstring = "Heute";
-                        } else if (datum.isSame(tomorrow, 'day')) {
-                            datumstring = "Morgen";
-                        } else {
-                            datumstring = datum.format("dddd, D. MMMM");
-                        }
-                    html_calendar += "<h3>" + datumstring + "</h3><ul>";
-                    count++;
-                }
-                adatum = datum;
+        var adatum = moment(0);	// Datum des vorherigen Schleifendurchgangs
 
-                // Termin-Einträge
-                html_calendar += "<li>";
+        var tomorrow = moment().startOf('day').add(1, 'days');	// Morgiges Datum
+        var count = 0;	// Schleifenzähler
+        $.each( data, function( key, val ) {
+            var datum = moment.unix(val.start);	// Event-Startdatumzeit
+            calendar[key].moment = datum;
+            if (datum.isBefore(today)) return true;	// Vergangene Termine ignorieren
+            // Tages-Überschriften erzeugen
+            if (!datum.isSame(adatum, 'day')) {
+                if (count !== 0) html_calendar += "</ul>";
+                    var datumstring = "";
+                    if (datum.isSame(today, 'day')) {
+                        datumstring = "Heute";
+                    } else if (datum.isSame(tomorrow, 'day')) {
+                        datumstring = "Morgen";
+                    } else {
+                        datumstring = datum.format("dddd, D. MMMM");
+                    }
+                html_calendar += "<h3>" + datumstring + "</h3><ul>";
+                count++;
+            }
+            adatum = datum;
 
-                // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
-                if (val.key !== undefined && val.hash !== undefined && pdata[val.key] !== undefined) {
-                    var linkData = genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
-                    var link = genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
-                    genSchema(val.title, val.location, datum.format(), link);
-                } else {
-                    var linkData = genLinkData(TYP_GRUPPE, {"gruppeId": val.key});
-                    var link = genLink(TYP_GRUPPE, {"gruppeId": val.key});
-                } 
-                html_calendar += "<a " + linkData  + " href=\"" + link + "\">";
-                html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
-            });
-            html_calendar += "</ul>";
-            $("#calendar").html(html_calendar);	// Kalender befüllen
+            // Termin-Einträge
+            html_calendar += "<li>";
 
-            // Ansicht zu Beginn handeln
-            if (typeof initData !== "undefined" && typeof initData.typ !== "undefined") {
-                if (initData.typ === TYP_GRUPPE && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined") {
-                    repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 5);
-                    setHash(TYP_GRUPPE, {"gruppeId": initData.gruppeId}, true);
-                } else if (initData.typ === TYP_PLZ && typeof initData.plz === "number") {
-                    startPLZ(initData.plz);
-                    setHash(TYP_PLZ, {"plz": initData.plz}, true);
-                } else if (initData.typ === TYP_EVENT && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
-                    && typeof initData.eventHash !== "undefined") {
-                    $.each(calendar, function (key2, val2) {
-                        if (val2.hash == initData.eventHash) {
-                            var eventId = key2;
-                            repeatUntil(function() { startEvent(initData.gruppeId, eventId, true); }, 200, 5);
-                            setHash(TYP_EVENT, {"gruppeId": initData.gruppeId, "eventId": eventId}, true);
-                            return false;
-                        }
+            // Mit ICAL-Eintrag oder Treffen verbinden, wenn möglich
+            if (val.key !== undefined && val.hash !== undefined && pdata[val.key] !== undefined) {
+                var linkData = genLinkData(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
+                var link = genLink(TYP_EVENT, {"gruppeId": val.key, "eventId": key});
+                genSchema(val.title, val.location, datum.format(), link);
+            } else {
+                var linkData = genLinkData(TYP_GRUPPE, {"gruppeId": val.key});
+                var link = genLink(TYP_GRUPPE, {"gruppeId": val.key});
+            } 
+            html_calendar += "<a " + linkData  + " href=\"" + link + "\">";
+            html_calendar += "<small>" + datum.format("HH:mm") + " Uhr, " + pdata[val.key].name + "</small><br>" + val.title + "</a></li>";
+        });
+        html_calendar += "</ul>";
+        $("#calendar").html(html_calendar);	// Kalender befüllen
 
-                    })
-                } else {
-                    repeatUntil(function() { startMain(); }, 200, 5);
-                    setHash(undefined, undefined, true);
-                }
+        // Ansicht zu Beginn handeln
+        if (typeof initData !== "undefined" && typeof initData.typ !== "undefined") {
+            if (initData.typ === TYP_GRUPPE && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined") {
+                repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 5);
+                setHash(TYP_GRUPPE, {"gruppeId": initData.gruppeId}, true);
+            } else if (initData.typ === TYP_PLZ && typeof initData.plz === "number") {
+                startPLZ(initData.plz);
+                setHash(TYP_PLZ, {"plz": initData.plz}, true);
+            } else if (initData.typ === TYP_EVENT && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined"
+                && typeof initData.eventHash !== "undefined") {
+                $.each(calendar, function (key2, val2) {
+                    if (val2.hash == initData.eventHash) {
+                        var eventId = key2;
+                        repeatUntil(function() { startEvent(initData.gruppeId, eventId, true); }, 200, 5);
+                        setHash(TYP_EVENT, {"gruppeId": initData.gruppeId, "eventId": eventId}, true);
+                        return false;
+                    }
+
+                })
             } else {
                 repeatUntil(function() { startMain(); }, 200, 5);
                 setHash(undefined, undefined, true);
             }
+        } else {
+            repeatUntil(function() { startMain(); }, 200, 5);
+            setHash(undefined, undefined, true);
+        }
 
-        }).fail(function() {
-                $(".calendar").hide();
-        });
-        
-        // PLZ-suche handeln
-        $( "#plzform" ).submit(function( event ) {
-            var plz = $( "#plz" ).val();	// PLZ aus Suchfeld abfragen
-            if (plz !== "" && !isNaN(parseInt(plz))) {			
-                setHash(TYP_PLZ, {"plz": parseInt(plz)});	// Hash setzen
-                startPLZ(parseInt(plz));      // Aktion: PLZ suchen
-            }
-          event.preventDefault();
-          return false;
-        });
-        $("#plz").on("input", function( e ) {
-            var plz = $( "#plz" ).val();
-            if (plz !== "" && isNaN(parseInt(plz))) {
-                e.target.setCustomValidity("Eine PLZ besteht ausschließlich aus Ziffern.");
-                $("#plz").get(0).reportValidity();
-            } else {
-                e.target.setCustomValidity("");
-            }
-        });
+    }).fail(function() {
+            $(".calendar").hide();
+    });
+    
+    // PLZ-suche handeln
+    $( "#plzform" ).submit(function( event ) {
+        var plz = $( "#plz" ).val();	// PLZ aus Suchfeld abfragen
+        if (plz !== "" && !isNaN(parseInt(plz))) {			
+            setHash(TYP_PLZ, {"plz": parseInt(plz)});	// Hash setzen
+            startPLZ(parseInt(plz));      // Aktion: PLZ suchen
+        }
+      event.preventDefault();
+      return false;
+    });
+    $("#plz").on("input", function( e ) {
+        var plz = $( "#plz" ).val();
+        if (plz !== "" && isNaN(parseInt(plz))) {
+            e.target.setCustomValidity("Eine PLZ besteht ausschließlich aus Ziffern.");
+            $("#plz").get(0).reportValidity();
+        } else {
+            e.target.setCustomValidity("");
+        }
     });
 
     // Vor- und Zurück-Buttons handeln

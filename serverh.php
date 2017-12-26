@@ -14,8 +14,8 @@ if(file_exists(dirname(__FILE__).'/data/config.inc.php')){
 
 // PData laden
 if(file_exists(dirname(__FILE__).'/data/pdata.json')){
-    $data = file_get_contents(dirname(__FILE__).'/data/pdata.json', FILE_USE_INCLUDE_PATH);
-    $pdata = json_decode($data);
+    $pdata_raw = file_get_contents(dirname(__FILE__).'/data/pdata.json', FILE_USE_INCLUDE_PATH);
+    $pdata = json_decode($pdata_raw);
     if ($pdata === null) {
         echo "Das DATA-Verzeichnis ist nicht vollständig.";
         exit();
@@ -195,5 +195,6 @@ function handleOG() {
 	if (isset($imgwidth)) echo '<meta property="og:image:width" content="'.$imgwidth.'" />';
 	if (isset($imgheight)) echo '<meta property="og:image:height" content="'.$imgheight.'" />';
 }
+
 
 ?>
