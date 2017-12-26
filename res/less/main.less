@@ -134,16 +134,18 @@ small {
         list-style-type: none;
         margin: 0;
         padding: 0;
-        li a {
+        li > a {
             display: block;
             color: black;
             margin-left: -15px;
             margin-right: -15px;
             padding-left: 15px;
-            padding-right: 15px;
+            padding-right: 21%;
             padding-top: 5px;	
             padding-bottom: 5px;
             text-decoration: none;
+            position: relative;
+            top: 0;
             &:hover {
                 background-color: #ff8800;
             }
@@ -152,6 +154,15 @@ small {
             }
             &.active {
                 background-color: #ff8800;
+            }
+            .kreisicon {
+                display: block;
+                position: absolute;
+                max-width: 20%;
+                max-height: 95%;
+                top: 50%;
+                right: 0; 
+                transform: translate(0, -50%);
             }
         }
     }
@@ -326,7 +337,7 @@ html.js {
         }
     }
 }
-.eventlink span.eventmore {
+span.eventmore {
     max-height: 0;
     position: relative;
     left: 0;
@@ -336,7 +347,21 @@ html.js {
     transition: max-height 0.5s;
     font-style: italic;
     font-size: 95%;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: #ffe8ce;
+    span {
+        display: block;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        a {
+            color: black;
+            text-decoration: underline;
+        }
+    }
 }
-.eventlink.active span.eventmore {
+.eventlink.active ~ span.eventmore {
     max-height: 200px;
 }

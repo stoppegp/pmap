@@ -233,7 +233,11 @@ function showGruppe( typ, data, callback ) {
             datume = moment.unix(val.end);
             if (datume.isBefore(moment(), 'hour')) return true;
             html_gruppe += "<li><a id=\"event-" + data.gruppeId + "-" + val.eventId + "\" " + genLinkData(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + " class=\"eventlink " + exclass + "\" href=\"" + genLink(TYP_EVENT, {"gruppeId": data.gruppeId, "eventId": val.eventId}) + "\"><small>" + datum.calendar() + "</small><br>";
-            html_gruppe += val.title + "<br><span class=\"eventmore\"><span>" + val.description.replace("\n", "<br>", "g") + "<br></span></span><small>" + val.location + "</small></a></li>";
+            html_gruppe += "<strong>" +  val.title + "</strong><br><small>" + val.location + "</small></a>";
+            if (val.description !== undefined && val.description != "") {
+                html_gruppe += "<span class=\"eventmore\"><span>" + val.description.replace("\n", "<br>", "g") + "<br></span></span>";
+            }
+            html_gruppe += "</li>";
         });
         html_gruppe += "</ul>";
     }
@@ -965,7 +969,7 @@ $( document ).ready(function start() {
     // Ansicht zu Beginn handeln
     if (typeof initData !== "undefined" && typeof initData.typ !== "undefined") {
         if (initData.typ === TYP_GRUPPE && typeof initData.gruppeId === "number" && typeof pdata[initData.gruppeId] !== "undefined") {
-            repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 5);
+            repeatUntil(function() { startGruppe(initData.gruppeId, true); }, 200, 10);
             setHash(TYP_GRUPPE, {"gruppeId": initData.gruppeId}, true);
         } else if (initData.typ === TYP_PLZ && typeof initData.plz === "number") {
             startPLZ(initData.plz);
@@ -975,7 +979,7 @@ $( document ).ready(function start() {
             $.each(calendar, function (key2, val2) {
                 if (val2.hash == initData.eventHash) {
                     var eventId = key2;
-                    repeatUntil(function() { startEvent(initData.gruppeId, eventId, true); }, 200, 5);
+                    repeatUntil(function() { startEvent(initData.gruppeId, eventId, true); }, 200, 10);
                     setHash(TYP_EVENT, {"gruppeId": initData.gruppeId, "eventId": eventId}, true);
                     return false;
                 }

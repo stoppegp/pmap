@@ -322,7 +322,7 @@ function getIcal($calfile, $key, $exclude = array(), $filter = array()) {
             if ($geo = getGeocode($ev['LOCATION'])) {
                 $jsEvt['location_detail'] = $geo;
             }
-                     
+            $jsEvt["description"] = preg_replace_callback("/\\\"http[s]?:\/\/(www\.)?google.*q=([^&]*).*\\\"/", function($matches) {  return '"'.urldecode($matches[2]).'"'; }, $jsEvt["description"]);       
             // Falls Filter-Liste aktiv und Termin nicht in Filter--Liste, überspringen
 			if (is_array($filter) && (count($filter) > 0)) {
 				foreach ($filter as $skey => $val0) {
