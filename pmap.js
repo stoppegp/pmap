@@ -1,6 +1,12 @@
-/* global L, basePath, moment, baseURL, title, initData */
+/* global L, moment */
+
+document.getElementById("html").className = "js";
 
 var shariffDiv;
+
+// Pfade
+var basePath;
+var baseURL;
 
 // JSON-Speicher
 var pdata;	// Daten aus pdata.json
@@ -29,6 +35,9 @@ var plzpopup;
 var treffenmarkers = [];
 var eventmarker;
 var eventpopup;
+var mainStyle;
+var gruppeStyle;
+var piratenIcon;
 
 // Status-Variablen
 var popupOpen = false;	// Ist ein Popup geöffnet?
@@ -37,6 +46,7 @@ var infoOpen = false;	// Ist das Info-Panel geöffnet?
 var infoData;	// Was ist im Info-Panel geöffnet?
 var anGoing = false;	// Läuft gerade eine Animation?
 var beforeFirstStart = true;
+var initData;
 
 // Konstanten
 var TYP_GRUPPE = 1;
@@ -45,27 +55,6 @@ var TYP_PLZ = 3;
 var TYP_EVENT = 4;
 
 var DEBUG_MODE = false;
-
-// Leaflet-Styles
-var mainStyle = {
-    "color": "#ff7800",
-	"fillOpacity": 0.1,
-    "weight": 4,
-    "opacity": 0.65
-};
-var gruppeStyle = {
-    "color": "#ff7800",
-    "weight": 5,
-    "opacity": 0.65
-};
-var piratenIcon = L.icon({
-    iconUrl: basePath + '/res/img/piratenicon-v1.png',
-    iconSize:     [24, 24], // size of the icon
-    shadowSize:   [30, 20], // size of the shadow
-    iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location
-    shadowAnchor: [10, 0],  // the same for the shadow
-    popupAnchor:  [0, -15] // point from which the popup should open relative to the iconAnchor
-});
 
 // Moment() initialisieren
 moment.locale('de', {
@@ -80,6 +69,29 @@ moment.locale('de', {
 });
 
 var today = moment().startOf('day');	// Aktuelles Datum
+
+function initLeafletStyles() {
+    // Leaflet-Styles
+    mainStyle = {
+        "color": "#ff7800",
+	    "fillOpacity": 0.1,
+        "weight": 4,
+        "opacity": 0.65
+    };
+    gruppeStyle = {
+        "color": "#ff7800",
+        "weight": 5,
+        "opacity": 0.65
+    };
+    piratenIcon = L.icon({
+        iconUrl: basePath + '/res/img/piratenicon-v1.png',
+        iconSize:     [24, 24], // size of the icon
+        shadowSize:   [30, 20], // size of the shadow
+        iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location
+        shadowAnchor: [10, 0],  // the same for the shadow
+        popupAnchor:  [0, -15] // point from which the popup should open relative to the iconAnchor
+    });
+}
 
 /**
  * Bei aktiviertem Debug-Modus in den Log schreiben
@@ -799,6 +811,17 @@ $( document ).ready(function start() {
     // Layout der Fenstergröße anpassen	
     initState();
     $(window).resize(function() { initState(); });
+
+    // dynamische Variablen auslesen
+    var datavar = JSON.parse($("#datavar").text());
+    basePath = datavar.basePath;
+    baseURL = document.location.protocol + "//" + document.location.hostname + basePath;
+    calendar = datavar.calendar;
+    pdata = datavar.pdata;
+    initData = datavar.initData;
+    title = datavar.title;
+
+    initLeafletStyles();
 
     // Map initialisieren
     map = L.map('mapid', {attributionControl: false });

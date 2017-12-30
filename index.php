@@ -1,3 +1,6 @@
+<?php
+header("Content-Security-Policy: default-src 'self'; img-src 'self' stamen-tiles.a.ssl.fastly.net; frame-ancestors 'self'");
+?>
 <!DOCTYPE html>
 <?php
     include('serverh.php'); // Server-Methoden einbinden
@@ -27,16 +30,17 @@ if (file_exists("data/img/favicon.ico")) {
 <script src="<?=getBase();?>/res/moment/moment-with-locales.js"></script>
 <link rel="stylesheet" type="text/css" href="<?=getBase();?>/res/css/main.css?v=2">
 <link type="text/css" href="<?=getBase();?>/res/shariff-1.24.1/shariff.complete.css" rel="stylesheet">
-<script type="text/javascript">
-var initKey, initKey2;
-document.getElementById("html").className = "js";
-<?php getInitKeysJS(); ?>
-var basePath = "<?=getBase();?>";
-var baseURL = document.location.protocol + "//" + document.location.hostname + basePath;
-var title = "<?php echo PMAP_TITLE; ?>";
-var pdata = <?php echo $pdata_raw; ?>;
-var calendar = <?php echo $cdata_raw; ?>;
-</script>
+
+<script type="application/json" id="datavar"><?php
+$datavar['basePath'] = getBase();
+$datavar['title'] = PMAP_TITLE;
+$datavar['pdata'] = $pdata;
+$datavar['calendar'] = $cdata;
+$datavar['initData'] = getData();
+
+echo json_encode($datavar, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES);
+?></script>
+
 <?php echo getOG(); ?>
 </head>
 
