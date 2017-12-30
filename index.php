@@ -29,7 +29,7 @@ if (file_exists("data/img/favicon.ico")) {
 <script src="<?=getBase();?>/res/leaflet-1.0.2/leaflet.ajax.min.js"></script>
 <script src="<?=getBase();?>/res/moment/moment-with-locales.js"></script>
 <link rel="stylesheet" type="text/css" href="<?=getBase();?>/res/css/main.css?v=2">
-<link type="text/css" href="<?=getBase();?>/res/shariff-1.24.1/shariff.complete.css" rel="stylesheet">
+<link type="text/css" href="<?=getBase();?>/res/shariff-2.0.4/shariff.complete.css" rel="stylesheet">
 
 <script type="application/json" id="datavar"><?php
 $datavar['basePath'] = getBase();
@@ -71,6 +71,6 @@ echo json_encode($datavar, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES);
     <div id="infocontent"></div>
 </div>
 <script src="<?=getBase();?>/pmap.js?v=2"></script>
-<script src="<?=getBase();?>/res/shariff-1.24.1/shariff.min.js"></script>
+<script src="<?=getBase();?>/res/shariff-2.0.4/shariff.min.js"></script>
 </body>
 </html> 
